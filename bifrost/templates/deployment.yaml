@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bifrost.fullname" . }}
+  labels:
+    {{- include "bifrost.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "bifrost.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "bifrost.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "bifrost.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/scripts/bifrost.sh"]
+          args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          env:
+            - name: NET
+              value: {{ .Values.net }}
+            - name: CHAIN_API
+              value: {{ .Values.thorApi }}
+            - name: CHAIN_RPC
+              value: {{ .Values.thorDaemon }}
+            - name: BINANCE_HOST
+              value: {{ .Values.binanceDaemon }}
+            - name: BTC_HOST
+              value: {{ .Values.bitcoinDaemon }}
+            - name: ETH_HOST
+              value: {{ .Values.ethereumDaemon }}
+            - name: PEER
+              value: {{ .Values.peer }}
+            - name: SIGNER_NAME
+              value: {{ .Values.signer.name }}
+            - name: SIGNER_PASSWORD
+              value: {{ .Values.signer.password }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: scripts
+          hostPath:
+            path: /root/thornode/build/scripts
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

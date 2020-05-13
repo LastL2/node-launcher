@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "midgard.fullname" . }}
+  labels:
+    {{- include "midgard.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "midgard.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "midgard.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "midgard.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/go/scripts/midgard.sh"]
+          args: ["midgard", "-c", "/etc/midgard/config.json"]
+          volumeMounts:
+            - name: scripts
+              mountPath: /go/scripts
+          env:
+            - name: NET
+              value: {{ .Values.net }}
+            - name: CHAIN_API
+              value: {{ .Values.thorApi }}
+            - name: CHAIN_RPC
+              value: {{ .Values.thorDaemon }}
+            - name: BINANCE_API
+              value: {{ .Values.binanceApi }}
+            - name: BINANCE_API_SCHEME
+              value: {{ .Values.binanceApiScheme }}
+            - name: PG_HOST
+              value: {{ include "midgard.fullname" . }}-timescaledb
+            - name: PG_PORT
+              value: "{{ .Values.postgres.port }}"
+            - name: PG_DB
+              value: {{ .Values.postgres.database }}
+            - name: PG_USERNAME
+              value: {{ .Values.postgres.username }}
+            - name: PG_PASSWORD
+              value: {{ .Values.postgres.password }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: scripts
+          hostPath:
+            path: /root/thornode/build/scripts
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "midgard.fullname" . }}-timescaledb
+  labels:
+    {{- include "midgard.labels" . | nindent 4 }}
+    app.kubernetes.io/component: timescaledb
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "midgard.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: timescaledb
+  template:
+    metadata:
+      labels:
+        {{- include "midgard.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: timescaledb
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "midgard.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-timescaledb
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: timescale/timescaledb:latest-pg11
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.username }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.postgres.password }}
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,21 @@
+dependencies:
+- name: thor-daemon
+  repository: file://../thor-daemon
+  version: 0.1.0
+- name: thor-api
+  repository: file://../thor-api
+  version: 0.1.0
+- name: bifrost
+  repository: file://../bifrost
+  version: 0.1.0
+- name: midgard
+  repository: file://../midgard
+  version: 0.1.0
+- name: binance-daemon
+  repository: file://../binance-daemon
+  version: 0.1.0
+- name: bepswap
+  repository: file://../bepswap
+  version: 0.1.0
+digest: sha256:f4626241ddbf73b135bed00bb4bcf0fa260e362bdbf8e5e19ba9ed18f49496cf
+generated: "2020-05-13T15:56:38.136337598+10:00"

@@ -1,0 +1,38 @@
+apiVersion: v2
+name: THORChain
+description: Deploys a THORChain stack with options to enable or disable some services
+type: application
+version: 0.1.0
+
+appVersion: 0.1.0
+
+dependencies:
+  - name: thor-daemon
+    repository: file://../thor-daemon
+    version: 0.1.0
+    condition: thor-daemon.enabled
+
+  - name: thor-api
+    repository: file://../thor-api
+    version: 0.1.0
+    condition: thor-api.enabled
+
+  - name: bifrost
+    repository: file://../bifrost
+    version: 0.1.0
+    condition: bifrost.enabled
+
+  - name: midgard
+    repository: file://../midgard
+    version: 0.1.0
+    condition: midgard.enabled
+
+  - name: binance-daemon
+    repository: file://../binance-daemon
+    version: 0.1.0
+    condition: binance-daemon.enabled
+
+  - name: bepswap
+    repository: file://../bepswap
+    version: 0.1.0
+    condition: bepswap.enabled

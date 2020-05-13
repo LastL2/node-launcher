@@ -1,0 +1,41 @@
+# Default values for thorchain.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+thor-daemon:
+  enabled: true
+  image:
+    tag: mocknet
+    pullPolicy: Always
+  net: mocknet
+  fullnameOverride: thor-daemon
+
+thor-api:
+  enabled: true
+  image:
+    tag: mocknet
+    pullPolicy: Always
+  net: mocknet
+  fullnameOverride: thor-api
+
+bifrost:
+  enabled: false
+  image:
+    tag: mocknet
+    pullPolicy: Always
+  net: mocknet
+  fullnameOverride: bifrost
+
+midgard:
+  enabled: true
+  image:
+    pullPolicy: Always
+  fullnameOverride: midgard
+
+binance-daemon:
+  enabled: true
+  fullnameOverride: binance-daemon
+
+bepswap:
+  enabled: false
+  fullnameOverride: bepswap
