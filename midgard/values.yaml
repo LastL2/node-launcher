@@ -5,9 +5,6 @@
 thorApi: thor-api
 thorDaemon: thor-daemon:26657
 
-binanceApi: testnet-dex.binance.org
-binanceApiScheme: https
-
 postgres:
   port: 5432
   database: midgard
