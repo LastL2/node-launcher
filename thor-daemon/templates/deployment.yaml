@@ -29,11 +29,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/genesis.sh"]
           args: ["thord", "start", "--pruning", "nothing", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:26657"]
-          volumeMounts:
-            - name: scripts
-              mountPath: /scripts
-            - name: thorcli
-              mountPath: /root/.thorcli
           env:
             - name: NODES
               value: "{{ .Values.nodes }}"
@@ -49,6 +44,8 @@ spec:
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWD
               value: {{ .Values.signer.password }}
+            - name: SIGNER_SEED_PHRASE
+              value: {{ .Values.signer.mnemonic }}
           ports:
             - name: p2p
               containerPort: 26656
@@ -66,45 +63,6 @@ spec:
               port: rpc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        - name: bifrost
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/scripts/bifrost.sh"]
-          args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
-          volumeMounts:
-            - name: scripts
-              mountPath: /scripts
-            - name: thorcli
-              mountPath: /root/.thorcli
-          env:
-            - name: NET
-              value: {{ .Values.net }}
-            - name: CHAIN_API
-              value: {{ .Values.thorApi }}
-            - name: CHAIN_RPC
-              value: 0.0.0.0:26657
-            - name: BINANCE_HOST
-              value: {{ .Values.binanceDaemon }}
-            - name: BTC_HOST
-              value: {{ .Values.bitcoinDaemon }}
-            - name: ETH_HOST
-              value: {{ .Values.ethereumDaemon }}
-            - name: PEER
-              value: {{ .Values.peer }}
-            - name: SIGNER_NAME
-              value: {{ .Values.signer.name }}
-            - name: SIGNER_PASSWORD
-              value: {{ .Values.signer.password }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-        - name: scripts
-          hostPath:
-            path: /root/thornode/build/scripts
-        - name: thorcli
-          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

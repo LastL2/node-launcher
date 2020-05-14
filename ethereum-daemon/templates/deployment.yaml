@@ -1,54 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "thor-api.fullname" . }}
+  name: {{ include "ethereum-daemon.fullname" . }}
   labels:
-    {{- include "thor-api.labels" . | nindent 4 }}
+    {{- include "ethereum-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "thor-api.selectorLabels" . | nindent 6 }}
+      {{- include "ethereum-daemon.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "thor-api.selectorLabels" . | nindent 8 }}
+        {{- include "ethereum-daemon.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "thor-api.serviceAccountName" . }}
+      serviceAccountName: {{ include "ethereum-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/scripts/rest.sh"]
-          args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:80", "--node", "tcp://{{ .Values.thorDaemon }}"]
-          env:
-            - name: NET
-              value: {{ .Values.net }}
-            - name: CHAIN_DAEMON
-              value: {{ .Values.thorDaemon }}
-            - name: SIGNER_NAME
-              value: {{ .Values.signer.name }}
-            - name: SIGNER_PASSWD
-              value: {{ .Values.signer.password }}
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /thorchain/vault
+              path: /
               port: http
           readinessProbe:
             httpGet:
-              path: /thorchain/vault
+              path: /
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

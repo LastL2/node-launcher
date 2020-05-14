@@ -7,6 +7,7 @@ net: mainnet
 signer:
   name: thorchain
   password: password
+  mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
 
 # use in multi nodes envs
 peer:
@@ -14,8 +15,8 @@ peer:
 thorApi: thor-api
 thorDaemon: thor-daemon:26657
 
-binanceDaemon: binance-daemon:26657
-bitcoinDaemon: bitcoin-daemon:8332
+binanceDaemon: http://binance-daemon:26660
+bitcoinDaemon: bitcoin-daemon:18443
 ethereumDaemon: etherum-daemon:8545
 
 replicaCount: 1

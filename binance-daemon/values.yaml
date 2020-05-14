@@ -33,7 +33,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 26657
+  port: 26660
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

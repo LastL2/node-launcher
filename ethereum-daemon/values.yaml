@@ -1,30 +1,13 @@
-# Default values for thor-daemon.
+# Default values for ethereum-daemon.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-net: mainet
-
-signer:
-  name: thorchain
-  password: password
-  mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
-
-seed: thor-daemon
-nodes: 1
-peer:
-
-thorApi: thor-api
-
-binanceDaemon: binance-daemon:26657
-bitcoinDaemon: bitcoin-daemon:8332
-ethereumDaemon: etherum-daemon:8545
 
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/thorchain/thornode
+  repository: registry.gitlab.com/thorchain/ethereum-mock
   pullPolicy: IfNotPresent
-  tag: mainnet
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
@@ -50,9 +33,20 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port:
-    p2p: 26656
-    rpc: 26657
+  port: 8545
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

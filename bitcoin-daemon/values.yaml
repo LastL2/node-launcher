@@ -1,30 +1,18 @@
-# Default values for thor-daemon.
+# Default values for bitcoin-daemon.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-net: mainet
-
-signer:
-  name: thorchain
-  password: password
-  mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
-
-seed: thor-daemon
-nodes: 1
-peer:
-
-thorApi: thor-api
-
-binanceDaemon: binance-daemon:26657
-bitcoinDaemon: bitcoin-daemon:8332
-ethereumDaemon: etherum-daemon:8545
 
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/thorchain/thornode
-  pullPolicy: IfNotPresent
-  tag: mainnet
+  bitcoin:
+    repository: ruimarinho/bitcoin-core
+    pullPolicy: IfNotPresent
+    tag: 0.19-alpine
+  scripts:
+    repository: registry.gitlab.com/thorchain/thornode
+    pullPolicy: IfNotPresent
+    tag: mainnet
 
 imagePullSecrets: []
 nameOverride: ""
@@ -51,8 +39,8 @@ securityContext: {}
 service:
   type: ClusterIP
   port:
-    p2p: 26656
-    rpc: 26657
+    p2p: 18444
+    rpc: 18443
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

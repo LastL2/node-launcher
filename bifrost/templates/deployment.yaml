@@ -29,9 +29,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/bifrost.sh"]
           args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
-          volumeMounts:
-            - name: scripts
-              mountPath: /scripts
           env:
             - name: NET
               value: {{ .Values.net }}
@@ -51,12 +48,10 @@ spec:
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWORD
               value: {{ .Values.signer.password }}
+            - name: SIGNER_SEED_PHRASE
+              value: {{ .Values.signer.mnemonic }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-        - name: scripts
-          hostPath:
-            path: /root/thornode/build/scripts
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

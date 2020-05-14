@@ -6,7 +6,6 @@ thor-daemon:
   enabled: true
   image:
     tag: mocknet
-    pullPolicy: Always
   net: mocknet
   fullnameOverride: thor-daemon
 
@@ -14,27 +13,37 @@ thor-api:
   enabled: true
   image:
     tag: mocknet
-    pullPolicy: Always
   net: mocknet
   fullnameOverride: thor-api
 
 bifrost:
-  enabled: false
+  enabled: true
   image:
     tag: mocknet
-    pullPolicy: Always
   net: mocknet
   fullnameOverride: bifrost
 
 midgard:
   enabled: true
-  image:
-    pullPolicy: Always
   fullnameOverride: midgard
 
 binance-daemon:
   enabled: true
   fullnameOverride: binance-daemon
+
+bitcoin-daemon:
+  enabled: true
+  image:
+    scripts:
+      tag: mocknet
+  fullnameOverride: bitcoin-daemon
+
+ethereum-daemon:
+  enabled: false
+  image:
+    scripts:
+      tag: mocknet
+  fullnameOverride: ethereum-daemon
 
 bepswap:
   enabled: false
