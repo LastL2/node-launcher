@@ -30,8 +30,6 @@ spec:
           command: ["/go/scripts/midgard.sh"]
           args: ["midgard", "-c", "/etc/midgard/config.json"]
           env:
-            - name: NET
-              value: {{ .Values.net }}
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
             - name: CHAIN_RPC

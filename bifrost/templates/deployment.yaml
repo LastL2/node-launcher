@@ -6,6 +6,8 @@ metadata:
     {{- include "bifrost.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
       {{- include "bifrost.selectorLabels" . | nindent 6 }}

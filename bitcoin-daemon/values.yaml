@@ -12,7 +12,7 @@ image:
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
-    tag: mainnet
+    tag: mocknet
 
 imagePullSecrets: []
 nameOverride: ""

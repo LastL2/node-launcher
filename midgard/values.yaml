@@ -17,7 +17,7 @@ replicaCount: 1
 image:
   repository: registry.gitlab.com/thorchain/midgard
   pullPolicy: IfNotPresent
-  tag: latest
+  tag: mainnet
 
 imagePullSecrets: []
 nameOverride: ""

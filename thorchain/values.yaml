@@ -25,6 +25,8 @@ bifrost:
 
 midgard:
   enabled: true
+  image:
+    tag: mocknet
   fullnameOverride: midgard
 
 binance-daemon:
@@ -33,16 +35,10 @@ binance-daemon:
 
 bitcoin-daemon:
   enabled: true
-  image:
-    scripts:
-      tag: mocknet
   fullnameOverride: bitcoin-daemon
 
 ethereum-daemon:
-  enabled: false
-  image:
-    scripts:
-      tag: mocknet
+  enabled: true
   fullnameOverride: ethereum-daemon
 
 bepswap:

@@ -21,6 +21,8 @@ ethereumDaemon: etherum-daemon:8545
 
 replicaCount: 1
 
+strategyType: Recreate
+
 image:
   repository: registry.gitlab.com/thorchain/thornode
   pullPolicy: IfNotPresent

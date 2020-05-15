@@ -21,26 +21,45 @@ spec:
       serviceAccountName: {{ include "ethereum-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-scripts
+          image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
+          imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /tmp
+          command: [ "sh", "-c", "cp /scripts/* /tmp" ]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.eth.repository }}:{{ .Values.image.eth.tag }}"
+          imagePullPolicy: {{ .Values.image.eth.pullPolicy }}
+          command: [ "sh", "-c", "apk add curl && /scripts/ethereum-mock.sh" ]
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
           ports:
-            - name: http
-              containerPort: 80
+            - name: rpc
+              containerPort: 8545
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command:
+                - curl
+                - -X POST
+                - http://localhost:8545
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command:
+                - curl
+                - -X POST
+                - http://localhost:8545
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: scripts
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
