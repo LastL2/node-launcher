@@ -9,11 +9,8 @@ signer:
   password: password
   mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
 
-seed: thor-daemon
 nodes: 1
 peer:
-
-thorApi: thor-api
 
 replicaCount: 1
 
