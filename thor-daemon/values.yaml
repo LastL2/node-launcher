@@ -15,10 +15,6 @@ peer:
 
 thorApi: thor-api
 
-binanceDaemon: binance-daemon:26657
-bitcoinDaemon: bitcoin-daemon:8332
-ethereumDaemon: etherum-daemon:8545
-
 replicaCount: 1
 
 strategyType: Recreate
