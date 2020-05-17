@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 thorApi: thor-api
-thorDaemon: thor-daemon:26657
+thorDaemon: thor-daemon-rpc:26657
 
 postgres:
   port: 5432
@@ -23,6 +23,15 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+persistence:
+  enabled: false
+  size: 10Gi
+  accessMode: ReadWriteOnce
+  # existingClaim: your-pvc
+  # storageClass: "-"
+  # hostPath: /host-path
+  # subPath: subpath
+  #
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

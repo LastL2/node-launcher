@@ -21,15 +21,33 @@ spec:
       serviceAccountName: {{ include "binance-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-ulimitn
+        image: busybox
+        command: ["sh", "-c", "ulimit -n 65536"]
+        securityContext:
+          privileged: true
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: data
+              mountPath: /opt/bnbchaind
+          env:
+            - name: PORT
+              value: "{{ .Values.service.rpc.port }}"
           ports:
+            - name: p2p
+              containerPort: {{ .Values.service.p2p.port }}
+              protocol: TCP
             - name: rpc
-              containerPort: 26660
+              containerPort: {{ .Values.service.rpc.port }}
+              protocol: TCP
+            - name: promtheus
+              containerPort: {{ .Values.service.prometheus.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -41,6 +59,18 @@ spec:
               port: rpc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "binance-daemon.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

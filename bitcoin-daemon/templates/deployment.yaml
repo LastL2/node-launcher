@@ -39,39 +39,53 @@ spec:
           volumeMounts:
             - name: scripts
               mountPath: /scripts
+            - name: data
+              mountPath: /home/bitcoin/.bitcoin
+          ports:
           ports:
             - name: p2p
-              containerPort: 18444
+              containerPort: {{ .Values.service.p2p.port }}
               protocol: TCP
             - name: rpc
-              containerPort: 18443
+              containerPort: {{ .Values.service.rpc.port }}
               protocol: TCP
           livenessProbe:
             exec:
               command:
                 - curl
                 - -X POST
-                - http://localhost:18443
+                - http://localhost:{{ .Values.service.rpc.port }}
           readinessProbe:
             exec:
               command:
                 - curl
                 - -X POST
-                - http://localhost:18443
+                - http://localhost:{{ .Values.service.rpc.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: scripts
-          emptyDir: {}
+      - name: scripts
+        emptyDir: {}
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "bitcoin-daemon.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}

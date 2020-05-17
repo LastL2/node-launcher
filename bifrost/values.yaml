@@ -13,10 +13,10 @@ signer:
 peer:
 
 thorApi: thor-api
-thorDaemon: thor-daemon:26657
+thorDaemon: thor-daemon-rpc:26657
 
-binanceDaemon: http://binance-daemon:26660
-bitcoinDaemon: bitcoin-daemon:18443
+binanceDaemon: http://binance-daemon-rpc:27147
+bitcoinDaemon: bitcoin-daemon-rpc:8332
 ethereumDaemon: http://ethereum-daemon:8545
 
 replicaCount: 1
@@ -31,6 +31,15 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+persistence:
+  enabled: false
+  size: 10Gi
+  accessMode: ReadWriteOnce
+  # existingClaim: your-pvc
+  # storageClass: "-"
+  # hostPath: /host-path
+  # subPath: subpath
 
 serviceAccount:
   # Specifies whether a service account should be created

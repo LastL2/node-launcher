@@ -30,7 +30,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/genesis.sh"]
-          args: ["thord", "start", "--pruning", "nothing", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:26657"]
+          args: ["thord", "start", "--pruning", "nothing", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.rpc.port }}"]
+          volumeMounts:
+            - mountPath: /root/
+              name: data
+            {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
           env:
             - name: NODES
               value: "{{ .Values.nodes }}"
@@ -50,10 +56,10 @@ spec:
               value: {{ .Values.signer.mnemonic }}
           ports:
             - name: p2p
-              containerPort: 26656
+              containerPort: {{ .Values.service.p2p.port }}
               protocol: TCP
             - name: rpc
-              containerPort: 26657
+              containerPort: {{ .Values.service.rpc.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -65,6 +71,18 @@ spec:
               port: rpc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "thor-daemon.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

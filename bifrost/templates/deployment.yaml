@@ -31,6 +31,12 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/bifrost.sh"]
           args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
+          volumeMounts:
+            - mountPath: /var/data/bifrost
+              name: data
+            {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
           env:
             - name: NET
               value: {{ .Values.net }}
@@ -54,6 +60,20 @@ spec:
               value: {{ .Values.signer.mnemonic }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "bifrost.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

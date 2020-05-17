@@ -8,7 +8,7 @@ signer:
   name: thorchain
   password: password
 
-thorDaemon: thor-daemon:26657
+thorDaemon: thor-daemon-rpc:26657
 
 replicaCount: 1
 

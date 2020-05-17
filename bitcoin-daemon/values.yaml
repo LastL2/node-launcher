@@ -12,11 +12,17 @@ image:
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
-    tag: mocknet
+    tag: mainnet
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+persistence:
+  enabled: false
+  size: 10Gi
+  accessMode: ReadWriteOnce
+  # storageClass: "-"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -37,10 +43,16 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port:
-    p2p: 18444
-    rpc: 18443
+  p2p:
+    type: ClusterIP
+    port: 8333 # mainnet
+    # port: 18333 # testnet
+    # port: 18444 # regtest
+  rpc:
+    type: ClusterIP
+    port: 8332 # mainnet
+    # port: 18332 # testnet
+    # port: 18443 # regtest
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

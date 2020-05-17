@@ -2,16 +2,24 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+net: prod
+
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/thorchain/bepswap/mock-binance
+  repository: varnav/binance-node
   pullPolicy: IfNotPresent
   tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+persistence:
+  enabled: false
+  size: 10Gi
+  accessMode: ReadWriteOnce
+  # storageClass: "-"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -32,8 +40,18 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 26660
+  p2p:
+    type: ClusterIP
+    port: 27146 # mainnet
+    # port: 26656 # testnet
+  rpc:
+    type: ClusterIP
+    port: 27147 # mainnet
+    # port: 26657 # testnet
+  prometheus:
+    type: ClusterIP
+    port: 26660
+
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
