@@ -6,6 +6,8 @@ metadata:
     {{- include "binance-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "binance-daemon.selectorLabels" . | nindent 6 }}
@@ -39,6 +41,8 @@ spec:
           env:
             - name: PORT
               value: "{{ .Values.service.rpc.port }}"
+            - name: BNET
+              value: {{ .Values.net }}
           ports:
             - name: p2p
               containerPort: {{ .Values.service.p2p.port }}

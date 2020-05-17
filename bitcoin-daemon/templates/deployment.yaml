@@ -6,6 +6,8 @@ metadata:
     {{- include "bitcoin-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "bitcoin-daemon.selectorLabels" . | nindent 6 }}
@@ -35,13 +37,25 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.bitcoin.repository }}:{{ .Values.image.bitcoin.tag }}"
           imagePullPolicy: {{ .Values.image.bitcoin.pullPolicy }}
-          command: [ "sh", "-c", "apk add curl && /scripts/bitcoin-mock.sh" ]
+          {{- if eq .Values.net "mocknet" }}
+          command: ["/scripts/bitcoin-mock.sh"]
+          {{- else if eq .Values.net "testnet" }}
+          args:
+            - -testnet
+            - -txindex
+            - -rpcallowip=10.0.0.0/8
+            - -rpcauth=thorchain:d7e53bb9757b6d4fabf87775c7824b5c$7097e9cde30ef4319ed708fc559267679ae6cc0bf7e18fd49b283650c0c26a10
+          {{- else if eq .Values.net "mainnet" }}
+          args:
+            - -txindex
+            - -rpcallowip=10.0.0.0/8
+            - -rpcauth=thorchain:d7e53bb9757b6d4fabf87775c7824b5c$7097e9cde30ef4319ed708fc559267679ae6cc0bf7e18fd49b283650c0c26a10
+          {{- end }}
           volumeMounts:
             - name: scripts
               mountPath: /scripts
             - name: data
               mountPath: /home/bitcoin/.bitcoin
-          ports:
           ports:
             - name: p2p
               containerPort: {{ .Values.service.p2p.port }}
@@ -52,15 +66,27 @@ spec:
           livenessProbe:
             exec:
               command:
-                - curl
-                - -X POST
-                - http://localhost:{{ .Values.service.rpc.port }}
+                - bitcoin-cli
+                - -rpcuser=thorchain
+                - -rpcpassword=password
+              {{- if eq .Values.net "mocknet" }}
+                - -regtest
+              {{- else if eq .Values.net "testnet" }}
+                - -testnet
+              {{- end }}
+                - ping
           readinessProbe:
             exec:
               command:
-                - curl
-                - -X POST
-                - http://localhost:{{ .Values.service.rpc.port }}
+                - bitcoin-cli
+                - -rpcuser=thorchain
+                - -rpcpassword=password
+              {{- if eq .Values.net "mocknet" }}
+                - -regtest
+              {{- else if eq .Values.net "testnet" }}
+                - -testnet
+              {{- end }}
+                - ping
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
