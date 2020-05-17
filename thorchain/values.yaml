@@ -27,8 +27,7 @@ bifrost:
 midgard:
   enabled: true
   image:
-    midgard:
-      tag: mocknet
+    tag: mocknet
   fullnameOverride: midgard
 
 binance-daemon:

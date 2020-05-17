@@ -21,25 +21,14 @@ spec:
       serviceAccountName: {{ include "midgard.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
-        - name: init-scripts
-          image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
-          imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
-          volumeMounts:
-            - name: scripts
-              mountPath: /tmp
-          command: [ "sh", "-c", "cp /go/scripts/* /tmp" ]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.midgard.repository }}:{{ .Values.image.midgard.tag }}"
-          imagePullPolicy: {{ .Values.image.midgard.pullPolicy }}
-          command: ["sh", "-c", "apk add curl && /go/scripts/midgard.sh"]
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/go/scripts/midgard.sh"]
           args: ["midgard", "-c", "/etc/midgard/config.json"]
-          volumeMounts:
-            - name: scripts
-              mountPath: /go/scripts
           env:
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
@@ -69,9 +58,6 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-      - name: scripts
-        emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
