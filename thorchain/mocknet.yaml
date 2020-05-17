@@ -5,56 +5,46 @@
 thor-daemon:
   enabled: true
   image:
-    tag: testnet
-  net: testnet
+    tag: mocknet
+  net: mocknet
   fullnameOverride: thor-daemon
 
 thor-api:
   enabled: true
   image:
-    tag: testnet
-  net: testnet
+    tag: mocknet
+  net: mocknet
   fullnameOverride: thor-api
 
 bifrost:
   enabled: true
   image:
-    tag: testnet
-  net: testnet
+    tag: mocknet
+  net: mocknet
   fullnameOverride: bifrost
-  bitcoinDaemon: bitcoin-daemon-rpc:18332
-  binanceDaemon: http://binance-daemon-rpc:26657
+  bitcoinDaemon: bitcoin-daemon-rpc:18443
 
 midgard:
   enabled: true
   image:
-    tag: mocknet
+    midgard:
+      tag: mocknet
   fullnameOverride: midgard
 
 binance-daemon:
   enabled: true
-  net: testnet
   image:
-    repository: varnav/binance-node
-  service:
-    rpc:
-      port: 26657
-    p2p:
-      port: 26656
-  persistence:
-    enabled: true
+    repository: registry.gitlab.com/thorchain/bepswap/mock-binance
   fullnameOverride: binance-daemon
 
 bitcoin-daemon:
   enabled: true
-  net: testnet
+  net: mocknet
   service:
     rpc:
-      port: 18332
+      port: 18443
     p2p:
-      port: 18333
-  persistence:
-    enabled: true
+      port: 18444
   fullnameOverride: bitcoin-daemon
 
 ethereum-daemon:

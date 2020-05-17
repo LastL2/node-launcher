@@ -23,6 +23,19 @@ spec:
       serviceAccountName: {{ include "bifrost.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-thorchain
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup thor-api; do echo waiting for thorchain; sleep 2; done"]
+      - name: init-bitcoin
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup bitcoin-daemon-rpc; do echo waiting for bitcoin; sleep 2; done"]
+      - name: init-binance
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup binance-daemon-rpc; do echo waiting for binance; sleep 2; done"]
+      - name: init-ethereum
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup ethereum-daemon-rpc; do echo waiting for ethereum; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

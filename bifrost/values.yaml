@@ -17,7 +17,7 @@ thorDaemon: thor-daemon-rpc:26657
 
 binanceDaemon: http://binance-daemon-rpc:27147
 bitcoinDaemon: bitcoin-daemon-rpc:8332
-ethereumDaemon: http://ethereum-daemon:8545
+ethereumDaemon: http://ethereum-daemon-rpc:8545
 
 replicaCount: 1
 

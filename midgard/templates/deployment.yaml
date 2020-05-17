@@ -21,13 +21,27 @@ spec:
       serviceAccountName: {{ include "midgard.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-thorchain
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup thor-api; do echo waiting for thorchain; sleep 2; done"]
+        - name: init-scripts
+          image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
+          imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /tmp
+          command: [ "sh", "-c", "cp /scripts/* /tmp" ]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/go/scripts/midgard.sh"]
+          image: "{{ .Values.image.midgard.repository }}:{{ .Values.image.midgard.tag }}"
+          imagePullPolicy: {{ .Values.image.midgard.pullPolicy }}
+          command: ["/scripts/midgard.sh"]
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
           args: ["midgard", "-c", "/etc/midgard/config.json"]
           env:
             - name: CHAIN_API
@@ -58,6 +72,9 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: scripts
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
