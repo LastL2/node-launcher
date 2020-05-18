@@ -1,0 +1,31 @@
+apiVersion: v2
+name: elastic
+description: Elastic stack for logs and metrics
+type: application
+version: 0.1.0
+
+appVersion: 7.7.0
+
+dependencies:
+  - name: elasticsearch
+    repository: https://helm.elastic.co/
+    version: 7.7.0
+
+  - name: kibana
+    repository: https://helm.elastic.co/
+    version: 7.7.0
+
+  - name: logstash
+    condition: logstash.enabled
+    repository: https://helm.elastic.co/
+    version: 7.7.0
+
+  - name: metricbeat
+    condition: metricbeat.enabled
+    repository: https://helm.elastic.co/
+    version: 7.7.0
+
+  - name: filebeat
+    condition: filebeat.enabled
+    repository: https://helm.elastic.co/
+    version: 7.7.0
