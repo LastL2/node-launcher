@@ -11,6 +11,9 @@ spec:
       targetPort: p2p
       protocol: TCP
       name: p2p
+      {{ if (and (eq .Values.service.p2p.type "NodePort") (not (empty .Values.service.p2p.nodePort))) }}
+      nodePort: {{.Values.service.p2p.nodePort}}
+      {{ end }}
   selector:
     {{- include "bitcoin-daemon.selectorLabels" . | nindent 4 }}
 ---
