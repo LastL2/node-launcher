@@ -1,0 +1,84 @@
+# Default values for elastic-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+fullnameOverride: elasticsearch
+
+elasticsearch:
+  replicas: 1
+  master: true
+  data: true
+  ingest: true
+  allow_mmap: false
+
+kibana:
+  replicas: 1
+
+filebeat:
+  fullnameOverride: filebeat
+  enabled: true
+  filebeatConfig:
+    filebeat.yml: |
+      filebeat.inputs:
+      - type: container
+        paths:
+          - /var/log/containers/*.log
+        processors:
+        - add_kubernetes_metadata:
+            host: ${NODE_NAME}
+            matchers:
+            - logs_path:
+                logs_path: "/var/log/containers/"
+      output.elasticsearch:
+        username: '${ELASTICSEARCH_USERNAME}'
+        password: '${ELASTICSEARCH_PASSWORD}'
+        protocol: https
+        hosts: ["elasticsearch-es-http:9200"]
+        ssl.certificate_authorities:
+          - /usr/share/filebeat/config/certs/tls.crt
+  secretMounts:
+    - name: elasticsearch-es-http-certs-public
+      secretName: elasticsearch-es-http-certs-public
+      path: /usr/share/filebeat/config/certs
+
+  extraEnvs:
+    - name: 'ELASTICSEARCH_USERNAME'
+      value: elastic
+    - name: 'ELASTICSEARCH_PASSWORD'
+      valueFrom:
+        secretKeyRef:
+          name: elasticsearch-es-elastic-user
+          key: elastic
+
+metricbeat:
+  fullnameOverride: metricbeat
+  enabled: false
+
+logstash:
+  fullnameOverride: logstash
+  enabled: false
+
+  persistence:
+    enabled: true
+
+  logstashConfig:
+    logstash.yml: |
+      http.host: 0.0.0.0
+      xpack.monitoring.enabled: false
+  logstashPipeline:
+    uptime.conf: |
+      input { exec { command => "uptime" interval => 30 } }
+      output { elasticsearch { hosts => ["http://elasticsearch-master:9200"] index => "logstash" } }
+
+  service:
+    annotations: {}
+    type: ClusterIP
+    ports:
+      - name: beats
+        port: 5044
+        protocol: TCP
+        targetPort: 5044
+      - name: http
+        port: 8080
+        protocol: TCP
+        targetPort: 8080

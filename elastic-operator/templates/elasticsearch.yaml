@@ -1,0 +1,17 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: {{ include "elastic-operator.fullname" . }}
+  labels:
+    {{- include "elastic-operator.labels" . | nindent 4 }}
+    app.kubernetes.io/component: elasticsearch
+spec:
+  version: {{ .Chart.AppVersion }}
+  nodeSets:
+  - name: default
+    count: {{ .Values.elasticsearch.replicas }}
+    config:
+      node.master: {{ .Values.elasticsearch.master }}
+      node.data: {{ .Values.elasticsearch.data }}
+      node.ingest: {{ .Values.elasticsearch.ingest }}
+      node.store.allow_mmap: {{ .Values.elasticsearch.allow_mmap }}
