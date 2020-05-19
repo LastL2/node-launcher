@@ -24,7 +24,7 @@ spec:
       initContainers:
       - name: init-thorchain
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup thor-daemon-rpc; do echo waiting for thorchain; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup thor-daemon; do echo waiting for thorchain; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

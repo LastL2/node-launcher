@@ -40,17 +40,13 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  p2p:
-    type: ClusterIP
-    port: 27146 # mainnet
-    # port: 26656 # testnet
-  rpc:
-    type: ClusterIP
-    port: 27147 # mainnet
-    # port: 26657 # testnet
-  prometheus:
-    type: ClusterIP
-    port: 26660
+  type: ClusterIP
+  port:
+    p2p: 27146 # mainnet
+    # p2p: 26656 # testnet
+    rpc: 27147 # mainnet
+    # rpc: 26657 # testnet
+    prometheus: 26660
 
 
 resources: {}

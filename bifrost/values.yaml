@@ -12,12 +12,12 @@ signer:
 # use in multi nodes envs
 peer:
 
-thorApi: thor-api
-thorDaemon: thor-daemon-rpc:26657
+thorApi: thor-api:1317
+thorDaemon: thor-daemon:26657
 
-binanceDaemon: http://binance-daemon-rpc:27147
-bitcoinDaemon: bitcoin-daemon-rpc:8332
-ethereumDaemon: http://ethereum-daemon-rpc:8545
+binanceDaemon: http://binance-daemon:27147
+bitcoinDaemon: bitcoin-daemon:8332
+ethereumDaemon: http://ethereum-daemon:8545
 
 replicaCount: 1
 

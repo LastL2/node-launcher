@@ -29,9 +29,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          {{- if .Values.peer }}
+          command: ["/scripts/validator.sh"]
+          {{- else }}
           command: ["/scripts/genesis.sh"]
-          args: ["thord", "start", "--pruning", "nothing", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.rpc.port }}"]
+          {{- end }}
+
+          args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.port.rpc }}"]
           volumeMounts:
+            - mountPath: /scripts/
+              name: scripts
             - mountPath: /root/
               name: data
             {{- if .Values.persistence.subPath }}
@@ -42,6 +50,10 @@ spec:
               value: "{{ .Values.nodes }}"
             - name: PEER
               value: {{ .Values.peer }}
+            - name: PEER_API
+              value: {{ .Values.peerApi }}
+            - name: BINANCE
+              value: {{ .Values.binanceDaemon }}
             - name: SEED
               valueFrom:
                 fieldRef:
@@ -56,10 +68,10 @@ spec:
               value: {{ .Values.signer.mnemonic }}
           ports:
             - name: p2p
-              containerPort: {{ .Values.service.p2p.port }}
+              containerPort: {{ .Values.service.port.p2p }}
               protocol: TCP
             - name: rpc
-              containerPort: {{ .Values.service.rpc.port }}
+              containerPort: {{ .Values.service.port.rpc }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -72,6 +84,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+      - name: scripts
+        hostPath:
+          path: /root/thornode/build/scripts
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:

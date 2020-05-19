@@ -25,8 +25,8 @@ bifrost:
   net: testnet
   persistence:
     enabled: true
-  bitcoinDaemon: bitcoin-daemon-rpc:18332
-  binanceDaemon: http://binance-daemon-rpc:26657
+  bitcoinDaemon: bitcoin-daemon:18332
+  binanceDaemon: http://binance-daemon:26657
   fullnameOverride: bifrost
 
 midgard:
@@ -42,10 +42,9 @@ binance-daemon:
   enabled: true
   net: testnet
   service:
-    rpc:
-      port: 26657
-    p2p:
-      port: 26656
+    port:
+      rpc: 26657
+      p2p: 26656
   persistence:
     enabled: true
   fullnameOverride: binance-daemon
@@ -54,10 +53,9 @@ bitcoin-daemon:
   enabled: true
   net: testnet
   service:
-    rpc:
-      port: 18332
-    p2p:
-      port: 18333
+    port:
+      rpc: 18332
+      p2p: 18333
   persistence:
     enabled: true
   fullnameOverride: bitcoin-daemon

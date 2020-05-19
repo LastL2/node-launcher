@@ -11,6 +11,10 @@ signer:
 
 nodes: 1
 peer:
+peerApi:
+
+# used by mocknet to send the bond automatically in multi nodes
+binanceDaemon: binance-daemon
 
 replicaCount: 1
 
@@ -53,12 +57,10 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  p2p:
-    type: ClusterIP
-    port: 26656
-  rpc:
-    type: ClusterIP
-    port: 26657
+  type: ClusterIP
+  port:
+    p2p: 26656
+    rpc: 26657
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

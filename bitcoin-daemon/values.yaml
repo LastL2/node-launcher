@@ -45,16 +45,14 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  p2p:
-    type: ClusterIP
-    port: 8333 # mainnet
-    # port: 18333 # testnet
-    # port: 18444 # regtest
-  rpc:
-    type: ClusterIP
-    port: 8332 # mainnet
-    # port: 18332 # testnet
-    # port: 18443 # regtest
+  type: ClusterIP
+  port:
+    p2p: 8333 # mainnet
+    # p2p: 18333 # testnet
+    # p2p: 18444 # regtest
+    rpc: 8332 # mainnet
+    # rpc: 18332 # testnet
+    # rpc: 18443 # regtest
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

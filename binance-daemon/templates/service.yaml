@@ -1,50 +1,32 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "binance-daemon.fullname" . }}-p2p
+  name: {{ include "binance-daemon.fullname" . }}
   labels:
     {{- include "binance-daemon.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.p2p.type }}
+  type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.p2p.port }}
+    - port: {{ .Values.service.port.p2p }}
       targetPort: p2p
       protocol: TCP
       name: p2p
-      {{ if (and (eq .Values.service.p2p.type "NodePort") (not (empty .Values.service.p2p.nodePort))) }}
-      nodePort: {{.Values.service.p2p.nodePort}}
+      {{ if eq .Values.service.type "NodePort" }}
+      nodePort: {{.Values.service.port.p2p}}
       {{ end }}
-  selector:
-    {{- include "binance-daemon.selectorLabels" . | nindent 4 }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "binance-daemon.fullname" . }}-rpc
-  labels:
-    {{- include "binance-daemon.labels" . | nindent 4 }}
-spec:
-  type: {{ .Values.service.rpc.type }}
-  ports:
-    - port: {{ .Values.service.rpc.port }}
+    - port: {{ .Values.service.port.rpc }}
       targetPort: rpc
       protocol: TCP
       name: rpc
-  selector:
-    {{- include "binance-daemon.selectorLabels" . | nindent 4 }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "binance-daemon.fullname" . }}-prometheus
-  labels:
-    {{- include "binance-daemon.labels" . | nindent 4 }}
-spec:
-  type: {{ .Values.service.prometheus.type }}
-  ports:
-    - port: {{ .Values.service.prometheus.port }}
+      {{ if eq .Values.service.type "NodePort" }}
+      nodePort: {{.Values.service.port.rpc}}
+      {{ end }}
+    - port: {{ .Values.service.port.prometheus }}
       targetPort: prometheus
       protocol: TCP
       name: prometheus
+      {{ if eq .Values.service.type "NodePort" }}
+      nodePort: {{.Values.service.port.prometheus}}
+      {{ end }}
   selector:
     {{- include "binance-daemon.selectorLabels" . | nindent 4 }}

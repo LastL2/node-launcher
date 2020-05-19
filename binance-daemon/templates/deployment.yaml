@@ -40,18 +40,18 @@ spec:
               mountPath: /opt/bnbchaind
           env:
             - name: PORT
-              value: "{{ .Values.service.rpc.port }}"
+              value: "{{ .Values.service.port.rpc }}"
             - name: BNET
               value: {{ .Values.net }}
           ports:
             - name: p2p
-              containerPort: {{ .Values.service.p2p.port }}
+              containerPort: {{ .Values.service.port.p2p }}
               protocol: TCP
             - name: rpc
-              containerPort: {{ .Values.service.rpc.port }}
+              containerPort: {{ .Values.service.port.rpc }}
               protocol: TCP
             - name: promtheus
-              containerPort: {{ .Values.service.prometheus.port }}
+              containerPort: {{ .Values.service.port.prometheus }}
               protocol: TCP
           livenessProbe:
             httpGet:

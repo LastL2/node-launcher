@@ -60,10 +60,10 @@ spec:
               mountPath: /home/bitcoin/.bitcoin
           ports:
             - name: p2p
-              containerPort: {{ .Values.service.p2p.port }}
+              containerPort: {{ .Values.service.port.p2p }}
               protocol: TCP
             - name: rpc
-              containerPort: {{ .Values.service.rpc.port }}
+              containerPort: {{ .Values.service.port.rpc }}
               protocol: TCP
           livenessProbe:
             exec:

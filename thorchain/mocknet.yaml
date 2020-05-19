@@ -7,6 +7,7 @@ thor-daemon:
   image:
     tag: mocknet
   net: mocknet
+  binanceDaemon: binance-daemon
   fullnameOverride: thor-daemon
 
 thor-api:
@@ -22,7 +23,7 @@ bifrost:
     tag: mocknet
   net: mocknet
   fullnameOverride: bifrost
-  bitcoinDaemon: bitcoin-daemon-rpc:18443
+  bitcoinDaemon: bitcoin-daemon:18443
 
 midgard:
   enabled: true
@@ -35,16 +36,19 @@ binance-daemon:
   enabled: true
   image:
     repository: registry.gitlab.com/thorchain/bepswap/mock-binance
+  service:
+    port:
+      rpc: 26660
+      prometheus: 26661
   fullnameOverride: binance-daemon
 
 bitcoin-daemon:
   enabled: true
   net: mocknet
   service:
-    rpc:
-      port: 18443
-    p2p:
-      port: 18444
+    port:
+      rpc: 18443
+      p2p: 18444
   fullnameOverride: bitcoin-daemon
 
 ethereum-daemon:
