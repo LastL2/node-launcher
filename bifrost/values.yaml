@@ -7,18 +7,21 @@ net: mainnet
 signer:
   name: thorchain
   password: password
+  mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
 
 # use in multi nodes envs
 peer:
 
-thorApi: thor-api
+thorApi: thor-api:1317
 thorDaemon: thor-daemon:26657
 
-binanceDaemon: binance-daemon:26657
+binanceDaemon: http://binance-daemon:27147
 bitcoinDaemon: bitcoin-daemon:8332
-ethereumDaemon: etherum-daemon:8545
+ethereumDaemon: http://ethereum-daemon:8545
 
 replicaCount: 1
+
+strategyType: Recreate
 
 image:
   repository: registry.gitlab.com/thorchain/thornode
@@ -28,6 +31,15 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+persistence:
+  enabled: false
+  size: 10Gi
+  accessMode: ReadWriteOnce
+  # existingClaim: your-pvc
+  # storageClass: "-"
+  # hostPath: /host-path
+  # subPath: subpath
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ethereum-daemon.fullname" . }}
+  labels:
+    {{- include "ethereum-daemon.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ethereum-daemon.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ethereum-daemon.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "ethereum-daemon.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-scripts
+          image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
+          imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /tmp
+          command: [ "sh", "-c", "cp /scripts/* /tmp" ]
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.eth.repository }}:{{ .Values.image.eth.tag }}"
+          imagePullPolicy: {{ .Values.image.eth.pullPolicy }}
+          command: [ "sh", "-c", "apk add curl && /scripts/ethereum-mock.sh" ]
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          ports:
+            - name: rpc
+              containerPort: 8545
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -X POST
+                - http://localhost:8545
+          readinessProbe:
+            exec:
+              command:
+                - curl
+                - -X POST
+                - http://localhost:8545
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: scripts
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

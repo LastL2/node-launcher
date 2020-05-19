@@ -2,11 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-thorApi: thor-api
+thorApi: thor-api:1317
 thorDaemon: thor-daemon:26657
-
-binanceApi: testnet-dex.binance.org
-binanceApiScheme: https
 
 postgres:
   port: 5432
@@ -18,14 +15,28 @@ postgres:
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/thorchain/midgard
-  pullPolicy: IfNotPresent
-  tag: latest
+  scripts:
+    repository: registry.gitlab.com/thorchain/thornode
+    pullPolicy: IfNotPresent
+    tag: mocknet
+  midgard:
+    repository: registry.gitlab.com/thorchain/midgard
+    pullPolicy: IfNotPresent
+    tag: mainnet
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+persistence:
+  enabled: false
+  size: 10Gi
+  accessMode: ReadWriteOnce
+  # existingClaim: your-pvc
+  # storageClass: "-"
+  # hostPath: /host-path
+  # subPath: subpath
+  #
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

@@ -14,8 +14,14 @@ dependencies:
 - name: binance-daemon
   repository: file://../binance-daemon
   version: 0.1.0
+- name: bitcoin-daemon
+  repository: file://../bitcoin-daemon
+  version: 0.1.0
+- name: ethereum-daemon
+  repository: file://../ethereum-daemon
+  version: 0.1.0
 - name: bepswap
   repository: file://../bepswap
   version: 0.1.0
-digest: sha256:f4626241ddbf73b135bed00bb4bcf0fa260e362bdbf8e5e19ba9ed18f49496cf
-generated: "2020-05-13T15:56:38.136337598+10:00"
+digest: sha256:29a74f641383031dcc7fcf68f54d6df89eb57e969e974dad44729eaf9e4b1a70
+generated: "2020-05-17T09:08:06.953873027Z"

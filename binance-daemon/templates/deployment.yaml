@@ -6,6 +6,8 @@ metadata:
     {{- include "binance-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "binance-daemon.selectorLabels" . | nindent 6 }}
@@ -21,15 +23,35 @@ spec:
       serviceAccountName: {{ include "binance-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-ulimitn
+        image: busybox
+        command: ["sh", "-c", "ulimit -n 65536"]
+        securityContext:
+          privileged: true
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: data
+              mountPath: /opt/bnbchaind
+          env:
+            - name: PORT
+              value: "{{ .Values.service.port.rpc }}"
+            - name: BNET
+              value: {{ .Values.net }}
           ports:
+            - name: p2p
+              containerPort: {{ .Values.service.port.p2p }}
+              protocol: TCP
             - name: rpc
-              containerPort: 26660
+              containerPort: {{ .Values.service.port.rpc }}
+              protocol: TCP
+            - name: promtheus
+              containerPort: {{ .Values.service.port.prometheus }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -41,6 +63,18 @@ spec:
               port: rpc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "binance-daemon.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

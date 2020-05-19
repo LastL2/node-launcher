@@ -32,6 +32,16 @@ dependencies:
     version: 0.1.0
     condition: binance-daemon.enabled
 
+  - name: bitcoin-daemon
+    repository: file://../bitcoin-daemon
+    version: 0.1.0
+    condition: bitcoin-daemon.enabled
+
+  - name: ethereum-daemon
+    repository: file://../ethereum-daemon
+    version: 0.1.0
+    condition: ethereum-daemon.enabled
+
   - name: bepswap
     repository: file://../bepswap
     version: 0.1.0

@@ -21,28 +21,33 @@ spec:
       serviceAccountName: {{ include "midgard.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-thorchain
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup thor-api; do echo waiting for thorchain; sleep 2; done"]
+        - name: init-scripts
+          image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
+          imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /tmp
+          command: [ "sh", "-c", "cp /scripts/* /tmp" ]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/go/scripts/midgard.sh"]
-          args: ["midgard", "-c", "/etc/midgard/config.json"]
+          image: "{{ .Values.image.midgard.repository }}:{{ .Values.image.midgard.tag }}"
+          imagePullPolicy: {{ .Values.image.midgard.pullPolicy }}
+          command: ["/scripts/midgard.sh"]
           volumeMounts:
             - name: scripts
-              mountPath: /go/scripts
+              mountPath: /scripts
+          args: ["midgard", "-c", "/etc/midgard/config.json"]
           env:
-            - name: NET
-              value: {{ .Values.net }}
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
             - name: CHAIN_RPC
               value: {{ .Values.thorDaemon }}
-            - name: BINANCE_API
-              value: {{ .Values.binanceApi }}
-            - name: BINANCE_API_SCHEME
-              value: {{ .Values.binanceApiScheme }}
             - name: PG_HOST
               value: {{ include "midgard.fullname" . }}-timescaledb
             - name: PG_PORT
@@ -69,8 +74,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: scripts
-          hostPath:
-            path: /root/thornode/build/scripts
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -116,7 +120,15 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: timescale/timescaledb:latest-pg11
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data
+            {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
           env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data
             - name: POSTGRES_USER
               value: {{ .Values.postgres.username }}
             - name: POSTGRES_PASSWORD
@@ -127,6 +139,18 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "midgard.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

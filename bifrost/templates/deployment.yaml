@@ -6,6 +6,8 @@ metadata:
     {{- include "bifrost.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
       {{- include "bifrost.selectorLabels" . | nindent 6 }}
@@ -21,6 +23,19 @@ spec:
       serviceAccountName: {{ include "bifrost.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-thorchain
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup thor-api; do echo waiting for thorchain; sleep 2; done"]
+      - name: init-bitcoin
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup bitcoin-daemon; do echo waiting for bitcoin; sleep 2; done"]
+      - name: init-binance
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup binance-daemon; do echo waiting for binance; sleep 2; done"]
+      - name: init-ethereum
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup ethereum-daemon; do echo waiting for ethereum; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -30,8 +45,11 @@ spec:
           command: ["/scripts/bifrost.sh"]
           args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
           volumeMounts:
-            - name: scripts
-              mountPath: /scripts
+            - mountPath: /var/data/bifrost
+              name: data
+            {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
           env:
             - name: NET
               value: {{ .Values.net }}
@@ -51,12 +69,24 @@ spec:
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWORD
               value: {{ .Values.signer.password }}
+            - name: SIGNER_SEED_PHRASE
+              value: {{ .Values.signer.mnemonic }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
       volumes:
-        - name: scripts
-          hostPath:
-            path: /root/thornode/build/scripts
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "bifrost.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

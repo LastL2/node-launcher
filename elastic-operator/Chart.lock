@@ -1,0 +1,12 @@
+dependencies:
+- name: filebeat
+  repository: https://helm.elastic.co/
+  version: 7.7.0
+- name: metricbeat
+  repository: https://helm.elastic.co/
+  version: 7.7.0
+- name: logstash
+  repository: https://helm.elastic.co/
+  version: 7.7.0
+digest: sha256:f39d9203ce4f19462ffaa4eef2f3503442c9486f2a836846acb25abe0efc0bc4
+generated: "2020-05-19T01:28:32.907102342Z"

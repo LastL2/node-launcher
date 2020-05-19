@@ -21,6 +21,10 @@ spec:
       serviceAccountName: {{ include "thor-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-thorchain
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup thor-daemon; do echo waiting for thorchain; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -29,9 +33,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/rest.sh"]
           args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:80", "--node", "tcp://{{ .Values.thorDaemon }}"]
-          volumeMounts:
-            - name: scripts
-              mountPath: /scripts
           env:
             - name: NET
               value: {{ .Values.net }}
@@ -55,10 +56,6 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-        - name: scripts
-          hostPath:
-            path: /root/thornode/build/scripts
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
