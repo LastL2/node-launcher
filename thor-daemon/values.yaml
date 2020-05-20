@@ -14,7 +14,7 @@ peer:
 peerApi:
 
 # used by mocknet to send the bond automatically in multi nodes
-binanceDaemon: binance-daemon
+binanceDaemon: binance-daemon.mocknet-1
 
 replicaCount: 1
 

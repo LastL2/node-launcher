@@ -27,15 +27,15 @@ spec:
       initContainers:
       - name: init-binance
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup {{ .Values.binanceDaemon }}; do echo waiting for binance; sleep 2; done"]
+        command: ['sh', '-c', "until nc -zv {{ .Values.binanceDaemon }}:26660; do echo waiting for binance-daemon; sleep 2; done"]
       - name: init-peer
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup {{ .Values.peer }}; do echo waiting for peer; sleep 2; done"]
+        command: ['sh', '-c', "until nc -zv {{ .Values.peer }}:26657; do echo waiting for peer thor-daemon; sleep 2; done"]
       {{- end }}
       {{- if .Values.peerApi }}
       - name: init-peer-api
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup {{ .Values.peerApi }}; do echo waiting for peer API; sleep 2; done"]
+        command: ['sh', '-c', "until nc -zv {{ .Values.peerApi }}:1317; do echo waiting for peer thor-api; sleep 2; done"]
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}

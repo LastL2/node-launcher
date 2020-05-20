@@ -24,7 +24,7 @@ spec:
       initContainers:
       - name: init-thorchain
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup thor-daemon; do echo waiting for thorchain; sleep 2; done"]
+        command: ['sh', '-c', "until nc -zv {{ .Values.thorDaemon }}; do echo waiting for thor-daemon; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -48,11 +48,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /thorchain/vault
+              path: /thorchain/ping
               port: http
           readinessProbe:
             httpGet:
-              path: /thorchain/vault
+              path: /thorchain/ping
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

@@ -1,11 +1,14 @@
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+path := $(dir $(mkfile_path))
+
 mocknet:
-	@./deploy.sh mocknet ${NODES} ${PEER} ${PEER_API}
+	@${path}/deploy.sh mocknet ${NODES} ${PEER} ${PEER_API}
 
 testnet:
-	@./deploy.sh testnet ${NODES} ${PEER} ${PEER_API}
+	@${path}/deploy.sh testnet ${NODES} ${PEER} ${PEER_API}
 
 mainnet:
-	@./deploy.sh mainnet ${NODES} ${PEER} ${PEER_API}
+	@${path}/deploy.sh mainnet ${NODES} ${PEER} ${PEER_API}
 
 clean:
 	helm uninstall mocknet

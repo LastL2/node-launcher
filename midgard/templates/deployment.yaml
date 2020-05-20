@@ -22,9 +22,12 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        - name: init-database
+          image: busybox:1.28
+          command: ['sh', '-c', "until nc -zv {{ include "midgard.fullname" . }}-timescaledb:{{ .Values.postgres.port }}; do echo waiting for timescale database; sleep 2; done"]
         - name: init-thorchain
           image: busybox:1.28
-          command: ['sh', '-c', "until nslookup thor-api; do echo waiting for thorchain; sleep 2; done"]
+          command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done"]
         - name: init-scripts
           image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
           imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
