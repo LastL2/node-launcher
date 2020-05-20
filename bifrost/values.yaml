@@ -41,6 +41,12 @@ persistence:
   # hostPath: /host-path
   # subPath: subpath
 
+service:
+  type: ClusterIP
+  port:
+    p2p: 5040
+    http: 6040
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
