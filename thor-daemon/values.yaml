@@ -9,12 +9,9 @@ signer:
   password: password
   mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
 
-nodes: 1
 peer:
 peerApi:
-
-# used by mocknet to send the bond automatically in multi nodes
-binanceDaemon: binance-daemon.mocknet-1
+binanceDaemon:
 
 replicaCount: 1
 

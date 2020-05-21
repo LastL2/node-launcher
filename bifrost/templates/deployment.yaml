@@ -31,11 +31,11 @@ spec:
         image: busybox:1.28
         command: ['sh', '-c', "until nc -zv {{ .Values.bitcoinDaemon }}; do echo waiting for bitcoin; sleep 2; done"]
       - name: init-binance
-        image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.binanceDaemon }}; do echo waiting for binance; sleep 2; done"]
+        image: appropriate/curl
+        command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance; sleep 2; done"]
       - name: init-ethereum
-        image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.ethereumDaemon }}; do echo waiting for ethereum; sleep 2; done"]
+        image: appropriate/curl
+        command: ['sh', '-c', "until curl -s {{ .Values.ethereumDaemon }} > /dev/null; do echo waiting for ethereum; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

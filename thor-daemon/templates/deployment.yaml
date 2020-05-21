@@ -25,17 +25,19 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- if .Values.peer }}
       initContainers:
-      - name: init-binance
-        image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.binanceDaemon }}:26660; do echo waiting for binance-daemon; sleep 2; done"]
       - name: init-peer
         image: busybox:1.28
         command: ['sh', '-c', "until nc -zv {{ .Values.peer }}:26657; do echo waiting for peer thor-daemon; sleep 2; done"]
-      {{- end }}
       {{- if .Values.peerApi }}
       - name: init-peer-api
         image: busybox:1.28
         command: ['sh', '-c', "until nc -zv {{ .Values.peerApi }}:1317; do echo waiting for peer thor-api; sleep 2; done"]
+      {{- end }}
+      {{- if .Values.binanceDaemon }}
+      - name: init-binance
+        image: appropriate/curl
+        command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -60,8 +62,6 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
             {{- end }}
           env:
-            - name: NODES
-              value: "{{ .Values.nodes }}"
             - name: PEER
               value: {{ .Values.peer }}
             - name: PEER_API

@@ -15,9 +15,9 @@ peer:
 thorApi: thor-api:1317
 thorDaemon: thor-daemon:26657
 
-binanceDaemon: binance-daemon:27147
+binanceDaemon: http://binance-daemon:27147
 bitcoinDaemon: bitcoin-daemon:8332
-ethereumDaemon: ethereum-daemon:8545
+ethereumDaemon: http://ethereum-daemon:8545
 
 replicaCount: 1
 
