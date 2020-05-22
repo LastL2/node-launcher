@@ -6,23 +6,12 @@ SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 NET=${NET:-mocknet}
 NODES=${NODES:-1}
-
+TAG=${TAG:-$NET}
 
 VALUES=$SCRIPTPATH/$NET.yaml
 VALUES_MNEMONIC=$SCRIPTPATH/tmp.yaml
 VALUES_VALIDATOR=$SCRIPTPATH/$NET-validator.yaml
-
-create_mnemonic_config () {
-  VALUE=${MNEMONIC:-$(docker run namick/12-words)}
-  cat << EOF > $VALUES_MNEMONIC
-thor-daemon:
-  signer:
-    mnemonic: $VALUE
-bifrost:
-  signer:
-    mnemonic: $VALUE
-EOF
-}
+VALUES_GENESIS=$SCRIPTPATH/$NET-genesis.yaml
 
 set_ports () {
   case $NET in
@@ -44,6 +33,35 @@ set_ports () {
   esac
 }
 
+create_mnemonic_config () {
+  VALUE=${MNEMONIC:-$(docker run namick/12-words)}
+  cat << EOF > $VALUES_MNEMONIC
+thor-daemon:
+  signer:
+    mnemonic: $VALUE
+bifrost:
+  signer:
+    mnemonic: $VALUE
+EOF
+}
+
+# creates genesis config
+create_genesis_config () {
+  cat << EOF > $VALUES_GENESIS
+thor-daemon:
+  image:
+    tag: "$TAG"
+
+thor-api:
+  image:
+    tag: "$TAG"
+
+bifrost:
+  image:
+    tag: "$TAG"
+EOF
+}
+
 # creates validator config for a single node within the cluster
 create_validator_config () {
   cat << EOF > $VALUES_VALIDATOR
@@ -51,9 +69,17 @@ thor-daemon:
   peer: $PEER
   peerApi: $PEER_API
   binanceDaemon: binance-daemon:$BINANCE_PORT
+  image:
+    tag: "$TAG"
+
+thor-api:
+  image:
+    tag: "$TAG"
 
 bifrost:
   peer: $PEER_BIFROST
+  image:
+    tag: "$TAG"
 EOF
 }
 
@@ -64,12 +90,20 @@ thor-daemon:
   peer: thor-daemon.$NET-1
   peerApi: thor-api.$NET-1
   binanceDaemon: binance-daemon.$NET-1:$BINANCE_PORT
+  image:
+    tag: "$TAG"
+
+thor-api:
+  image:
+    tag: "$TAG"
 
 bifrost:
   peer: bifrost.$NET-1
   binanceDaemon: http://binance-daemon.$NET-1:$BINANCE_PORT
   bitcoinDaemon: bitcoin-daemon.$NET-1:$BITCOIN_PORT
   ethereumDaemon: http://ethereum-daemon.$NET-1:$ETHEREUM_PORT
+  image:
+    tag: "$TAG"
 
 binance-daemon:
   enabled: false
@@ -84,7 +118,7 @@ EOF
 
 # remove temporary files
 clean_files () {
-  rm $VALUES_VALIDATOR $VALUES_MNEMONIC
+  rm $VALUES_VALIDATOR $VALUES_MNEMONIC $VALUES_GENESIS
 }
 
 # deploys a single node in the cluster
@@ -96,17 +130,18 @@ deploy_single_node () {
 # deploys a multi nodes net within the cluster
 deploy_multi_node () {
 
+  create_genesis_config
   create_multi_validator_config
 
   for i in `seq 1 $NODES`; do
     NODE=$NET-$i
     echo Deploying $NODE
 
-    create_mnemonic_config
 
     if [ $i = 1 ]; then
-      helm upgrade --install $NET $SCRIPTPATH -n $NODE --create-namespace -f $VALUES -f $VALUES_MNEMONIC
+      helm upgrade --install $NET $SCRIPTPATH -n $NODE --create-namespace -f $VALUES -f $VALUES_GENESIS
     else
+      create_mnemonic_config
       helm upgrade --install $NET $SCRIPTPATH -n $NODE --create-namespace -f $VALUES -f $VALUES_MNEMONIC -f $VALUES_VALIDATOR
     fi
   done
