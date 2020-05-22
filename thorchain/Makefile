@@ -5,7 +5,7 @@ mocknet:
 	@NET=mocknet ${path}/deploy.sh
 
 3-mocknet:
-	@NET=mocknet NODES=3 TAG=cfdb17b8 ${path}/deploy.sh
+	@NET=mocknet NODES=3 TAG=mocknet ${path}/deploy.sh
 
 12-mocknet:
 	@NET=mocknet NODES=12 ${path}/deploy.sh
@@ -20,3 +20,4 @@ clean:
 	helm delete mocknet -n mocknet-1
 	helm delete mocknet -n mocknet-2
 	helm delete mocknet -n mocknet-3
+	kubectl delete ns mocknet-1 mocknet-2 mocknet-3
