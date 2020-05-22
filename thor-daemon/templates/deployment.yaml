@@ -37,9 +37,6 @@ spec:
       - name: init-binance
         image: appropriate/curl
         command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
-      - name: wait-binance
-        image: busybox:1.28
-        command: ["sleep", "30"]
       {{- end }}
       {{- end }}
       containers:
