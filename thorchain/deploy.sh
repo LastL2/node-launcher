@@ -59,6 +59,10 @@ thor-api:
 bifrost:
   image:
     tag: "$TAG"
+
+midgard:
+  enabled: false
+
 EOF
 }
 
@@ -71,6 +75,9 @@ thor-daemon:
   binanceDaemon: binance-daemon:$BINANCE_PORT
   image:
     tag: "$TAG"
+
+midgard:
+  enabled: false
 
 thor-api:
   image:
@@ -105,6 +112,9 @@ bifrost:
   image:
     tag: "$TAG"
 
+midgard:
+  enabled: false
+
 binance-daemon:
   enabled: false
 
@@ -137,11 +147,11 @@ deploy_multi_node () {
     NODE=$NET-$i
     echo Deploying $NODE
 
+    create_mnemonic_config
 
     if [ $i = 1 ]; then
-      helm upgrade --install $NET $SCRIPTPATH -n $NODE --create-namespace -f $VALUES -f $VALUES_GENESIS
+      helm upgrade --install $NET $SCRIPTPATH -n $NODE --create-namespace -f $VALUES -f $VALUES_MNEMONIC -f $VALUES_GENESIS
     else
-      create_mnemonic_config
       helm upgrade --install $NET $SCRIPTPATH -n $NODE --create-namespace -f $VALUES -f $VALUES_MNEMONIC -f $VALUES_VALIDATOR
     fi
   done
