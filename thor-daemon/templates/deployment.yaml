@@ -58,8 +58,6 @@ spec:
           args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.port.rpc }}"]
           {{- end }}
           volumeMounts:
-            - mountPath: /scripts/
-              name: scripts
             - mountPath: /root/
               name: data
             {{- if .Values.persistence.subPath }}
@@ -112,9 +110,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-      - name: scripts
-        hostPath:
-          path: /root/thornode/build/scripts
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
