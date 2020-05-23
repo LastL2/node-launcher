@@ -45,8 +45,6 @@ spec:
           command: ["/scripts/bifrost.sh"]
           args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
           volumeMounts:
-            - mountPath: /scripts/
-              name: scripts
             - mountPath: /var/data/bifrost
               name: data
             {{- if .Values.persistence.subPath }}
@@ -86,9 +84,6 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
 
       volumes:
-      - name: scripts
-        hostPath:
-          path: /root/thornode/build/scripts
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
