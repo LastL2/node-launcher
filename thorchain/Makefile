@@ -5,7 +5,7 @@ mocknet:
 	@NET=mocknet ${path}/deploy.sh
 
 3-mocknet:
-	@NET=mocknet NODES=3 TAG=test ${path}/deploy.sh
+	@NET=mocknet NODES=3 ${path}/deploy.sh
 
 12-mocknet:
 	@NET=mocknet NODES=12 ${path}/deploy.sh

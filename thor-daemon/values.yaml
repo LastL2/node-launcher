@@ -13,6 +13,8 @@ peer:
 peerApi:
 binanceDaemon:
 
+debug: false
+
 replicaCount: 1
 
 strategyType: Recreate

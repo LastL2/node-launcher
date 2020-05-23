@@ -52,7 +52,11 @@ spec:
           command: ["/scripts/genesis.sh"]
           {{- end }}
 
+          {{- if {{ .Values.debug }} }}
+          args: ["thord", "start", "--trace", "--log_level", "*:debug", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.port.rpc }}"]
+          {{- else }}
           args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.port.rpc }}"]
+          {{- end }}
           volumeMounts:
             - mountPath: /scripts/
               name: scripts
