@@ -6,7 +6,9 @@ metadata:
     {{- include "thor-daemon.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "ClusterIP" }}
   clusterIP: None
+  {{- end }}
   ports:
     - port: {{ .Values.service.port.rpc }}
       targetPort: rpc

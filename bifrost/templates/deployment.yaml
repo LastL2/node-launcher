@@ -23,6 +23,8 @@ spec:
       serviceAccountName: {{ include "bifrost.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       initContainers:
       - name: init-thorchain
         image: busybox:1.28
@@ -76,9 +78,11 @@ spec:
           ports:
             - name: p2p
               containerPort: {{ .Values.service.port.p2p }}
+              hostPort: {{ .Values.service.port.p2p }}
               protocol: TCP
             - name: http
               containerPort: {{ .Values.service.port.http }}
+              hostPort: {{ .Values.service.port.http }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

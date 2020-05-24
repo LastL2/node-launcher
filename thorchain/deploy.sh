@@ -60,6 +60,10 @@ bifrost:
   image:
     tag: "$TAG"
 
+binance-daemon:
+  service:
+    type: LoadBalancer
+
 midgard:
   enabled: false
 
@@ -72,12 +76,9 @@ create_validator_config () {
 thor-daemon:
   peer: $PEER
   peerApi: $PEER_API
-  binanceDaemon: binance-daemon:$BINANCE_PORT
+  binanceDaemon: $PEER_BINANCE:26657
   image:
     tag: "$TAG"
-
-midgard:
-  enabled: false
 
 thor-api:
   image:
@@ -85,8 +86,16 @@ thor-api:
 
 bifrost:
   peer: $PEER_BIFROST
+  binanceDaemon: http://$PEER_BINANCE:26657
   image:
     tag: "$TAG"
+
+midgard:
+  enabled: false
+
+binance-daemon:
+  enabled: false
+
 EOF
 }
 

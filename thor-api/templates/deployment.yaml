@@ -21,6 +21,8 @@ spec:
       serviceAccountName: {{ include "thor-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       initContainers:
       - name: init-thorchain
         image: busybox:1.28
@@ -32,7 +34,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/rest.sh"]
-          args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:80", "--node", "tcp://{{ .Values.thorDaemon }}"]
+          args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:1317", "--node", "tcp://{{ .Values.thorDaemon }}"]
           env:
             - name: NET
               value: {{ .Values.net }}
@@ -44,7 +46,8 @@ spec:
               value: {{ .Values.signer.password }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 1317
+              hostPort: 1317
               protocol: TCP
           livenessProbe:
             httpGet:

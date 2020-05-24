@@ -26,6 +26,8 @@ bifrost:
     tag: mocknet
     pullPolicy: Always
   net: mocknet
+  persistence:
+    enabled: false
   fullnameOverride: bifrost
   bitcoinDaemon: bitcoin-daemon:18443
   binanceDaemon: http://binance-daemon:26657
