@@ -46,9 +46,6 @@ spec:
             - name: BNET
               value: {{ .Values.net }}
           ports:
-            - name: p2p
-              containerPort: {{ .Values.service.port.p2p }}
-              protocol: TCP
             - name: rpc
               containerPort: {{ .Values.service.port.rpc }}
               hostPort: {{ .Values.service.port.rpc }}
