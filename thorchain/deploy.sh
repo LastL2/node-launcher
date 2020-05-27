@@ -16,7 +16,7 @@ VALUES_GENESIS=$SCRIPTPATH/$NET-genesis.yaml
 set_ports () {
   case $NET in
     mocknet)
-      BINANCE_PORT=26657
+      BINANCE_PORT=26660
       BITCOIN_PORT=18443
       ETHEREUM_PORT=8545
       ;;
@@ -62,7 +62,8 @@ bifrost:
 
 binance-daemon:
   service:
-    type: LoadBalancer
+    port:
+      rpc: "$BINANCE_PORT"
 
 midgard:
   enabled: false
@@ -76,7 +77,7 @@ create_validator_config () {
 thor-daemon:
   peer: $PEER
   peerApi: $PEER_API
-  binanceDaemon: $PEER_BINANCE:26657
+  binanceDaemon: $PEER_BINANCE:$BINANCE_PORT
   image:
     tag: "$TAG"
 
@@ -86,7 +87,7 @@ thor-api:
 
 bifrost:
   peer: $PEER_BIFROST
-  binanceDaemon: http://$PEER_BINANCE:26657
+  binanceDaemon: http://$PEER_BINANCE:$BINANCE_PORT
   image:
     tag: "$TAG"
 
