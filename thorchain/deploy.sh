@@ -57,6 +57,7 @@ thor-api:
     tag: "$TAG"
 
 bifrost:
+  binanceDaemon: binance-daemon:$BINANCE_PORT
   image:
     tag: "$TAG"
 
