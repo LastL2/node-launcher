@@ -53,9 +53,6 @@ spec:
               containerPort: {{ .Values.service.port.rpc }}
               hostPort: {{ .Values.service.port.rpc }}
               protocol: TCP
-            - name: promtheus
-              containerPort: {{ .Values.service.port.prometheus }}
-              protocol: TCP
           livenessProbe:
             httpGet:
               path: /block
