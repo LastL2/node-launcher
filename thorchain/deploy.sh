@@ -157,7 +157,7 @@ clean_files () {
 deploy_single_node () {
   create_mnemonic_config
   create_validator_config
-  helm upgrade --install $NET $SCRIPTPATH -n $NET --create-namespace -f $VALUES -f $VALUES_MNEMONIC -f $VALUES_VALIDATOR
+  helm upgrade --install $NET $SCRIPTPATH -n $NET-1 --create-namespace -f $VALUES -f $VALUES_MNEMONIC -f $VALUES_VALIDATOR
 }
 # deploys a multi nodes net within the cluster
 deploy_multi_node () {
