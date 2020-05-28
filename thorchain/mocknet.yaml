@@ -9,7 +9,7 @@ thor-daemon:
     pullPolicy: Always
   net: mocknet
   persistence:
-    enabled: false
+    enabled: true
   fullnameOverride: thor-daemon
 
 thor-api:
