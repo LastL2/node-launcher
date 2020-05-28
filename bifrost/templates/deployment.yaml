@@ -29,15 +29,9 @@ spec:
       - name: init-thorchain
         image: busybox:1.28
         command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done"]
-      - name: init-bitcoin
-        image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.bitcoinDaemon }}; do echo waiting for bitcoin; sleep 2; done"]
       - name: init-binance
         image: appropriate/curl
         command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance; sleep 2; done"]
-      - name: init-ethereum
-        image: appropriate/curl
-        command: ['sh', '-c', "until curl -s {{ .Values.ethereumDaemon }} > /dev/null; do echo waiting for ethereum; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

@@ -31,7 +31,6 @@ bifrost:
   fullnameOverride: bifrost
   bitcoinDaemon: bitcoin-daemon:18443
   binanceDaemon: http://binance-daemon:26657
-  binanceStartBlockHeight: 1
 
 midgard:
   enabled: true

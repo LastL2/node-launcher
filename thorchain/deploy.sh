@@ -58,6 +58,7 @@ thor-api:
 
 bifrost:
   binanceDaemon: http://binance-daemon:$BINANCE_PORT
+  binanceStartBlockHeight: 1
   image:
     tag: "$TAG"
 
@@ -69,6 +70,11 @@ binance-daemon:
 midgard:
   enabled: false
 
+bitcoin-daemon:
+  enabled: false
+
+ethereum-daemon:
+  enabled: false
 EOF
 }
 
@@ -98,6 +104,11 @@ midgard:
 binance-daemon:
   enabled: false
 
+bitcoin-daemon:
+  enabled: false
+
+ethereum-daemon:
+  enabled: false
 EOF
 }
 

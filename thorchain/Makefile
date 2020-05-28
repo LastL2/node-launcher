@@ -20,8 +20,5 @@ mainnet:
 	@NET=mainnet ${path}/deploy.sh
 
 clean:
-	helm delete mocknet -n mocknet-1
-	helm delete mocknet -n mocknet-2
-	helm delete mocknet -n mocknet-3
-	helm delete mocknet -n mocknet-4
-	kubectl delete ns mocknet-1 mocknet-2 mocknet-3 mocknet-4
+	helm delete mocknet -n mocknet
+	kubectl delete ns mocknet
