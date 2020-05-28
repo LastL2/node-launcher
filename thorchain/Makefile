@@ -5,7 +5,7 @@ mocknet:
 	@NET=mocknet ${path}/deploy.sh
 
 validator:
-	@NET=mocknet TAG=mocknet PEER=45.63.26.186 PEER_BINANCE=45.63.26.186 ${path}/deploy.sh
+	@NET=mocknet TAG=mocknet ${path}/deploy.sh
 
 3-mocknet:
 	@NET=mocknet NODES=4 TAG=mocknet ${path}/deploy.sh
