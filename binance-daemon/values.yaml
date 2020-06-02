@@ -1,6 +1,7 @@
 # Default values for binance-daemon.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global: {}
 
 net: prod
 
@@ -14,6 +15,18 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+service:
+  type:
+    p2p: NodePort
+    rpc: ClusterIP
+  port:
+    testnet:
+      p2p: 26656
+      rpc: 26657
+    mainnet:
+      p2p: 27146
+      rpc: 27147
 
 persistence:
   enabled: false
@@ -38,16 +51,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port:
-    p2p: 27146 # mainnet
-    # p2p: 26656 # testnet
-    rpc: 27147 # mainnet
-    # rpc: 26657 # testnet
-    prometheus: 26660
-
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

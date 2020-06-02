@@ -23,8 +23,6 @@ spec:
       serviceAccountName: {{ include "binance-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       initContainers:
       - name: init-ulimitn
         image: busybox
@@ -42,21 +40,26 @@ spec:
               mountPath: /opt/bnbchaind
           env:
             - name: PORT
-              value: "{{ .Values.service.port.rpc }}"
+              value: {{ include "binance-daemon.rpc" . | quote }}
             - name: BNET
-              value: {{ .Values.net }}
+              value: {{ include "binance-daemon.net" . }}
           ports:
             - name: rpc
-              containerPort: {{ .Values.service.port.rpc }}
-              hostPort: {{ .Values.service.port.rpc }}
+              containerPort: {{ include "binance-daemon.rpc" . }}
+              protocol: TCP
+            - name: p2p
+              containerPort: {{ include "binance-daemon.p2p" . }}
+              protocol: TCP
+            - name: prometheus
+              containerPort: 26660
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /block
+              path: /status
               port: rpc
           readinessProbe:
             httpGet:
-              path: /block
+              path: /status
               port: rpc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

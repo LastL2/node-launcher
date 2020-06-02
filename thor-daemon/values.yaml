@@ -7,7 +7,7 @@ net: mainet
 signer:
   name: thorchain
   password: password
-  mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
+  mnemonic:
 
 peer:
 peerApi:
@@ -27,6 +27,12 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port:
+    p2p: 26656
+    rpc: 26657
 
 persistence:
   enabled: false
@@ -54,12 +60,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port:
-    p2p: 26656
-    rpc: 26657
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

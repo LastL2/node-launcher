@@ -21,6 +21,10 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+service:
+  type: ClusterIP
+  port: 1317
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -38,10 +42,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 1317
 
 ingress:
   enabled: false
