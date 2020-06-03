@@ -23,13 +23,18 @@ spec:
       serviceAccountName: {{ include "thor-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      {{- if .Values.hostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      {{- if .Values.peer }}
+      {{- end }}
+
       initContainers:
+      {{- if .Values.peer }}
       - name: init-peer
         image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.peer }}:26657; do echo waiting for peer thor-daemon; sleep 2; done"]
+        command: ['sh', '-c', 'until nc -zv {{ .Values.peer }}:{{ include "thor-daemon.rpc" . }}; do echo waiting for peer thor-daemon; sleep 2; done']
+      {{- end }}
       {{- if .Values.peerApi }}
       - name: init-peer-api
         image: busybox:1.28
@@ -40,14 +45,12 @@ spec:
         image: appropriate/curl
         command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
       {{- end }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ include "thor-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-
           {{- if .Values.peer }}
           command: ["/scripts/validator.sh"]
           {{- else }}
@@ -55,9 +58,9 @@ spec:
           {{- end }}
 
           {{- if .Values.debug }}
-          args: ["thord", "start", "--trace", "--log_level", "*:debug", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.port.rpc }}"]
+          args: ["thord", "start", "--trace", "--log_level", "*:debug", "--rpc.laddr", 'tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}']
           {{- else }}
-          args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.port.rpc }}"]
+          args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", 'tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}']
           {{- end }}
           volumeMounts:
             - mountPath: /root/
@@ -72,30 +75,31 @@ spec:
               value: {{ .Values.peerApi }}
             - name: BINANCE
               value: {{ .Values.binanceDaemon }}
-            - name: EXTERNAL_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
             - name: SEED
               valueFrom:
                 fieldRef:
+                  {{- if .Values.hostNetwork }}
                   fieldPath: spec.nodeName
+                  {{- else}}
+                  fieldPath: metadata.name
+                  {{- end }}
             - name: NET
-              value: {{ .Values.net }}
+              value: {{ include "thor-daemon.net" . }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWD
               value: {{ .Values.signer.password }}
             - name: SIGNER_SEED_PHRASE
-              value: {{ .Values.signer.mnemonic }}
+              value: {{ default .Values.signer.mnemonic .Values.global.mnemonic | b64dec | quote }}
           ports:
             - name: p2p
-              containerPort: {{ .Values.service.port.p2p }}
-              hostPort: {{ .Values.service.port.p2p }}
+              containerPort: {{ include "thor-daemon.p2p" . }}
               protocol: TCP
             - name: rpc
-              containerPort: {{ .Values.service.port.rpc }}
-              hostPort: {{ .Values.service.port.rpc }}
+              containerPort: {{ include "thor-daemon.rpc" . }}
+              protocol: TCP
+            - name: prometheus
+              containerPort: 26660
               protocol: TCP
           startupProbe:
             httpGet:

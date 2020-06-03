@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: mainet
+net: mainnet
 
 signer:
   name: thorchain
@@ -16,6 +16,8 @@ binanceDaemon:
 debug: false
 
 replicaCount: 1
+
+hostNetwork: true
 
 strategyType: Recreate
 
@@ -31,12 +33,16 @@ fullnameOverride: ""
 service:
   type: ClusterIP
   port:
-    p2p: 26656
-    rpc: 26657
+    testnet:
+      p2p: 26656
+      rpc: 26657
+    mainnet:
+      p2p: 27146
+      rpc: 27147
 
 persistence:
-  enabled: false
-  size: 10Gi
+  enabled: true
+  size: 100Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"
@@ -78,3 +84,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+global: {}
