@@ -61,3 +61,66 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Net
+*/}}
+{{- define "bifrost.net" -}}
+{{- default .Values.net .Values.global.net -}}
+{{- end -}}
+
+{{/*
+Tag
+*/}}
+{{- define "bifrost.tag" -}}
+{{- default .Values.image.tag .Values.global.tag -}}
+{{- end -}}
+
+{{/*
+Image
+*/}}
+{{- define "bifrost.image" -}}
+{{- .Values.image.repository -}}:{{ include "bifrost.tag" . }}
+{{- end -}}
+
+{{/*
+Thor daemon
+*/}}
+{{- define "bifrost.thorDaemon" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.thorDaemon.mainnet }}
+{{- else -}}
+    {{ .Values.thorDaemon.testnet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Binance daemon
+*/}}
+{{- define "bifrost.binanceDaemon" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.binanceDaemon.mainnet }}
+{{- else -}}
+    {{ .Values.binanceDaemon.testnet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Bitcoin
+*/}}
+{{- define "bifrost.bitcoinDaemon" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.bitcoinDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "testnet" -}}
+    {{ .Values.bitcoinDaemon.testnet }}
+{{- else -}}
+    {{ .Values.bitcoinDaemon.mocknet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Ethereum
+*/}}
+{{- define "bifrost.ethereumDaemon" -}}
+{{ .Values.ethereumDaemon.mainnet }}
+{{- end -}}

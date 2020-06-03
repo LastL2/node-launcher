@@ -90,7 +90,7 @@ spec:
             - name: SIGNER_PASSWD
               value: {{ .Values.signer.password }}
             - name: SIGNER_SEED_PHRASE
-              value: {{ default .Values.signer.mnemonic .Values.global.mnemonic | b64dec | quote }}
+              value: {{ default .Values.signer.mnemonic .Values.global.mnemonic | default "" | b64dec | quote }}
           ports:
             - name: p2p
               containerPort: {{ include "thor-daemon.p2p" . }}
