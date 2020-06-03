@@ -62,7 +62,7 @@ spec:
             {{- end }}
           env:
             - name: NET
-              value: {{ .Values.net }}
+              value: {{ include "bifrost.net" . }}
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
             - name: CHAIN_RPC

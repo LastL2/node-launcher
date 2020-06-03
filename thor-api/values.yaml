@@ -2,13 +2,17 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: mainet
+net: mainnet
 
 signer:
   name: thorchain
   password: password
 
-thorDaemon: thor-daemon:26657
+thorDaemon:
+  mainnet: thor-daemon:27147
+  testnet: thor-daemon:26657
+
+hostNetwork: true
 
 replicaCount: 1
 
@@ -73,3 +77,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+global: {}

@@ -25,36 +25,26 @@ spec:
         - name: init-database
           image: busybox:1.28
           command: ['sh', '-c', "until nc -zv {{ include "midgard.fullname" . }}-timescaledb:{{ .Values.postgres.port }}; do echo waiting for timescale database; sleep 2; done"]
-        - name: init-thorchain
+        - name: init-thor
           image: busybox:1.28
           command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done"]
-        - name: init-scripts
-          image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
-          imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
-          volumeMounts:
-            - name: scripts
-              mountPath: /tmp
-          command: [ "sh", "-c", "cp /scripts/* /tmp" ]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.midgard.repository }}:{{ .Values.image.midgard.tag }}"
+          image: {{ include "midgard.image" . }}
           imagePullPolicy: {{ .Values.image.midgard.pullPolicy }}
           command: ["/scripts/midgard.sh"]
-          volumeMounts:
-            - name: scripts
-              mountPath: /scripts
           args: ["midgard", "-c", "/etc/midgard/config.json"]
           env:
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
             - name: CHAIN_RPC
-              value: {{ .Values.thorDaemon }}
+              value: {{ include "midgard.thorDaemon" . }}
             - name: PG_HOST
               value: {{ include "midgard.fullname" . }}-timescaledb
             - name: PG_PORT
-              value: "{{ .Values.postgres.port }}"
+              value: {{ .Values.postgres.port | quote }}
             - name: PG_DB
               value: {{ .Values.postgres.database }}
             - name: PG_USERNAME

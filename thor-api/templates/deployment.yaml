@@ -21,25 +21,29 @@ spec:
       serviceAccountName: {{ include "thor-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      {{- if .Values.hostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+
       initContainers:
-      - name: init-thorchain
+      - name: init-thor
         image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.thorDaemon }}; do echo waiting for thor-daemon; sleep 2; done"]
+        command: ['sh', '-c', 'until nc -zv {{ include "thor-api.thorDaemon" . }}; do echo waiting for thor-daemon; sleep 2; done']
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ include "thor-api.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/rest.sh"]
-          args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:1317", "--node", "tcp://{{ .Values.thorDaemon }}"]
+          args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:1317", "--node", 'tcp://{{ include "thor-api.thorDaemon" . }}']
           env:
             - name: NET
-              value: {{ .Values.net }}
+              value: {{ include "thor-api.net" . }}
             - name: CHAIN_DAEMON
-              value: {{ .Values.thorDaemon }}
+              value: {{ include "thor-api.thorDaemon" . }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWD
@@ -47,7 +51,6 @@ spec:
           ports:
             - name: http
               containerPort: 1317
-              hostPort: 1317
               protocol: TCP
           livenessProbe:
             httpGet:

@@ -30,6 +30,11 @@ spec:
       {{- end }}
 
       initContainers:
+      - name: init-ulimitn
+        image: busybox
+        command: ["sh", "-c", "ulimit -n 65536"]
+        securityContext:
+          privileged: true
       {{- if .Values.peer }}
       - name: init-peer
         image: busybox:1.28
