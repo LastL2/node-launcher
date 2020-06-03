@@ -33,7 +33,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ include "binance-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: data
@@ -42,7 +42,7 @@ spec:
             - name: PORT
               value: {{ include "binance-daemon.rpc" . | quote }}
             - name: BNET
-              value: {{ include "binance-daemon.net" . }}
+              value: {{ if eq (include "binance-daemon.net" .) "mainnet" }}prod{{- else }}{{ include "binance-daemon.net" . }}{{- end }}
           ports:
             - name: rpc
               containerPort: {{ include "binance-daemon.rpc" . }}

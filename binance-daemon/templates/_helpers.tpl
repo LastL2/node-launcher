@@ -70,10 +70,21 @@ Net
 {{- end -}}
 
 {{/*
+Image
+*/}}
+{{- define "binance-daemon.image" -}}
+{{- if eq (include "binance-daemon.net" .) "mocknet" -}}
+    "{{ .Values.image.mocknet }}:{{ .Values.image.tag }}"
+{{- else -}}
+    "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+{{- end -}}
+{{- end -}}
+
+{{/*
 RPC Port
 */}}
 {{- define "binance-daemon.rpc" -}}
-{{- if eq (include "binance-daemon.net" .) "prod" -}}
+{{- if eq (include "binance-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.rpc}}
 {{- else -}}
     {{ .Values.service.port.testnet.rpc }}
@@ -84,7 +95,7 @@ RPC Port
 P2P Port
 */}}
 {{- define "binance-daemon.p2p" -}}
-{{- if eq (include "binance-daemon.net" .) "prod" -}}
+{{- if eq (include "binance-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.p2p}}
 {{- else -}}
     {{ .Values.service.port.testnet.p2p }}
