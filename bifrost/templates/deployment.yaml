@@ -76,7 +76,7 @@ spec:
             - name: ETH_HOST
               value: {{ include "bifrost.ethereumDaemon" . }}
             - name: PEER
-              value: {{ .Values.peer }}
+              value: {{ default .Values.peer .Values.global.peer }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWORD

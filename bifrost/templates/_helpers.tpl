@@ -101,7 +101,7 @@ Binance daemon
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
     {{ .Values.binanceDaemon.mainnet }}
 {{- else -}}
-    {{ .Values.binanceDaemon.testnet }}
+    {{ default .Values.binanceDaemon.testnet .Values.global.binanceDaemon }}
 {{- end -}}
 {{- end -}}
 
