@@ -38,7 +38,7 @@ spec:
       {{- if default .Values.peer .Values.global.peer }}
       - name: init-peer
         image: busybox:1.28
-        command: ['sh', '-c', 'until nc -zv {{ .Values.peer }}:{{ include "thor-daemon.rpc" . }}; do echo waiting for peer thor-daemon; sleep 2; done']
+        command: ['sh', '-c', 'until nc -zv {{ default .Values.peer .Values.global.peer }}:{{ include "thor-daemon.rpc" . }}; do echo waiting for peer thor-daemon; sleep 2; done']
       {{- end }}
       {{- if .Values.peerApi }}
       - name: init-peer-api
@@ -48,7 +48,7 @@ spec:
       {{- if default .Values.binanceDaemon .Values.global.binanceDaemon }}
       - name: init-binance
         image: appropriate/curl
-        command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
+        command: ['sh', '-c', "until curl -s {{ default .Values.binanceDaemon .Values.global.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
