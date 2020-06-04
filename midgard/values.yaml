@@ -17,14 +17,9 @@ postgres:
 replicaCount: 1
 
 image:
-  scripts:
-    repository: registry.gitlab.com/thorchain/thornode
-    pullPolicy: IfNotPresent
-    tag: mocknet
-  midgard:
-    repository: registry.gitlab.com/thorchain/midgard
-    pullPolicy: IfNotPresent
-    tag: mainnet
+  repository: registry.gitlab.com/thorchain/midgard
+  pullPolicy: IfNotPresent
+  tag: mainnet
 
 imagePullSecrets: []
 nameOverride: ""

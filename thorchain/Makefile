@@ -1,32 +1,18 @@
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-path := $(dir $(mkfile_path))
+NAME?=thorchain
+ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp
 
-mocknet:
-	$(shell docker run namick/12-words | tr -d '\n' | base64 > tmp)
-	helm upgrade --install mocknet thorchain -n mocknet --create-namespace \
-		--set global.net=mocknet \
-		--set global.tag=mocknet \
-		--set-file global.mnemonic=tmp \
-		--dry-run
-	@rm tmp
+mnemonic:
+	$(shell docker run namick/12-words | tr -d '\n' > tmp)
 
-testnet:
-	helm upgrade --install testnet ./thorchain -n testnet --create-namespace --set global.net=testnet,global.tag=testnet --dry-run
+mocknet: mnemonic
+	@helm upgrade --install ${ARGS} --set global.net=$${NET:-mocknet} --set global.tag=$${TAG:-mocknet}; rm tmp
 
-mainnet:
-	MNEMONIC=${MNEMONIC:-$(docker run namick/12-words)}
-	echo ${MNEMONIC}
-	helm upgrade --install mainnet ./thorchain -n mainnet --create-namespace --set global.mnemonic=${MNEMONIC} --dry-run
+testnet: mnemonic
+	@helm upgrade --install ${ARGS} --set global.net=$${NET:-testnet} --set global.tag=$${TAG:-testnet}; rm tmp
 
-validator:
-	@NET=mocknet TAG=mocknet ${path}/deploy.sh
-
-3-mocknet:
-	@NET=mocknet NODES=4 TAG=mocknet ${path}/deploy.sh
-
-12-mocknet:
-	@NET=mocknet NODES=12 ${path}/deploy.sh
+mainnet: mnemonic
+	@helm upgrade --install ${ARGS}; rm tmp
 
 clean:
-	helm delete mocknet -n mocknet-1
-	kubectl delete ns mocknet-1
+	@helm delete ${NAME} -n ${NAME}
+	@kubectl delete namespace ${NAME}

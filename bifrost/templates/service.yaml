@@ -18,5 +18,9 @@ spec:
       targetPort: p2p
       protocol: TCP
       name: p2p
+    - name: prometheus
+      port: 26660
+      targetPort: prometheus
+      protocol: TCP
   selector:
     {{- include "bifrost.selectorLabels" . | nindent 4 }}

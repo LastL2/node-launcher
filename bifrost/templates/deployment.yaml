@@ -81,8 +81,13 @@ spec:
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWORD
               value: {{ .Values.signer.password }}
+            {{- if default .Values.signer.mnemonic .Values.global.mnemonic }}
             - name: SIGNER_SEED_PHRASE
-              value: {{ default .Values.signer.mnemonic .Values.global.mnemonic | default "" | b64dec | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "bifrost.fullname" . }}
+                  key: mnemonic
+            {{- end }}
           ports:
             - name: p2p
               containerPort: {{ .Values.service.port.p2p }}
@@ -91,7 +96,7 @@ spec:
               containerPort: {{ .Values.service.port.http }}
               protocol: TCP
             - name: prometheus
-              containerPort: 26660
+              containerPort: 26661
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
