@@ -17,7 +17,7 @@ mocknet-validator: mnemonic
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
 		--set binance-daemon.enabled=false \
 		--set global.peer=139.180.169.102 \
-		--set global.binanceDaemon=http://139.180.169.102:30779 --dry-run ; rm tmp
+		--set global.binanceDaemon=http://139.180.169.102:30779; rm tmp
 
 clean:
 	@helm delete ${NAME} -n ${NAME}

@@ -56,7 +56,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "thor-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.peer }}
+          {{- if default .Values.peer .Values.global.peer }}
           command: ["/scripts/validator.sh"]
           {{- else }}
           command: ["/scripts/genesis.sh"]
