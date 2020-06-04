@@ -33,33 +33,33 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ include "binance-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: data
               mountPath: /opt/bnbchaind
           env:
             - name: PORT
-              value: "{{ .Values.service.port.rpc }}"
+              value: {{ include "binance-daemon.rpc" . | quote }}
             - name: BNET
-              value: {{ .Values.net }}
+              value: {{ if eq (include "binance-daemon.net" .) "mainnet" }}prod{{- else }}{{ include "binance-daemon.net" . }}{{- end }}
           ports:
-            - name: p2p
-              containerPort: {{ .Values.service.port.p2p }}
-              protocol: TCP
             - name: rpc
-              containerPort: {{ .Values.service.port.rpc }}
+              containerPort: {{ include "binance-daemon.rpc" . }}
               protocol: TCP
-            - name: promtheus
-              containerPort: {{ .Values.service.port.prometheus }}
+            - name: p2p
+              containerPort: {{ include "binance-daemon.p2p" . }}
+              protocol: TCP
+            - name: prometheus
+              containerPort: 26660
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /block
+              path: /status
               port: rpc
           readinessProbe:
             httpGet:
-              path: /block
+              path: /status
               port: rpc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

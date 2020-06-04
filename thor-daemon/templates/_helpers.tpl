@@ -61,3 +61,46 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Net
+*/}}
+{{- define "thor-daemon.net" -}}
+{{- default .Values.net .Values.global.net -}}
+{{- end -}}
+
+{{/*
+Tag
+*/}}
+{{- define "thor-daemon.tag" -}}
+{{- default .Values.image.tag .Values.global.tag -}}
+{{- end -}}
+
+{{/*
+Image
+*/}}
+{{- define "thor-daemon.image" -}}
+{{- .Values.image.repository -}}:{{ include "thor-daemon.tag" . }}
+{{- end -}}
+
+{{/*
+RPC Port
+*/}}
+{{- define "thor-daemon.rpc" -}}
+{{- if eq (include "thor-daemon.net" .) "mainnet" -}}
+    {{ .Values.service.port.mainnet.rpc}}
+{{- else -}}
+    {{ .Values.service.port.testnet.rpc }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+P2P Port
+*/}}
+{{- define "thor-daemon.p2p" -}}
+{{- if eq (include "thor-daemon.net" .) "mainnet" -}}
+    {{ .Values.service.port.mainnet.p2p}}
+{{- else -}}
+    {{ .Values.service.port.testnet.p2p }}
+{{- end -}}
+{{- end -}}

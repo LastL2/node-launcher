@@ -6,7 +6,9 @@ metadata:
     {{- include "bifrost.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "ClusterIP" }}
   clusterIP: None
+  {{- end }}
   ports:
     - port: {{ .Values.service.port.http }}
       targetPort: http
@@ -16,5 +18,9 @@ spec:
       targetPort: p2p
       protocol: TCP
       name: p2p
+    - name: prometheus
+      port: 26660
+      targetPort: prometheus
+      protocol: TCP
   selector:
     {{- include "bifrost.selectorLabels" . | nindent 4 }}

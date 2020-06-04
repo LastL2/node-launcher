@@ -23,36 +23,50 @@ spec:
       serviceAccountName: {{ include "thor-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if .Values.peer }}
+
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+
       initContainers:
+      - name: init-ulimitn
+        image: busybox
+        command: ["sh", "-c", "ulimit -n 65536"]
+        securityContext:
+          privileged: true
+      {{- if default .Values.peer .Values.global.peer }}
       - name: init-peer
         image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.peer }}:26657; do echo waiting for peer thor-daemon; sleep 2; done"]
+        command: ['sh', '-c', 'until nc -zv {{ default .Values.peer .Values.global.peer }}:{{ include "thor-daemon.rpc" . }}; do echo waiting for peer thor-daemon; sleep 2; done']
+      {{- end }}
       {{- if .Values.peerApi }}
       - name: init-peer-api
         image: busybox:1.28
         command: ['sh', '-c', "until nc -zv {{ .Values.peerApi }}:1317; do echo waiting for peer thor-api; sleep 2; done"]
       {{- end }}
-      {{- if .Values.binanceDaemon }}
+      {{- if default .Values.binanceDaemon .Values.global.binanceDaemon }}
       - name: init-binance
         image: appropriate/curl
-        command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
-      {{- end }}
+        command: ['sh', '-c', "until curl -s {{ default .Values.binanceDaemon .Values.global.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ include "thor-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-
-          {{- if .Values.peer }}
+          {{- if default .Values.peer .Values.global.peer }}
           command: ["/scripts/validator.sh"]
           {{- else }}
           command: ["/scripts/genesis.sh"]
           {{- end }}
 
-          args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", "tcp://0.0.0.0:{{ .Values.service.port.rpc }}"]
+          {{- if .Values.debug }}
+          args: ["thord", "start", "--trace", "--log_level", "*:debug", "--rpc.laddr", 'tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}']
+          {{- else }}
+          args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", 'tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}']
+          {{- end }}
           volumeMounts:
             - mountPath: /root/
               name: data
@@ -61,29 +75,41 @@ spec:
             {{- end }}
           env:
             - name: PEER
-              value: {{ .Values.peer }}
+              value: {{ default .Values.peer .Values.global.peer }}
             - name: PEER_API
               value: {{ .Values.peerApi }}
             - name: BINANCE
-              value: {{ .Values.binanceDaemon }}
+              value: {{ default .Values.binanceDaemon .Values.global.binanceDaemon }}
             - name: SEED
               valueFrom:
                 fieldRef:
+                  {{- if .Values.hostNetwork }}
+                  fieldPath: spec.nodeName
+                  {{- else}}
                   fieldPath: metadata.name
+                  {{- end }}
             - name: NET
-              value: {{ .Values.net }}
+              value: {{ include "thor-daemon.net" . }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWD
               value: {{ .Values.signer.password }}
+            {{- if default .Values.signer.mnemonic .Values.global.mnemonic }}
             - name: SIGNER_SEED_PHRASE
-              value: {{ .Values.signer.mnemonic }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "thor-daemon.fullname" . }}
+                  key: mnemonic
+            {{- end }}
           ports:
             - name: p2p
-              containerPort: {{ .Values.service.port.p2p }}
+              containerPort: {{ include "thor-daemon.p2p" . }}
               protocol: TCP
             - name: rpc
-              containerPort: {{ .Values.service.port.rpc }}
+              containerPort: {{ include "thor-daemon.rpc" . }}
+              protocol: TCP
+            - name: prometheus
+              containerPort: 26660
               protocol: TCP
           startupProbe:
             httpGet:
@@ -92,10 +118,12 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
+            initialDelaySeconds: 30
             httpGet:
               path: /status
               port: rpc
           readinessProbe:
+            initialDelaySeconds: 30
             httpGet:
               path: /status
               port: rpc

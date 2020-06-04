@@ -1,23 +1,24 @@
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-path := $(dir $(mkfile_path))
+NAME?=thorchain
+ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp
 
-mocknet:
-	@NET=mocknet ${path}/deploy.sh
+mnemonic:
+	$(shell docker run namick/12-words | tr -d '\n' > tmp)
 
-3-mocknet:
-	@NET=mocknet NODES=3 TAG=mocknet ${path}/deploy.sh
+mocknet: mnemonic
+	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet},binance-daemon.service.type.rpc=NodePort,bifrost.binanceStartBlockHeight=1; rm tmp
 
-12-mocknet:
-	@NET=mocknet NODES=12 ${path}/deploy.sh
+testnet: mnemonic
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet}; rm tmp
 
-testnet:
-	@NET=testnet ${path}/deploy.sh
+mainnet: mnemonic
+	@helm upgrade --install ${ARGS}; rm tmp
 
-mainnet:
-	@NET=mainnet ${path}/deploy.sh
+mocknet-validator: mnemonic
+	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
+		--set binance-daemon.enabled=false \
+		--set global.peer=139.180.169.102 \
+		--set global.binanceDaemon=http://139.180.169.102:31812; rm tmp
 
 clean:
-	helm delete mocknet -n mocknet-1
-	helm delete mocknet -n mocknet-2
-	helm delete mocknet -n mocknet-3
-	kubectl delete ns mocknet-1 mocknet-2 mocknet-3
+	@helm delete ${NAME} -n ${NAME}
+	@kubectl delete namespace ${NAME}

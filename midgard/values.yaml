@@ -3,7 +3,9 @@
 # Declare variables to be passed into your templates.
 
 thorApi: thor-api:1317
-thorDaemon: thor-daemon:26657
+thorDaemon:
+  mainnet: thor-daemon:27147
+  testnet: thor-daemon:26657
 
 postgres:
   port: 5432
@@ -15,14 +17,9 @@ postgres:
 replicaCount: 1
 
 image:
-  scripts:
-    repository: registry.gitlab.com/thorchain/thornode
-    pullPolicy: IfNotPresent
-    tag: mocknet
-  midgard:
-    repository: registry.gitlab.com/thorchain/midgard
-    pullPolicy: IfNotPresent
-    tag: mainnet
+  repository: registry.gitlab.com/thorchain/midgard
+  pullPolicy: IfNotPresent
+  tag: mainnet
 
 imagePullSecrets: []
 nameOverride: ""

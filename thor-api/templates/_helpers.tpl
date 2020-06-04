@@ -61,3 +61,36 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Net
+*/}}
+{{- define "thor-api.net" -}}
+{{- default .Values.net .Values.global.net -}}
+{{- end -}}
+
+{{/*
+Tag
+*/}}
+{{- define "thor-api.tag" -}}
+{{- default .Values.image.tag .Values.global.tag -}}
+{{- end -}}
+
+{{/*
+Image
+*/}}
+{{- define "thor-api.image" -}}
+{{- .Values.image.repository -}}:{{ include "thor-api.tag" . }}
+{{- end -}}
+
+{{/*
+Thor daemon
+*/}}
+{{- define "thor-api.thorDaemon" -}}
+{{- if eq (include "thor-api.net" .) "mainnet" -}}
+    {{ .Values.thorDaemon.mainnet }}
+{{- else -}}
+    {{ .Values.thorDaemon.testnet }}
+{{- end -}}
+{{- end -}}
+

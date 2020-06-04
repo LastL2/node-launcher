@@ -2,13 +2,17 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: mainet
+net: mainnet
 
 signer:
   name: thorchain
   password: password
 
-thorDaemon: thor-daemon:26657
+thorDaemon:
+  mainnet: thor-daemon:27147
+  testnet: thor-daemon:26657
+
+hostNetwork: true
 
 replicaCount: 1
 
@@ -20,6 +24,10 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 1317
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -38,10 +46,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 1317
 
 ingress:
   enabled: false
@@ -73,3 +77,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+global: {}

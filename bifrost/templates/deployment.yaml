@@ -23,24 +23,34 @@ spec:
       serviceAccountName: {{ include "bifrost.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+
       initContainers:
       - name: init-thorchain
         image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done"]
-      - name: init-bitcoin
-        image: busybox:1.28
-        command: ['sh', '-c', "until nc -zv {{ .Values.bitcoinDaemon }}; do echo waiting for bitcoin; sleep 2; done"]
+        command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done']
       - name: init-binance
         image: appropriate/curl
-        command: ['sh', '-c', "until curl -s {{ .Values.binanceDaemon }} > /dev/null; do echo waiting for binance; sleep 2; done"]
+        command: ['sh', '-c', 'until curl -s {{ include "bifrost.binanceDaemon" . }} > /dev/null; do echo waiting for binance; sleep 2; done']
+      {{- if .Values.bitcoinDaemon.enabled }}
+      - name: init-bitcoin
+        image: appropriate/curl
+        command: ['sh', '-c', 'until curl -s {{ include "bifrost.bitcoinDaemon" . }} > /dev/null; do echo waiting for bitcoin; sleep 2; done']
+      {{- end }}
+      {{- if .Values.ethereumDaemon.enabled }}
       - name: init-ethereum
         image: appropriate/curl
-        command: ['sh', '-c', "until curl -s {{ .Values.ethereumDaemon }} > /dev/null; do echo waiting for ethereum; sleep 2; done"]
+        command: ['sh', '-c', 'until curl -s {{ include "bifrost.ethereumDaemon" . }} > /dev/null; do echo waiting for ethereum; sleep 2; done']
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ include "bifrost.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/bifrost.sh"]
           args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
@@ -52,33 +62,41 @@ spec:
             {{- end }}
           env:
             - name: NET
-              value: {{ .Values.net }}
+              value: {{ include "bifrost.net" . }}
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
             - name: CHAIN_RPC
-              value: {{ .Values.thorDaemon }}
+              value: {{ include "bifrost.thorDaemon" . }}
             - name: BINANCE_HOST
-              value: {{ .Values.binanceDaemon }}
+              value: {{ include "bifrost.binanceDaemon" . }}
             - name: BINANCE_START_BLOCK_HEIGHT
               value: "{{ .Values.binanceStartBlockHeight }}"
             - name: BTC_HOST
-              value: {{ .Values.bitcoinDaemon }}
+              value: {{ include "bifrost.bitcoinDaemon" . }}
             - name: ETH_HOST
-              value: {{ .Values.ethereumDaemon }}
+              value: {{ include "bifrost.ethereumDaemon" . }}
             - name: PEER
-              value: {{ .Values.peer }}
+              value: {{ default .Values.peer .Values.global.peer }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWORD
               value: {{ .Values.signer.password }}
+            {{- if default .Values.signer.mnemonic .Values.global.mnemonic }}
             - name: SIGNER_SEED_PHRASE
-              value: {{ .Values.signer.mnemonic }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "bifrost.fullname" . }}
+                  key: mnemonic
+            {{- end }}
           ports:
             - name: p2p
               containerPort: {{ .Values.service.port.p2p }}
               protocol: TCP
             - name: http
               containerPort: {{ .Values.service.port.http }}
+              protocol: TCP
+            - name: prometheus
+              containerPort: 26661
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

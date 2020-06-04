@@ -2,18 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: mainet
+net: mainnet
 
 signer:
   name: thorchain
   password: password
-  mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
+  mnemonic:
 
 peer:
 peerApi:
 binanceDaemon:
 
+debug: false
+
 replicaCount: 1
+
+hostNetwork: true
 
 strategyType: Recreate
 
@@ -26,9 +30,19 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+service:
+  type: ClusterIP
+  port:
+    testnet:
+      p2p: 26656
+      rpc: 26657
+    mainnet:
+      p2p: 27146
+      rpc: 27147
+
 persistence:
-  enabled: false
-  size: 10Gi
+  enabled: true
+  size: 100Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"
@@ -53,12 +67,6 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
-  type: ClusterIP
-  port:
-    p2p: 26656
-    rpc: 26657
-
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -76,3 +84,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+global: {}

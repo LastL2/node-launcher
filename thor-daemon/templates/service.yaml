@@ -6,15 +6,21 @@ metadata:
     {{- include "thor-daemon.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "ClusterIP" }}
   clusterIP: None
+  {{- end }}
   ports:
-    - port: {{ .Values.service.port.rpc }}
-      targetPort: rpc
-      protocol: TCP
-      name: rpc
-    - port: {{ .Values.service.port.p2p }}
+    - name: p2p
+      port: {{ include "thor-daemon.p2p" . }}
       targetPort: p2p
       protocol: TCP
-      name: p2p
+    - name: rpc
+      port: {{ include "thor-daemon.rpc" . }}
+      targetPort: rpc
+      protocol: TCP
+    - name: prometheus
+      port: 26660
+      targetPort: prometheus
+      protocol: TCP
   selector:
     {{- include "thor-daemon.selectorLabels" . | nindent 4 }}

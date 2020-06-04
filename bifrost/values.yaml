@@ -7,17 +7,32 @@ net: mainnet
 signer:
   name: thorchain
   password: password
-  mnemonic: keen sample slam fine kind fame disorder gravity valid couple pet subway home pony depart festival bread staff gown pumpkin empower parent unusual flat
+  mnemonic:
 
 # use in multi nodes envs
 peer:
 
-thorApi: thor-api:1317
-thorDaemon: thor-daemon:26657
+hostNetwork: true
 
-binanceDaemon: http://binance-daemon:27147
-bitcoinDaemon: bitcoin-daemon:8332
-ethereumDaemon: http://ethereum-daemon:8545
+thorApi: thor-api:1317
+
+thorDaemon:
+  mainnet: thor-daemon:27147
+  testnet: thor-daemon:26657
+
+binanceDaemon:
+  mainnet: http://binance-daemon:27147
+  testnet: http://binance-daemon:26657
+
+bitcoinDaemon:
+  enabled: false
+  mainnet: bitcoin-daemon:8332
+  testnet: bitcoin-daemon:18332
+  mocknet: bitcoin-daemon:18443
+
+ethereumDaemon:
+  enabled: false
+  mainnet: http://ethereum-daemon:8545
 
 replicaCount: 1
 
@@ -33,8 +48,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 persistence:
-  enabled: false
-  size: 10Gi
+  enabled: true
+  size: 100Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"
@@ -86,3 +101,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+global: {}
