@@ -31,5 +31,6 @@ spec:
       port: {{ include "binance-daemon.p2p" . }}
       targetPort: p2p
       protocol: TCP
+      nodePort: {{ include "binance-daemon.p2p" . }}
   selector:
     {{- include "binance-daemon.selectorLabels" . | nindent 4 }}

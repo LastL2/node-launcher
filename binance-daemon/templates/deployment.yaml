@@ -35,6 +35,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "binance-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if not (eq .Values.net "mocknet") }}
+          command: ["sh"]
+          args:
+          - -c
+          - 'setup.sh && sed -i -e "s/26656/{{ include "binance-daemon.p2p" . }}/g" ${BNCHOME}/config/config.toml && entrypoint.sh'
+          {{- end }}
           volumeMounts:
             - name: data
               mountPath: /opt/bnbchaind
