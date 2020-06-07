@@ -35,7 +35,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "binance-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if not (eq .Values.net "mocknet") }}
+          {{- if not (eq (include "binance-daemon.net" . ) "mocknet") }}
           command: ["sh"]
           args:
           - -c
