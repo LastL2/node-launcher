@@ -46,8 +46,8 @@ mainnet-validator:
 	$(call generate_mnemonic)
 	@helm upgrade --install ${ARGS} --set global.peer=${PEER}; rm tmp
 
-clean:
+destroy:
 	@helm delete ${NAME} -n ${NAME}
 	@kubectl delete namespace ${NAME}
 
-.PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator clean
+.PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy

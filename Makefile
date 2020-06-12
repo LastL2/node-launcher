@@ -9,7 +9,7 @@ repo:
 logs: repo
 	@helm upgrade elastic ./elastic-operator --install -n elastic-system --create-namespace
 
-clean-logs:
+destroy-logs:
 	@helm delete elastic -n elastic-system
 	@kubectl delete namespace elastic-system
 
@@ -29,8 +29,8 @@ grafana:
 	@echo Open your browser at https://localhost:8080
 	@kubectl -n metrics port-forward service/prometheus-grafana 8080:80 --address 0.0.0.0
 
-clean-metrics:
+destroy-metrics:
 	@helm delete metrics-server -n metrics
 	@helm delete prometheus -n metrics
 
-.PHONY: helm repo logs metrics
+.PHONY: helm repo logs metrics destroy-logs destroy-metrics

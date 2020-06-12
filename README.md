@@ -73,7 +73,7 @@ the genesis node:
 export PEER=$(kubectl get pods --namespace thorchain -l "app.kubernetes.io/name=thor-daemon,app.kubernetes.io/instance=thorchain" -o jsonpath="{.items[0].status.podIP}")
 echo $PEER
 ```
-Then in the same terminal where you exporeted the PEER env variable, you can run:
+Then in the same terminal where you previously exported the PEER env variable, you can run:
 
 ```bash
 make testnet-validator
@@ -85,7 +85,7 @@ Or to manually specify the PEER IP, run that command:
 PEER=1.2.3.4 make testnet-validator
 ```
 
-Slim version:
+Slim version validator:
 
 ```bash
 PEER=1.2.3.4 make testnet-slim-validator
@@ -96,7 +96,7 @@ PEER=1.2.3.4 make testnet-slim-validator
 To fully destroy the running node and all services, run that command:
 
 ```bash
-make clean
+make destroy
 ```
 
 ## Deploy logs management Elastic Search stack
@@ -155,7 +155,7 @@ kubectl -n elastic-system get secret elasticsearch-es-elastic-user -o=jsonpath='
 ### Destroy logs management stack
 
 ```bash
-make clean-logs
+make destroy-logs
 ```
 
 
@@ -192,7 +192,7 @@ Login as the admin user. The default password should have been displayed in the 
 ### Destroy metrics management stack
 
 ```bash
-make clean-metrics
+make destroy-metrics
 ```
 
 
