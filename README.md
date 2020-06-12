@@ -91,6 +91,14 @@ Slim version:
 PEER=1.2.3.4 make testnet-slim-validator
 ```
 
+## Destroy THORChain Node
+
+To fully destroy the running node and all services, run that command:
+
+```bash
+make clean
+```
+
 ## Deploy logs management Elastic Search stack
 
 It is recommended to deploy an Elastic Search / Logstash / Filebeat / Kibana to redirect all logs
@@ -144,7 +152,7 @@ Login as the elastic user. The password can be obtained with the following comma
 kubectl -n elastic-system get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
 ```
 
-### Remove logs management stack
+### Destroy logs management stack
 
 ```bash
 make clean-logs
@@ -181,7 +189,7 @@ Open http://localhost:5601 in your browser.
 
 Login as the admin user. The default password should have been displayed in the previous command (`make grafana`).
 
-### Remove metrics management stack
+### Destroy metrics management stack
 
 ```bash
 make clean-metrics
