@@ -3,9 +3,23 @@ thor-daemon:
 
 thor-api:
   fullnameOverride: thor-api
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: "thor-daemon"
+        topologyKey: "kubernetes.io/hostname"
 
 bifrost:
   fullnameOverride: bifrost
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: "thor-daemon"
+        topologyKey: "kubernetes.io/hostname"
 
 midgard:
   fullnameOverride: midgard

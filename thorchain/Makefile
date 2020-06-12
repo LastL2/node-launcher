@@ -1,9 +1,9 @@
 NAME?=thorchain
-ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp
+ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --render-subchart-notes
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 
 define generate_mnemonic
-	docker run namick/12-words | tr -d '\n' > tmp
+	@docker run namick/12-words | tr -d '\n' > tmp
 endef
 
 mocknet:

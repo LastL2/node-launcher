@@ -4,15 +4,18 @@ metadata:
   name: {{ include "midgard.fullname" . }}
   labels:
     {{- include "midgard.labels" . | nindent 4 }}
+    app.kubernetes.io/component: midgard
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "midgard.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: midgard
   template:
     metadata:
       labels:
         {{- include "midgard.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: midgard
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -53,7 +56,7 @@ spec:
               value: {{ .Values.postgres.password }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:

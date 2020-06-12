@@ -66,6 +66,21 @@ make testnet-slim
 
 ### Deploy Testnet Validator
 
+To retrieve the PEER IP of your genesis node run that command on the cluster running
+the genesis node:
+
+```bash
+export PEER=$(kubectl get pods --namespace thorchain -l "app.kubernetes.io/name=thor-daemon,app.kubernetes.io/instance=thorchain" -o jsonpath="{.items[0].status.podIP}")
+echo $PEER
+```
+Then in the same terminal where you exporeted the PEER env variable, you can run:
+
+```bash
+make testnet-validator
+```
+
+Or to manually specify the PEER IP, run that command:
+
 ```bash
 PEER=1.2.3.4 make testnet-validator
 ```

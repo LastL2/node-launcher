@@ -1,0 +1,12 @@
+- Get the THORChain Node IP by running these commands:
+
+  export NODE_IP=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "thor-daemon.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].status.podIP}")
+  echo $NODE_IP
+
+- Visit RPC endpoint of the THORChain Node:
+
+  Mainnet:
+  curl http://$NODE_IP:27147
+
+  Testnet / Mocknet:
+  curl http://$NODE_IP:26567

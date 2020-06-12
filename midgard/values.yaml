@@ -21,6 +21,10 @@ image:
   pullPolicy: IfNotPresent
   tag: mainnet
 
+service:
+  type: ClusterIP
+  port: 8080
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -51,10 +55,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
 
 ingress:
   enabled: false
