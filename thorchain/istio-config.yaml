@@ -1,0 +1,23 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  addonComponents:
+    prometheus:
+      enabled: false
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: false
+      - name: thornode-gateway
+        enabled: true
+        k8s:
+          service:
+            ports:
+            - port: 26657
+              name: thord-rpc
+            - port: 26656
+              name: thord-p2p
+            - port: 5040
+              name: tss-p2p
+            - port: 6040
+              name: tss-api

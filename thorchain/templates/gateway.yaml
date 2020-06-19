@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: thornode-gateway
+spec:
+  servers:
+  - port:
+      number: {{ include "thorchain.rpc" . }}
+      name: thord-rpc
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: thornode
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - thornode-gateway
+  http:
+  - match:
+    - port: {{ include "thorchain.rpc" . }}
+    route:
+    - destination:
+        host: thor-daemon
+        port:
+          number: {{ include "thorchain.rpc" . }}

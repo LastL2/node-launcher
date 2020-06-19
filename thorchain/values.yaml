@@ -1,3 +1,14 @@
+global:
+  net: mainnet
+
+port:
+  mainnet:
+    rpc: 27147
+    p2p: 27146
+  testnet:
+    rpc: 26657
+    p2p: 26656
+
 thor-daemon:
   fullnameOverride: thor-daemon
 

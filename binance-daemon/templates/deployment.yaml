@@ -68,7 +68,9 @@ spec:
               path: /status
               port: rpc
           resources:
+          {{- if not (eq (include "binance-daemon.net" . ) "mocknet") }}
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
       volumes:
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
