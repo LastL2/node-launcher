@@ -1,5 +1,5 @@
 NAME?=thorchain
-ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --render-subchart-notes
+ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --render-subchart-notes --wait
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 
 define generate_mnemonic

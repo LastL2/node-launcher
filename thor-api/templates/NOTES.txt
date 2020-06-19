@@ -15,6 +15,6 @@
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "thor-api.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   echo http://$SERVICE_IP:{{ .Values.service.port }}
 {{- else if contains "ClusterIP" .Values.service.type }}
-  kubectl --namespace {{ .Release.Namespace }} port-forward service/{{ include "thor-api.fullname" . }} 8080:1317
-  curl http://localhost:8080
+  kubectl --namespace {{ .Release.Namespace }} port-forward service/{{ include "thor-api.fullname" . }} 1317
+  curl http://localhost:1317
 {{- end }}

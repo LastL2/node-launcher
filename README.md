@@ -146,7 +146,7 @@ Use kubectl port-forward to access Kibana from your local workstation:
 kubectl -n elastic-system port-forward service/elasticsearch-kb-http 5601
 ```
 
-Login as the elastic user. The password can be obtained with the following command:
+Login as the `elastic` user. The password can be obtained with the following command:
 
 ```bash
 kubectl -n elastic-system get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
@@ -185,9 +185,9 @@ local workstation:
 make grafana
 ```
 
-Open http://localhost:5601 in your browser.
+Open http://localhost:3000 in your browser.
 
-Login as the admin user. The default password should have been displayed in the previous command (`make grafana`).
+Login as the `admin` user. The default password should have been displayed in the previous command (`make grafana`).
 
 ### Destroy metrics management stack
 
