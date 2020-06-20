@@ -50,4 +50,8 @@ destroy:
 	@helm delete ${NAME} -n ${NAME}
 	@kubectl delete namespace ${NAME}
 
+status:
+	@echo Your THORNode IP is:
+	@kubectl exec -it --namespace ${NAME} deploy/thor-daemon -- curl -s http://whatismyip.akamai.com
+
 .PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy
