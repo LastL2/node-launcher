@@ -22,18 +22,18 @@ kibana:
 	@kubectl -n elastic-system port-forward service/elasticsearch-kb-http 5601
 
 metrics: repo
-	@helm upgrade --install metrics-server stable/metrics-server -n metrics --create-namespace --wait
-	@helm upgrade --install prometheus stable/prometheus-operator -n metrics --create-namespace --wait -f ./prometheus/values.yaml
+	@helm upgrade --install metrics-server stable/metrics-server -n prometheus-system --create-namespace --wait
+	@helm upgrade --install prometheus stable/prometheus-operator -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
 
 grafana:
 	@echo "User 'admin' password:"
 	@echo prom-operator
 	@echo Open your browser at http://localhost:3000
-	@kubectl -n metrics port-forward service/prometheus-grafana 3000:80
+	@kubectl -n prometheus-system port-forward service/prometheus-grafana 3000:80
 
 destroy-metrics:
-	@helm delete metrics-server -n metrics
-	@helm delete prometheus -n metrics
-	@kubectl delete namespace metrics
+	@helm delete metrics-server -n prometheus-system
+	@helm delete prometheus -n prometheus-system
+	@kubectl delete namespace prometheus-system
 
 .PHONY: helm repo logs metrics destroy-logs destroy-metrics

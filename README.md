@@ -174,7 +174,7 @@ This command will deploy the prometheus chart.
 It can take a while to deploy all the services, usually up to 5 minutes
 depending on resources running your kubernetes cluster.
 
-You can check the services being deployed in your kubernetes namespace `metrics`.
+You can check the services being deployed in your kubernetes namespace `prometheus-system`.
 
 ### Access Grafana
 
