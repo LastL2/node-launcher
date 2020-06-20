@@ -1,23 +1,13 @@
 NAME?=thorchain
-ARGS=${NAME} ./thorchain --namespace ${NAME} --set-file global.mnemonic=tmp --render-subchart-notes --wait
+ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --render-subchart-notes --wait
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 
 define generate_mnemonic
 	@docker run namick/12-words | tr -d '\n' > tmp
 endef
 
-define generate_namespace
-	@kubectl get ns ${NAME} > /dev/null || kubectl create ns ${NAME}
-endef
-
-istio:
-	$(call generate_namespace)
-	@type istioctl > /dev/null || (curl -sL https://istio.io/downloadIstioctl | sh - && mv ${HOME}/.istioctl/bin/istioctl /usr/local/bin/)
-	@istioctl install -y -w -f ./thorchain/istio-config.yaml --set components.ingressGateways[1].namespace=${NAME}
-
 mocknet:
 	$(call generate_mnemonic)
-	$(call generate_namespace)
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet},binance-daemon.service.type.rpc=NodePort,bifrost.binanceStartBlockHeight=1; rm tmp
 
 mocknet-validator:

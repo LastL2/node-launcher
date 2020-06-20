@@ -29,6 +29,10 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
 
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+
       initContainers:
       - name: init-ulimitn
         image: busybox

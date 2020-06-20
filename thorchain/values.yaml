@@ -1,8 +1,10 @@
 thor-daemon:
   fullnameOverride: thor-daemon
+  priorityClassName: high-priority
 
 thor-api:
   fullnameOverride: thor-api
+  priorityClassName: high-priority
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -13,6 +15,7 @@ thor-api:
 
 bifrost:
   fullnameOverride: bifrost
+  priorityClassName: high-priority
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

@@ -27,6 +27,10 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
 
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+
       initContainers:
       - name: init-thor
         image: busybox:1.28
