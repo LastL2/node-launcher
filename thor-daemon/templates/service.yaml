@@ -6,6 +6,9 @@ metadata:
     {{- include "thor-daemon.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "ClusterIP" }}
+  clusterIP: None
+  {{- end }}
   ports:
     - name: p2p
       port: {{ include "thor-daemon.p2p" . }}
