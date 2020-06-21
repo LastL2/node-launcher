@@ -3,7 +3,7 @@ ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file globa
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 
 define generate_mnemonic
-	@kubectl get -n ${NAME} secrets/thor-daemon --template={{.data.mnemonic}} | base64 --decode > tmp || docker run namick/12-words | tr -d '\n' > tmp
+	@(kubectl get -n ${NAME} secrets/thor-daemon && kubectl get -n ${NAME} secrets/thor-daemon --template={{.data.mnemonic}} | base64 --decode > tmp) || docker run namick/12-words | tr -d '\n' > tmp
 endef
 
 mocknet:
