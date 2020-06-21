@@ -1,6 +1,6 @@
 - Get the THORChain Node IP by running these commands:
 
-  export NODE_IP=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "thor-daemon.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].status.podIP}")
+  export NODE_IP=$(kubectl exec -it --namespace {{ .Release.Namespace }} deploy/{{ include "thor-daemon.name" . }} -- curl -s http://whatismyip.akamai.com)
   echo $NODE_IP
 
 - Visit RPC endpoint of the THORChain Node:

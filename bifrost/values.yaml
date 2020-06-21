@@ -54,7 +54,6 @@ persistence:
   # existingClaim: your-pvc
   # storageClass: "-"
   # hostPath: /host-path
-  # subPath: subpath
 
 service:
   type: ClusterIP

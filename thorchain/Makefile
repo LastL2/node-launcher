@@ -3,7 +3,7 @@ ARGS=${NAME} ./thorchain --namespace ${NAME} --create-namespace --set-file globa
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 
 define generate_mnemonic
-	@docker run namick/12-words | tr -d '\n' > tmp
+	@kubectl get -n ${NAME} secrets/thor-daemon --template={{.data.mnemonic}} | base64 --decode > tmp || docker run namick/12-words | tr -d '\n' > tmp
 endef
 
 mocknet:
@@ -15,7 +15,7 @@ mocknet-validator:
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
 		--set binance-daemon.enabled=false \
 		--set global.peer=${PEER} \
-		--set global.binanceDaemon=http://${PEER}:30656; rm tmp
+		--set global.binanceDaemon=http://${PEER}:30657; rm tmp
 
 testnet:
 	$(call generate_mnemonic)

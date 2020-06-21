@@ -56,14 +56,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "bifrost.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/scripts/bifrost.sh"]
-          args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
+          command: ["sh", "-c", "EXTERNAL_IP=$(curl -s http://whatismyip.akamai.com) /scripts/bifrost.sh bifrost -c /etc/bifrost/config.json -l debug"]
           volumeMounts:
             - mountPath: /var/data/bifrost
               name: data
-            {{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
-            {{- end }}
+              subPath: data
+            - mountPath: /root/.thorcli
+              name: data
+              subPath: thorcli
+            - mountPath: /etc/bifrost
+              name: data
+              subPath: etc
           env:
             - name: NET
               value: {{ include "bifrost.net" . }}

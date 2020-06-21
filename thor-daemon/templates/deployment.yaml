@@ -122,12 +122,12 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             httpGet:
               path: /status
               port: rpc
           readinessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             httpGet:
               path: /status
               port: rpc

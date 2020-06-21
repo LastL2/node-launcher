@@ -10,6 +10,9 @@ spec:
     - name: rpc
       port: {{ include "binance-daemon.rpc" . }}
       targetPort: rpc
+      {{- if eq "NodePort" .Values.service.type.rpc }}
+      nodePort: 30657
+      {{- end }}
       protocol: TCP
     - name: prometheus
       port: 26660
