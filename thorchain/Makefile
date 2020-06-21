@@ -51,7 +51,11 @@ destroy:
 	@kubectl delete namespace ${NAME}
 
 status:
-	@echo Your THORNode IP is:
-	@kubectl exec -it --namespace ${NAME} deploy/thor-daemon -- curl -s http://whatismyip.akamai.com
+	$(eval NODE_IP=$(shell kubectl exec --namespace ${NAME} deploy/thor-daemon -- curl -s http://whatismyip.akamai.com))
+	$(eval NODE_ADDRESS=$(shell kubectl exec --namespace ${NAME} deploy/thor-daemon -- ls /root/.thorcli/keyring-THORChain | grep address | awk -F '.' '{print $$1}'))
+	$(eval VAULT_ADDRESS=$(shell curl -s ${NODE_IP}:1317/thorchain/pool_addresses | jq -r ".current[0].address"))
+	@echo Your THORNode IP: ${NODE_IP}
+	@echo Your THORNode address: ${NODE_ADDRESS}
+	@echo Vault BNB bond address: ${VAULT_ADDRESS}
 
 .PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy
