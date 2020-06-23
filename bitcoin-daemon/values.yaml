@@ -47,12 +47,12 @@ securityContext: {}
 service:
   type: ClusterIP
   port:
-    p2p: 8333 # mainnet
+    # p2p: 8333 # mainnet
     # p2p: 18333 # testnet
-    # p2p: 18444 # regtest
-    rpc: 8332 # mainnet
+    p2p: 18444 # regtest
+    # rpc: 8332 # mainnet
     # rpc: 18332 # testnet
-    # rpc: 18443 # regtest
+    rpc: 18443 # regtest
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

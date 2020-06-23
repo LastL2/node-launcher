@@ -4,7 +4,7 @@ BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 MNEMONIC_IMAGE=registry.gitlab.com/thorchain/thornode
 
 define generate_mnemonic
-	kubectl run --attach --rm mnemonic --image=${MNEMONIC_IMAGE} --restart=Never --command -- generate | grep MASTER_MNEMONIC= | awk -F= '{print $$NF}'
+	kubectl run -n default --attach --rm mnemonic --image=${MNEMONIC_IMAGE} --restart=Never --command -- generate | grep MASTER_MNEMONIC= | awk -F= '{print $$NF}'
 endef
 
 define node_attach
@@ -15,7 +15,7 @@ mnemonic:
 	@$(call generate_mnemonic)
 
 check-mnemonic:
-	@(kubectl get -n ${NAME} secrets/thor-daemon 2> /dev/null && kubectl get -n ${NAME} secrets/thor-daemon --template={{.data.mnemonic}} | base64 --decode)\
+	@(kubectl get -n ${NAME} secrets/thor-daemon &> /dev/null && kubectl get -n ${NAME} secrets/thor-daemon --template={{.data.mnemonic}} | base64 --decode > tmp)\
 		|| $(call generate_mnemonic) > tmp
 
 mocknet: check-mnemonic
