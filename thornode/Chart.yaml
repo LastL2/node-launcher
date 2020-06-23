@@ -1,6 +1,6 @@
 apiVersion: v2
-name: thorchain
-description: Deploys a THORChain stack with options to enable or disable some services
+name: thornode
+description: Deploys a THORNode stack with options to enable or disable some services
 type: application
 version: 0.1.0
 

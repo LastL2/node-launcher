@@ -13,7 +13,7 @@ Helm Charts
 ****
 ========
 
-Charts to deploy THORChain stack and tools.
+Charts to deploy THORNode stack and tools.
 It is recommended to use the make commands available in this repo
 to start the charts with predefined configuration for most environments.
 
@@ -31,12 +31,12 @@ Install Helm 3 if not already available on your current machine:
 make helm
 ```
 
-## Deploy THORChain
+## Deploy THORNode
 
-You have multiple commands available to deploy different configurations of THORChain.
+You have multiple commands available to deploy different configurations of THORNode.
 You can deploy mainnet / testnet / mocknet.
-The commands deploy the umbrella chart `thorchain` in the background in the kubernetes
-namespace `thorchain` by default.
+The commands deploy the umbrella chart `thornode` in the background in the kubernetes
+namespace `thornode` by default.
 
 ### Deploy Mainnet Genesis
 
@@ -70,7 +70,7 @@ To retrieve the PEER IP of your genesis node run that command on the cluster run
 the genesis node:
 
 ```bash
-export PEER=$(kubectl get pods --namespace thorchain -l "app.kubernetes.io/name=thor-daemon,app.kubernetes.io/instance=thorchain" -o jsonpath="{.items[0].status.podIP}")
+export PEER=$(kubectl get pods --namespace thornode -l "app.kubernetes.io/name=thor-daemon,app.kubernetes.io/instance=thornode" -o jsonpath="{.items[0].status.podIP}")
 echo $PEER
 ```
 Then in the same terminal where you previously exported the PEER env variable, you can run:
@@ -91,7 +91,7 @@ Slim version validator:
 PEER=1.2.3.4 make testnet-slim-validator
 ```
 
-## Destroy THORChain Node
+## Destroy THORNode
 
 To fully destroy the running node and all services, run that command:
 
@@ -107,7 +107,7 @@ within an elasticsearch database and available through the UI Kibana.
 You can deploy the log management automatically using the command below:
 
 ```bash
-make logs
+make install-logs
 ```
 
 This command will deploy the elastic-operator chart.
@@ -167,7 +167,7 @@ and your running services.
 You can deploy the metrics management automatically using the command below:
 
 ```bash
-make metrics
+make install-metrics
 ```
 
 This command will deploy the prometheus chart.
@@ -195,19 +195,50 @@ Login as the `admin` user. The default password should have been displayed in th
 make destroy-metrics
 ```
 
+## Deploy Kubernetes Dashboard
+
+You can also deploy the Kubernetes dashboard to monitor your cluster resources.
+
+```bash
+make install-dashboard
+```
+
+This command will deploy the Kubernetes dashboard chart.
+It can take a while to deploy all the services, usually up to 5 minutes
+depending on resources running your kubernetes cluster.
+
+
+### Access Dashboard
+
+We have created a make command to automate this task to access the Dashboard from your
+local workstation:
+
+```bash
+make dashboard
+```
+
+Open http://localhost:8000 in your browser.
+
+
+### Destroy Kubernetes dashboard
+
+```bash
+make destroy-dashboard
+```
+
 
 ## Charts available:
 
-### THORChain full stack umbrella chart
+### THORNode full stack umbrella chart
 
-- thorchain: Umbrella chart packaging all services needed to run
-a fullnode or validator THORChain node.
+- thornode: Umbrella chart packaging all services needed to run
+a fullnode or validator THORNode.
 
-This should be the only chart used to run THORChain stack unless
+This should be the only chart used to run THORNode stack unless
 you know what you are doing and want to run each chart separately (not recommended).
 
 
-### THORChain services:
+### THORNode services:
 
 - thor-daemon: THORNode daemon
 - thor-api: THORNode API
