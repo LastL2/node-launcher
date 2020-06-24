@@ -53,12 +53,12 @@ securityContext: {}
   # runAsUser: 1000
 
 resources:
-  limits:
-    cpu: 2
-    memory: 14Gi
   requests:
     cpu: 2
-    memory: 14Gi
+    memory: 12Gi
+  limits:
+    cpu: 2
+    memory: 16Gi
 
 nodeSelector: {}
 
