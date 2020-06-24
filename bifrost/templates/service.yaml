@@ -19,7 +19,7 @@ spec:
       protocol: TCP
       name: p2p
     - name: prometheus
-      port: 26660
+      port: 9000
       targetPort: prometheus
       protocol: TCP
   selector:

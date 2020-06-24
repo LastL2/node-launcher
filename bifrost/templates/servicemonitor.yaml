@@ -1,15 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ .Release.Name }}-{{ include "thor-daemon.name" . }}
+  name: {{ .Release.Name }}-{{ include "bifrost.name" . }}
   namespace: prometheus-system
   labels:
-    {{- include "thor-daemon.labels" . | nindent 4 }}
+    {{- include "bifrost.labels" . | nindent 4 }}
     release: prometheus
 spec:
   selector:
     matchLabels:
-      {{- include "thor-daemon.selectorLabels" . | nindent 6 }}
+      {{- include "bifrost.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
