@@ -122,12 +122,20 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
-            initialDelaySeconds: 60
+            {{- if default .Values.peer .Values.global.peer }}
+            initialDelaySeconds: 120
+            {{- else }}
+            initialDelaySeconds: 30
+            {{- end }}
             httpGet:
               path: /status
               port: rpc
           readinessProbe:
-            initialDelaySeconds: 60
+            {{- if default .Values.peer .Values.global.peer }}
+            initialDelaySeconds: 120
+            {{- else }}
+            initialDelaySeconds: 30
+            {{- end }}
             httpGet:
               path: /status
               port: rpc
