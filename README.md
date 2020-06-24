@@ -31,6 +31,22 @@ Install Helm 3 if not already available on your current machine:
 make helm
 ```
 
+## Deploy tools
+
+To deploy all tools, metrics, logs management, Kubernetes Dashboard, run the command below.
+
+```bash
+make tools
+```
+
+To destroy all those resources run the command below.
+
+```bash
+make destroy-tools
+```
+
+You can install those tools separately using the sections below.
+
 ## Deploy THORNode
 
 You have multiple commands available to deploy different configurations of THORNode.
@@ -89,6 +105,15 @@ Slim version validator:
 
 ```bash
 PEER=1.2.3.4 make testnet-slim-validator
+```
+
+## Status THORNode
+
+To get information about your node on how to connect to services or its IP, run the command below.
+You will also get your node address and the vault address where you will need to send your bond.
+
+```bash
+make status
 ```
 
 ## Destroy THORNode
@@ -188,6 +213,17 @@ make grafana
 Open http://localhost:3000 in your browser.
 
 Login as the `admin` user. The default password should have been displayed in the previous command (`make grafana`).
+
+### Access Prometheus admin UI
+
+We have created a make command to automate this task to access Prometheus from your
+local workstation:
+
+```bash
+make prometheus
+```
+
+Open http://localhost:9090 in your browser.
 
 ### Destroy metrics management stack
 

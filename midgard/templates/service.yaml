@@ -11,6 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+      {{- if eq "NodePort" .Values.service.type }}
+      nodePort: 30080
+      {{- end }}
   selector:
     {{- include "midgard.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: midgard

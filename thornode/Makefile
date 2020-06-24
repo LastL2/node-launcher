@@ -63,10 +63,18 @@ destroy:
 	@kubectl delete namespace ${NAME}
 
 status:
-	@echo Your THORNode IP: $(shell $(call node_attach,curl -s http://whatismyip.akamai.com))
+	@echo Your THORNode IP: $(shell $(call node_attach,curl -s http://whatismyip.akamai.com) > .node_ip && cat .node_ip)
+	@echo Access THORNode API: http://$(shell cat .node_ip):1317
+	@echo Access THORNode RPC: http://$(shell cat .node_ip):$(shell kubectl get -n ${NAME} -o jsonpath="{.spec.ports[?(@.name=='rpc')].port}" services thor-daemon)
+	@echo Access Midgard API: http://$(shell cat .node_ip):30080
 	@echo Your THORNode version: $(shell $(call node_attach,sh -c "source /scripts/core.sh;fetch_version"))
 	@echo Your THORNode address: $(shell $(call node_attach,sh -c "echo \$$SIGNER_PASSWD | thorcli keys show \$$SIGNER_NAME -a"))
 	@echo Vault BNB Bond address: $(shell $(call node_attach,curl -s localhost:1317/thorchain/pool_addresses | jq -r ".current[0].address"))
+	@rm .node_ip
+
+midgard:
+	@echo Open your browser at http://localhost:8080
+	@kubectl -n ${NAME} port-forward service/midgard 8080
 
 shell:
 	@$(call node_attach,sh)
@@ -77,4 +85,4 @@ set-node-keys:
 set-ip-address:
 	@$(call node_attach,sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost")
 
-.PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy
+.PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy midgard status shell mnemonic check-mnemonic set-node-keys set-ip-address

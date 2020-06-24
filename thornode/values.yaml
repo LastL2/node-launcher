@@ -26,12 +26,15 @@ bifrost:
 
 midgard:
   fullnameOverride: midgard
+  service:
+    type: NodePort
 
 binance-daemon:
   fullnameOverride: binance-daemon
 
 bitcoin-daemon:
   enabled: false
+  net: mocknet
   fullnameOverride: bitcoin-daemon
 
 ethereum-daemon:
