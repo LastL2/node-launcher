@@ -12,7 +12,7 @@ signer:
 # use in multi nodes envs
 peer:
 
-hostNetwork: true
+hostNetwork: false
 
 thorApi: thor-api:1317
 

@@ -17,7 +17,7 @@ debug: false
 
 replicaCount: 1
 
-hostNetwork: true
+hostNetwork: false
 
 strategyType: Recreate
 

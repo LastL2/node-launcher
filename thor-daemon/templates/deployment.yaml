@@ -35,8 +35,12 @@ spec:
 
       initContainers:
       - name: init-external-ip
-        image: gcr.io/cloud-builders/kubectl:latest
+        image: alpine/k8s:1.18.2
+        {{- if .Values.global.thornodeGateway }}
+        command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.thornodeGateway }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
+        {{- else }}
         command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "thor-daemon.fullname" . }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
+        {{- end }}
         volumeMounts:
         - name: scripts
           mountPath: /scripts

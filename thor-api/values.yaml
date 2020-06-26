@@ -12,7 +12,7 @@ thorDaemon:
   mainnet: thor-daemon:27147
   testnet: thor-daemon:26657
 
-hostNetwork: true
+hostNetwork: false
 
 replicaCount: 1
 

@@ -13,6 +13,8 @@ data:
     # If ClusterIP return service IP
     # If NodePort returns node IP
 
+    apk add bind-tools
+
     HOST_NETWORK=$1
     SERVICE=$2
     CONFIGMAP=$3
@@ -33,7 +35,7 @@ data:
           external_ip=$(kubectl get svc $SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           if [ -z $external_ip ]; then
             hostname=$(kubectl get svc $SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-            [ ! -z $hostname ] && external_ip=dig +s $hostname | sort | head -1
+            [ ! -z $hostname ] && external_ip=$(dig +short $hostname | sort | head -1)
           fi
           [ -z $external_ip ] && sleep 10
         done
