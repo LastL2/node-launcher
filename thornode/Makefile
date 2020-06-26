@@ -68,7 +68,7 @@ destroy:
 	@kubectl delete namespace ${NAME}
 
 status:
-	@echo Your THORNode IP: $(shell $(call node_attach,curl -s http://whatismyip.akamai.com) > .node_ip && cat .node_ip)
+	@echo Your THORNode IP: $(shell kubectl get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP} > .node_ip && cat .node_ip)
 	@echo Access THORNode API: http://$(shell cat .node_ip):1317
 	@echo Access THORNode RPC: http://$(shell cat .node_ip):$(shell kubectl get -n ${NAME} -o jsonpath="{.spec.ports[?(@.name=='rpc')].port}" services thor-daemon)
 	@echo Access Midgard API: http://$(shell cat .node_ip):30080
