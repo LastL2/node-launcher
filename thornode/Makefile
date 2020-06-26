@@ -18,6 +18,11 @@ check-mnemonic:
 	@(kubectl get -n ${NAME} secrets/thor-daemon &> /dev/null && kubectl get -n ${NAME} secrets/thor-daemon --template={{.data.mnemonic}} | base64 --decode > tmp)\
 		|| $(call generate_mnemonic) > tmp
 
+install-istio:
+	@type istioctl > /dev/null ||\
+		(curl -sL https://istio.io/downloadIstioctl | sh - && mv ${HOME}/.istioctl/bin/istioctl /usr/local/bin/ &&\
+		istioctl install -y -w --set profile=minimal)
+
 mocknet: check-mnemonic
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet},binance-daemon.service.type.rpc=NodePort,bifrost.binanceStartBlockHeight=1
 	@rm tmp
