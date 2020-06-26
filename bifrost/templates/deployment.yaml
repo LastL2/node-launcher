@@ -34,6 +34,12 @@ spec:
       {{- end }}
 
       initContainers:
+      - name: init-external-ip
+        image: gcr.io/cloud-builders/kubectl:latest
+        command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "thor-daemon.fullname" . }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
       - name: init-thorchain
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done']
@@ -56,7 +62,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "bifrost.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["sh", "-c", "EXTERNAL_IP=$(curl -s http://whatismyip.akamai.com) /scripts/bifrost.sh bifrost -c /etc/bifrost/config.json -l debug"]
+          command: ["/scripts/bifrost.sh"]
+          args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
           volumeMounts:
             - mountPath: /var/data/bifrost
               name: data
@@ -68,6 +75,11 @@ spec:
               name: data
               subPath: etc
           env:
+            - name: EXTERNAL_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "bifrost.fullname" . }}-external-ip
+                  key: externalIP
             - name: NET
               value: {{ include "bifrost.net" . }}
             - name: CHAIN_API
@@ -120,7 +132,9 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-
+      - name: scripts
+        configMap:
+          name: {{ include "bifrost.fullname" . }}-scripts
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

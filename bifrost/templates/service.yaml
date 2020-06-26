@@ -6,9 +6,6 @@ metadata:
     {{- include "bifrost.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
-  {{- if eq .Values.service.type "ClusterIP" }}
-  clusterIP: None
-  {{- end }}
   ports:
     - port: {{ .Values.service.port.http }}
       targetPort: http

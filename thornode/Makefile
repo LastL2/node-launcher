@@ -18,6 +18,11 @@ check-mnemonic:
 	@(kubectl get -n ${NAME} secrets/thor-daemon &> /dev/null && kubectl get -n ${NAME} secrets/thor-daemon --template={{.data.mnemonic}} | base64 --decode > tmp)\
 		|| $(call generate_mnemonic) > tmp
 
+install-istio:
+	@type istioctl > /dev/null ||\
+		(curl -sL https://istio.io/downloadIstioctl | sh - && mv ${HOME}/.istioctl/bin/istioctl /usr/local/bin/ &&\
+		istioctl install -y -w --set profile=minimal)
+
 mocknet: check-mnemonic
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet},binance-daemon.service.type.rpc=NodePort,bifrost.binanceStartBlockHeight=1
 	@rm tmp
@@ -63,7 +68,7 @@ destroy:
 	@kubectl delete namespace ${NAME}
 
 status:
-	@echo Your THORNode IP: $(shell $(call node_attach,curl -s http://whatismyip.akamai.com) > .node_ip && cat .node_ip)
+	@echo Your THORNode IP: $(shell kubectl get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP} > .node_ip && cat .node_ip)
 	@echo Access THORNode API: http://$(shell cat .node_ip):1317
 	@echo Access THORNode RPC: http://$(shell cat .node_ip):$(shell kubectl get -n ${NAME} -o jsonpath="{.spec.ports[?(@.name=='rpc')].port}" services thor-daemon)
 	@echo Access Midgard API: http://$(shell cat .node_ip):30080

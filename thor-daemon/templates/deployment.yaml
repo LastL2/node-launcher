@@ -34,9 +34,15 @@ spec:
       {{- end }}
 
       initContainers:
+      - name: init-external-ip
+        image: gcr.io/cloud-builders/kubectl:latest
+        command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "thor-daemon.fullname" . }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
       - name: init-ulimitn
         image: busybox
-        command: ["sh", "-c", "ulimit -n 65536"]
+        command: ['sh', '-c', 'ulimit -n 65536']
         securityContext:
           privileged: true
       {{- if default .Values.peer .Values.global.peer }}
@@ -78,6 +84,11 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
             {{- end }}
           env:
+            - name: EXTERNAL_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "thor-daemon.fullname" . }}-external-ip
+                  key: externalIP
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
             - name: PEER_API
@@ -153,6 +164,9 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ include "thor-daemon.fullname" . }}-scripts
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
