@@ -18,6 +18,12 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+
       serviceAccountName: {{ include "ethereum-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -35,29 +41,34 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.eth.repository }}:{{ .Values.image.eth.tag }}"
           imagePullPolicy: {{ .Values.image.eth.pullPolicy }}
+          {{- if eq .Values.net "mocknet" }}
           command: [ "sh", "-c", "apk add curl && /scripts/ethereum-mock.sh" ]
+          {{- else }}
+          command: [ "sh", "-c", 'geth --rinkeby --syncmode light -rpc --rpcaddr 0.0.0.0 --rpcport 8545 -nousb --rpcapi "eth,net,web3,miner,personal,txpool,debug" --rpccorsdomain "*" -nodiscover --rpcvhosts="*"' ]
+          {{- end }}
           volumeMounts:
             - name: scripts
               mountPath: /scripts
+            - name: data
+              mountPath: /root
           ports:
             - name: rpc
               containerPort: 8545
               protocol: TCP
-          livenessProbe:
-            exec:
-              command:
-                - curl
-                - -X POST
-                - http://localhost:8545
-          readinessProbe:
-            exec:
-              command:
-                - curl
-                - -X POST
-                - http://localhost:8545
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+        - name: data
+        {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "ethereum-daemon.fullname" . }}{{- end }}
+        {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+          hostPath:
+            path: {{ .Values.persistence.hostPath }}
+            type: DirectoryOrCreate
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
         - name: scripts
           emptyDir: {}
       {{- with .Values.nodeSelector }}

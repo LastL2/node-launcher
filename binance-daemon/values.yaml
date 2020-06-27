@@ -17,15 +17,13 @@ nameOverride: ""
 fullnameOverride: ""
 
 service:
-  type:
-    p2p: NodePort
-    rpc: ClusterIP
+  type: ClusterIP
   port:
     testnet:
-      p2p: 30656
+      p2p: 26656
       rpc: 26657
     mainnet:
-      p2p: 30146
+      p2p: 27146
       rpc: 27147
 
 persistence:

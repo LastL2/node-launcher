@@ -1,5 +1,5 @@
 NAME?=thornode
-ARGS=${NAME} ./thornode --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --render-subchart-notes --wait
+ARGS=${NAME} ./thornode --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --render-subchart-notes --wait --timeout 10m
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 MNEMONIC_IMAGE=registry.gitlab.com/thorchain/thornode
 
@@ -25,7 +25,9 @@ install-istio:
 
 mocknet: install-istio check-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet},binance-daemon.service.type.rpc=NodePort,bifrost.binanceStartBlockHeight=1
+	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
+		--set binance-daemon.service.type=LoadBalancer \
+		--set bifrost.binanceStartBlockHeight=1
 	@rm tmp
 
 mocknet-validator: install-istio check-mnemonic
@@ -33,7 +35,7 @@ mocknet-validator: install-istio check-mnemonic
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
 		--set binance-daemon.enabled=false \
 		--set global.peer=${PEER} \
-		--set global.binanceDaemon=http://${PEER}:30657
+		--set global.binanceDaemon=${BINANCE}
 	@rm tmp
 
 testnet: install-istio check-mnemonic
