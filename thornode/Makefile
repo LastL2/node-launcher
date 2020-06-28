@@ -1,5 +1,5 @@
 NAME?=thornode
-ARGS=${NAME} ./thornode --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --render-subchart-notes --wait --timeout 10m
+ARGS=${NAME} ./thornode --namespace ${NAME} --create-namespace --set-file global.mnemonic=tmp --wait --timeout 10m
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 MNEMONIC_IMAGE=registry.gitlab.com/thorchain/thornode
 
@@ -9,6 +9,17 @@ endef
 
 define node_attach
 	kubectl exec -it --namespace ${NAME} deploy/thor-daemon -- ${1}
+endef
+
+define node_status
+	echo Your THORNode IP: $(shell kubectl get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP} > .node_ip && cat .node_ip)
+	echo Access THORNode API: http://$(shell cat .node_ip):1317
+	echo Access THORNode RPC: http://$(shell cat .node_ip):$(shell kubectl get -n ${NAME} -o jsonpath="{.spec.ports[?(@.name=='rpc')].port}" services thor-daemon)
+	echo Access Midgard API: http://$(shell cat .node_ip):8080
+	echo Your THORNode version: $(shell $(call node_attach,sh -c "source /scripts/core.sh;fetch_version"))
+	echo Your THORNode address: $(shell $(call node_attach,sh -c "echo \$$SIGNER_PASSWD | thorcli keys show \$$SIGNER_NAME -a"))
+	echo Vault BNB Bond address: $(shell $(call node_attach,curl -s $(shell cat .node_ip):1317/thorchain/pool_addresses | jq -r ".current[0].address"))
+	rm .node_ip
 endef
 
 mnemonic:
@@ -29,6 +40,7 @@ mocknet: install-istio check-mnemonic
 		--set binance-daemon.service.type=LoadBalancer \
 		--set bifrost.binanceStartBlockHeight=1
 	@rm tmp
+	@$(call node_status)
 
 mocknet-validator: install-istio check-mnemonic
 	@echo Installing THORNode
@@ -37,16 +49,19 @@ mocknet-validator: install-istio check-mnemonic
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE}
 	@rm tmp
+	@$(call node_status)
 
 testnet: install-istio check-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet}
 	@rm tmp
+	@$(call node_status)
 
 testnet-validator: install-istio check-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet} --set global.peer=${PEER}
 	@rm tmp
+	@$(call node_status)
 
 testnet-slim: install-istio check-mnemonic
 	@echo Installing THORNode
@@ -54,6 +69,7 @@ testnet-slim: install-istio check-mnemonic
 		--set binance-daemon.enabled=false \
 		--set global.binanceDaemon=${BINANCE_TESTNET}
 	@rm tmp
+	@$(call node_status)
 
 testnet-slim-validator: install-istio check-mnemonic
 	@echo Installing THORNode
@@ -62,16 +78,19 @@ testnet-slim-validator: install-istio check-mnemonic
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE_TESTNET}
 	@rm tmp
+	@$(call node_status)
 
 mainnet: install-istio check-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS}
 	@rm tmp
+	@$(call node_status)
 
 mainnet-validator: install-istio check-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.peer=${PEER}
 	@rm tmp
+	@$(call node_status)
 
 destroy:
 	@echo Deleting THORNode
@@ -79,14 +98,7 @@ destroy:
 	@kubectl delete namespace ${NAME}
 
 status:
-	@echo Your THORNode IP: $(shell kubectl get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP} > .node_ip && cat .node_ip)
-	@echo Access THORNode API: http://$(shell cat .node_ip):1317
-	@echo Access THORNode RPC: http://$(shell cat .node_ip):$(shell kubectl get -n ${NAME} -o jsonpath="{.spec.ports[?(@.name=='rpc')].port}" services thor-daemon)
-	@echo Access Midgard API: http://$(shell cat .node_ip):8080
-	@echo Your THORNode version: $(shell $(call node_attach,sh -c "source /scripts/core.sh;fetch_version"))
-	@echo Your THORNode address: $(shell $(call node_attach,sh -c "echo \$$SIGNER_PASSWD | thorcli keys show \$$SIGNER_NAME -a"))
-	@echo Vault BNB Bond address: $(shell $(call node_attach,curl -s $(shell cat .node_ip):1317/thorchain/pool_addresses | jq -r ".current[0].address"))
-	@rm .node_ip
+	@$(call node_status)
 
 midgard:
 	@echo Open your browser at http://localhost:8080
