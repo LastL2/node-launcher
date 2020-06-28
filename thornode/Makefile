@@ -74,13 +74,14 @@ destroy:
 status:
 	@echo THORNode Status:
 	@echo IP: $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP} > .node_ip && cat .node_ip)
-	@echo Address: $(shell $(call node_attach,sh -c "echo \$$SIGNER_PASSWD | thorcli keys show \$$SIGNER_NAME -a"))
+	@echo Address: $(shell $(call node_attach,sh -c "echo \$$SIGNER_PASSWD | thorcli keys show \$$SIGNER_NAME -a") > .node_address && cat .node_address)
 	@echo Version: $(shell $(call node_attach,sh -c "source /scripts/core.sh;fetch_version"))
 	@echo API: http://$(shell cat .node_ip):1317
 	@echo RPC: http://$(shell cat .node_ip):$(shell kubectl get -n ${NAME} -o jsonpath="{.spec.ports[?(@.name=='rpc')].port}" services thor-daemon)
 	@echo Midgard API: http://$(shell cat .node_ip):8080
+	@echo Preflight: $(shell curl -s $(shell cat .node_ip):1317/thorchain/nodeaccount/$(shell cat .node_address)/preflight)
 	@echo Vault BNB Bond address: $(shell curl -s $(shell cat .node_ip):1317/thorchain/pool_addresses | jq -r ".current[0].address")
-	@rm .node_ip
+	@rm .node_ip .node_address
 
 midgard:
 	@echo Open your browser at http://localhost:8080
