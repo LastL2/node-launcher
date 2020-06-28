@@ -19,6 +19,7 @@ install-logs: repos
 	@kubectl wait --for=condition=Ready --all pods -n elastic-system --timeout=5m
 
 destroy-logs:
+	@echo Deleting Logs Management
 	@helm delete elastic -n elastic-system
 	@kubectl delete namespace elastic-system
 
@@ -28,6 +29,7 @@ install-metrics: repos
 	@helm upgrade --install prometheus stable/prometheus-operator -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
 
 destroy-metrics:
+	@echo Deleting Metrics
 	@helm delete metrics-server -n prometheus-system
 	@helm delete prometheus -n prometheus-system
 	@kubectl delete namespace prometheus-system
@@ -38,6 +40,7 @@ install-dashboard: repos
 	@kubectl apply -f ./kubernetes-dashboard/dashboard-admin.yaml
 
 destroy-dashboard:
+	@echo Deleting Kubernetes Dashboard
 	@helm delete kubernetes-dashboard -n kube-system
 
 kibana:

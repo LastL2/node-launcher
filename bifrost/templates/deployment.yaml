@@ -104,11 +104,11 @@ spec:
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWORD
               value: {{ .Values.signer.password }}
-            {{- if default .Values.signer.mnemonic .Values.global.mnemonic }}
+            {{- if default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
             - name: SIGNER_SEED_PHRASE
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "bifrost.fullname" . }}
+                  name: {{ default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
                   key: mnemonic
             {{- end }}
           ports:

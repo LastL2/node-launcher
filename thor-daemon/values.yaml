@@ -7,7 +7,7 @@ net: mainnet
 signer:
   name: thorchain
   password: password
-  mnemonic:
+  mnemonicSecret: ""
 
 peer:
 peerApi:
