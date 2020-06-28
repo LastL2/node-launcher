@@ -17,11 +17,16 @@ Charts to deploy THORNode stack and tools.
 It is recommended to use the make commands available in this repo
 to start the charts with predefined configuration for most environments.
 
+Once you have your THORNode up and running, please follow instructions [here](https://gitlab.com/thorchain/thornode) for the next steps.
+
 ## Requirements
  *  Running Kubernetes cluster
  *  Kubectl configured, ready and connected to running cluster
  *  Helm 3 (version >=3.2, can be installed using make command below)
 
+## Running Kubernetes cluster
+
+To get a Kubernetes cluster running, you can use the Terraform scripts [here](https://gitlab.com/thorchain/devops/terraform-scripts).
 
 ## Install Helm 3
 
