@@ -36,7 +36,7 @@ spec:
           image: {{ include "binance-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if not (eq (include "binance-daemon.net" . ) "mocknet") }}
-          command: ["bash", "/scripts/entrypoint.sh"]
+          command: ["/scripts/entrypoint.sh"]
           {{- end }}
           volumeMounts:
             - name: data
@@ -85,6 +85,7 @@ spec:
       - name: scripts
         configMap:
           name: {{ include "binance-daemon.fullname" . }}-scripts
+          defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

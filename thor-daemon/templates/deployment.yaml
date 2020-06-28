@@ -37,9 +37,9 @@ spec:
       - name: init-external-ip
         image: alpine/k8s:1.18.2
         {{- if .Values.global.thornodeGateway }}
-        command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.thornodeGateway }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.thornodeGateway }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
         {{- else }}
-        command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "thor-daemon.fullname" . }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "thor-daemon.fullname" . }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
         {{- end }}
         volumeMounts:
         - name: scripts
@@ -64,62 +64,72 @@ spec:
         image: appropriate/curl
         command: ['sh', '-c', "until curl -s {{ default .Values.binanceDaemon .Values.global.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
       {{- end }}
+      - name: init-thor-daemon
+        image: {{ include "thor-daemon.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if default .Values.peer .Values.global.peer }}
+        command: ["/scripts/validator.sh"]
+        {{- else }}
+        command: ["/scripts/genesis.sh"]
+        {{- end }}
+        volumeMounts:
+          - mountPath: /root/
+            name: data
+        env:
+          - name: EXTERNAL_IP
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "thor-daemon.fullname" . }}-external-ip
+                key: externalIP
+          - name: PEER
+            value: {{ default .Values.peer .Values.global.peer }}
+          - name: PEER_API
+            value: {{ .Values.peerApi }}
+          - name: BINANCE
+            value: {{ default .Values.binanceDaemon .Values.global.binanceDaemon }}
+          - name: SEED
+            valueFrom:
+              fieldRef:
+                {{- if .Values.hostNetwork }}
+                fieldPath: spec.nodeName
+                {{- else}}
+                fieldPath: metadata.name
+                {{- end }}
+          - name: NET
+            value: {{ include "thor-daemon.net" . }}
+          - name: SIGNER_NAME
+            value: {{ .Values.signer.name }}
+          - name: SIGNER_PASSWD
+            value: {{ .Values.signer.password }}
+          {{- if default .Values.signer.mnemonic .Values.global.mnemonic }}
+          - name: SIGNER_SEED_PHRASE
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "thor-daemon.fullname" . }}
+                key: mnemonic
+          {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "thor-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if default .Values.peer .Values.global.peer }}
-          command: ["/scripts/validator.sh"]
-          {{- else }}
-          command: ["/scripts/genesis.sh"]
-          {{- end }}
-
-          {{- if .Values.debug }}
-          args: ["thord", "start", "--trace", "--log_level", "*:debug", "--rpc.laddr", 'tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}']
-          {{- else }}
-          args: ["thord", "start", "--log_level", "main:info,state:debug,*:error", "--rpc.laddr", 'tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}']
-          {{- end }}
+          command: ["/entrypoint.sh"]
           volumeMounts:
-            - mountPath: /root/
-              name: data
-            {{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
-            {{- end }}
+            - name: data
+              mountPath: /root/
+            - name: scripts
+              mountPath: /entrypoint.sh
+              subPath: entrypoint.sh
           env:
-            - name: EXTERNAL_IP
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "thor-daemon.fullname" . }}-external-ip
-                  key: externalIP
-            - name: PEER
-              value: {{ default .Values.peer .Values.global.peer }}
-            - name: PEER_API
-              value: {{ .Values.peerApi }}
-            - name: BINANCE
-              value: {{ default .Values.binanceDaemon .Values.global.binanceDaemon }}
-            - name: SEED
-              valueFrom:
-                fieldRef:
-                  {{- if .Values.hostNetwork }}
-                  fieldPath: spec.nodeName
-                  {{- else}}
-                  fieldPath: metadata.name
-                  {{- end }}
+            - name: DEBUG
+              value: "{{ .Values.debug }}"
             - name: NET
               value: {{ include "thor-daemon.net" . }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWD
               value: {{ .Values.signer.password }}
-            {{- if default .Values.signer.mnemonic .Values.global.mnemonic }}
-            - name: SIGNER_SEED_PHRASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "thor-daemon.fullname" . }}
-                  key: mnemonic
-            {{- end }}
           ports:
             - name: p2p
               containerPort: {{ include "thor-daemon.p2p" . }}
@@ -130,27 +140,11 @@ spec:
             - name: prometheus
               containerPort: 26660
               protocol: TCP
-          startupProbe:
-            httpGet:
-              path: /status
-              port: rpc
-            failureThreshold: 30
-            periodSeconds: 10
           livenessProbe:
-            {{- if default .Values.peer .Values.global.peer }}
-            initialDelaySeconds: 120
-            {{- else }}
-            initialDelaySeconds: 30
-            {{- end }}
             httpGet:
               path: /status
               port: rpc
           readinessProbe:
-            {{- if default .Values.peer .Values.global.peer }}
-            initialDelaySeconds: 120
-            {{- else }}
-            initialDelaySeconds: 30
-            {{- end }}
             httpGet:
               path: /status
               port: rpc
@@ -171,6 +165,7 @@ spec:
       - name: scripts
         configMap:
           name: {{ include "thor-daemon.fullname" . }}-scripts
+          defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

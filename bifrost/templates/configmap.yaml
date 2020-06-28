@@ -46,4 +46,4 @@ data:
       fi
     fi
 
-    kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run -o yaml | kubectl apply -f -
+    kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -

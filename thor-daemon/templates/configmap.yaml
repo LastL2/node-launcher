@@ -3,6 +3,13 @@ kind: ConfigMap
 metadata:
   name: {{ include "thor-daemon.fullname" . }}-scripts
 data:
+  entrypoint.sh: |
+    #!/bin/sh
+
+    ARGS="--rpc.laddr tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}"
+    [ "$DEBUG" = "true" ] && ARGS="$ARGS --trace --log_level *:debug" || ARGS="$ARGS --log_level main:info,state:debug,*:error"
+    printf "$SIGNER_NAME\n$SIGNER_PASSWD\n" | thord start $ARGS
+
   external-ip.sh: |
     #!/bin/bash
     # ./external-ip.sh <host_network> <service_name> <config_map>
@@ -46,4 +53,4 @@ data:
       fi
     fi
 
-    kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run -o yaml | kubectl apply -f -
+    kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -

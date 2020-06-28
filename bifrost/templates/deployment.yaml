@@ -37,9 +37,9 @@ spec:
       - name: init-external-ip
         image: alpine/k8s:1.18.2
         {{- if .Values.global.thornodeGateway }}
-        command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.thornodeGateway }}', '{{ include "bifrost.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.thornodeGateway }}', '{{ include "bifrost.fullname" . }}-external-ip']
         {{- else }}
-        command: ['sh', '/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "bifrost.fullname" . }}', '{{ include "bifrost.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "bifrost.fullname" . }}', '{{ include "bifrost.fullname" . }}-external-ip']
         {{- end }}
         volumeMounts:
         - name: scripts
@@ -139,6 +139,7 @@ spec:
       - name: scripts
         configMap:
           name: {{ include "bifrost.fullname" . }}-scripts
+          defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

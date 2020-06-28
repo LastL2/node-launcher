@@ -74,6 +74,7 @@ mainnet-validator: install-istio check-mnemonic
 	@rm tmp
 
 destroy:
+	@echo Deleting THORNode
 	@helm delete ${NAME} -n ${NAME}
 	@kubectl delete namespace ${NAME}
 
