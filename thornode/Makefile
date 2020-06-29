@@ -94,6 +94,6 @@ set-node-keys:
 	@$(call node_attach,sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost")
 
 set-ip-address:
-	@$(call node_attach,sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost")
+	@$(call node_attach,sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})")
 
 .PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
