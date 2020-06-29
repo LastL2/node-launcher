@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "binance-daemon.fullname" . }}-scripts
+data:
+  entrypoint.sh: |
+    #!/bin/bash
+
+    source /usr/local/bin/setup.sh
+
+    # enable telemetry
+    sed -i -e "s/prometheus = false/prometheus = true/g" ${BNCHOME}/config/config.toml
+
+    # advertise external ip if available
+    if [ ! -z $EXTERNAL_IP ]; then
+      PORT=26656
+      [ "$BNET" == "prod" ] && PORT=27146
+      ADDR="$EXTERNAL_IP:$PORT"
+      sed -i -e "s/external_address =.*/external_address = \"$ADDR\"/g" ${BNCHOME}/config/config.toml
+    fi
+
+    echo "Running $0 in $PWD"
+    set -ev
+    su bnbchaind -c "/usr/local/bin/bnbchaind start --home ${BNCHOME}"

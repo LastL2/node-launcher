@@ -7,7 +7,7 @@
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "thor-api.fullname" . }})
-  export NODE_IP=$(kubectl exec -it --namespace {{ .Release.Namespace }} deploy/{{ include "thor-daemon.name" . }} -- curl -s http://whatismyip.akamai.com)
+  export NODE_IP=$(kubectl exec -it --namespace {{ .Release.Namespace }} deploy/{{ include "thor-api.name" . }} -- curl -s http://whatismyip.akamai.com)
   echo http://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.

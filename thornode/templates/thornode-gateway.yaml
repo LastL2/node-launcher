@@ -1,0 +1,98 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: thornode-gateway
+spec:
+  selector:
+    thornode: ingressgateway
+  servers:
+  - port:
+      number: {{ include "thornode.rpc" . }}
+      name: rpc
+      protocol: HTTP
+    hosts:
+    - "*"
+  - port:
+      number: 1317
+      name: api
+      protocol: HTTP
+    hosts:
+    - "*"
+  - port:
+      number: 8080
+      name: midgard
+      protocol: HTTP
+    hosts:
+    - "*"
+  - port:
+      number: 5040
+      name: bifrost-p2p
+      protocol: TCP
+    hosts:
+    - "*"
+  - port:
+      number: 6040
+      name: bifrost-p2p-api
+      protocol: HTTP
+    hosts:
+    - "*"
+  - port:
+      number: {{ include "thornode.p2p" . }}
+      name: p2p
+      protocol: TCP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: thornode
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - thornode-gateway
+  tcp:
+  - match:
+    - port: {{ include "thornode.p2p" . }}
+    route:
+    - destination:
+        host: thor-daemon
+        port:
+          number: {{ include "thornode.p2p" . }}
+  - match:
+    - port: 5040
+    route:
+    - destination:
+        host: bifrost
+        port:
+          number: 5040
+  http:
+  - match:
+    - port: {{ include "thornode.rpc" . }}
+    route:
+    - destination:
+        host: thor-daemon
+        port:
+          number: {{ include "thornode.rpc" . }}
+  - match:
+    - port: 1317
+    route:
+    - destination:
+        host: thor-api
+        port:
+          number: 1317
+  - match:
+    - port: 8080
+    route:
+    - destination:
+        host: midgard
+        port:
+          number: 8080
+  - match:
+    - port: 6040
+    route:
+    - destination:
+        host: bifrost
+        port:
+          number: 6040

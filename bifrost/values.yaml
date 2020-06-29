@@ -7,12 +7,12 @@ net: mainnet
 signer:
   name: thorchain
   password: password
-  mnemonic:
+  mnemonicSecret: ""
 
 # use in multi nodes envs
 peer:
 
-hostNetwork: true
+hostNetwork: false
 
 thorApi: thor-api:1317
 
