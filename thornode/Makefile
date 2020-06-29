@@ -22,7 +22,7 @@ create-mnemonic: install-istio create-namespace
 install-istio:
 	@echo Installing Istio
 	@type istioctl > /dev/null || (curl -sL https://istio.io/downloadIstioctl | sh - && mv ${HOME}/.istioctl/bin/istioctl /usr/local/bin/)
-	@istioctl install -y -w --set profile=minimal
+	@istioctl install -y -w -f ./thornode/istio-config.yaml
 
 mocknet: install-istio create-mnemonic
 	@echo Installing THORNode
@@ -91,9 +91,11 @@ shell:
 	@$(call node_attach,sh)
 
 set-node-keys:
-	@$(call node_attach,sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost")
+	@$(call node_attach,sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null)
+	@echo THORNode Keys updated
 
 set-ip-address:
-	@$(call node_attach,sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})")
+	@$(call node_attach,sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})" > /dev/null)
+	@echo THORNode IP address updated
 
 .PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
