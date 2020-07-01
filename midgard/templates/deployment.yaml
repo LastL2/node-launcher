@@ -114,17 +114,14 @@ spec:
         - name: {{ .Chart.Name }}-timescaledb
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: timescale/timescaledb:latest-pg11
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: {{ .Values.timescaleDbImage.repository }}:{{ .Values.timescaleDbImage.tag }}
+          imagePullPolicy: {{ .Values.timescaleDbImage.pullPolicy }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: data
-            {{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
-            {{- end }}
           env:
             - name: PGDATA
-              value: /var/lib/postgresql/data
+              value: /var/lib/postgresql/data/pgdata
             - name: POSTGRES_USER
               value: {{ .Values.postgres.username }}
             - name: POSTGRES_PASSWORD
