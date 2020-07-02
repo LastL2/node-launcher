@@ -1,98 +1,24 @@
 global:
-  # THORNode options
   net: mainnet
-  thornodeGateway: thornode-ingressgateway
+  gateway: thor-gateway
 
-  # default options for Istio
-  arch:
-    amd64: 2
-    s390x: 2
-    ppc64le: 2
-  proxy:
-    enableCoreDump: false
-    image: docker.io/istio/proxyv2:1.6.3
-  istioNamespace: istio-system
-  meshExpansion:
-    enabled: false
-  multiCluster:
-    enabled: false
-  defaultPodDisruptionBudget:
-    enabled: false
-  logging:
-    level: "default:info"
-  sts:
-    servicePort: 0
-  sds:
-    token:
-      aud: istio-ca
-  pilotCertProvider: istiod
-  jwtPolicy: third-party-jwt
-
-istio-ingress:
-  gateways:
-    istio-ingressgateway:
-      name: thornode-ingressgateway
-      labels:
-        app: thornode-ingressgateway
-        thornode: ingressgateway
-      ports:
-      # Note that AWS ELB will by default perform health checks on the first port
-      # on this list. Setting this to the health check port will ensure that health
-      # checks always work. https://github.com/istio/istio/issues/12503
-      - port: 15021
-        targetPort: 15021
-        name: status-port
-      - port: 26656
-        targetPort: 26656
-        name: p2p-testnet
-      - port: 26657
-        targetPort: 26657
-        name: rpc-testnet
-      - port: 27146
-        targetPort: 27146
-        name: p2p-mainnet
-      - port: 27147
-        targetPort: 27147
-        name: rpc-mainnet
-      - port: 8080
-        targetPort: 8080
-        name: midgard
-      - port: 5040
-        targetPort: 5040
-        name: bifrost-p2p
-      - port: 6040
-        targetPort: 6040
-        name: bifrost-p2p-api
-      - port: 1317
-        targetPort: 1317
-        name: thornode-api
-      externalTrafficPolicy: "Local"
-      serviceAnnotations:
-        service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
-        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
-        service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
-        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-  meshConfig:
-    enablePrometheusMerge: false
-    defaultConfig:
-      proxyMetadata: {}
-
-port:
-  mainnet:
-    rpc: 27147
-    p2p: 27146
-  testnet:
-    rpc: 26657
-    p2p: 26656
+thor-gateway:
+  fullnameOverride: thor-gateway
 
 thor-daemon:
   fullnameOverride: thor-daemon
+  image:
+    pullPolicy: Always
 
 thor-api:
   fullnameOverride: thor-api
+  image:
+    pullPolicy: Always
 
 bifrost:
   fullnameOverride: bifrost
+  image:
+    pullPolicy: Always
 
 midgard:
   fullnameOverride: midgard

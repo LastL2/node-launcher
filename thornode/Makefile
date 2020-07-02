@@ -15,54 +15,49 @@ create-namespace:
 	@echo Creating THORNode Namespace
 	@kubectl get ns ${NAME} &> /dev/null || kubectl create ns ${NAME}
 
-create-mnemonic: install-istio create-namespace
+create-mnemonic: create-namespace
 	@echo Generating THORNode Mnemonic phrase
 	@kubectl get -n ${NAME} secrets/${MNEMONIC_SECRET} &> /dev/null || kubectl -n ${NAME} create secret generic ${MNEMONIC_SECRET} --from-literal='mnemonic=$(shell exec ${MNEMONIC_CMD})'
 
-install-istio:
-	@echo Installing Istio
-	@type istioctl > /dev/null || (curl -sL https://istio.io/downloadIstioctl | sh - && mv ${HOME}/.istioctl/bin/istioctl /usr/local/bin/)
-	@istioctl install -y -w -f ./thornode/istio-config.yaml
-
-mocknet: install-istio create-mnemonic
+mocknet: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
 		--set binance-daemon.service.type=LoadBalancer \
 		--set bifrost.binanceStartBlockHeight=1
 
-mocknet-validator: install-istio create-mnemonic
+mocknet-validator: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
 		--set binance-daemon.enabled=false \
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE}
 
-testnet: install-istio create-mnemonic
+testnet: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet}
 
-testnet-validator: install-istio create-mnemonic
+testnet-validator: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet} --set global.peer=${PEER}
 
-testnet-slim: install-istio create-mnemonic
+testnet-slim: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet} \
 		--set binance-daemon.enabled=false \
 		--set global.binanceDaemon=${BINANCE_TESTNET}
 
-testnet-slim-validator: install-istio create-mnemonic
+testnet-slim-validator: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet} \
 		--set binance-daemon.enabled=false \
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE_TESTNET}
 
-mainnet: install-istio create-mnemonic
+mainnet: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS}
 
-mainnet-validator: install-istio create-mnemonic
+mainnet-validator: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.peer=${PEER}
 

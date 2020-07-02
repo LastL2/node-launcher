@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "thor-gateway.fullname" . }}
+data:
+  haproxy.cfg: |
+    global
+        maxconn 2000
+
+    defaults
+        mode tcp
+        timeout connect 5000ms
+        timeout client 50000ms
+        timeout server 50000ms
+
+    listen health-check
+      bind :80
+      mode http
+      monitor-uri /healthz
+      option      dontlognull
+
+    listen bifrost-p2p
+        bind *:{{ .Values.service.port.bifrost.p2p }}
+        server bifrost_service bifrost:{{ .Values.service.port.bifrost.p2p }}
+
+    listen bifrost-api
+        bind *:{{ .Values.service.port.bifrost.api }}
+        server bifrost_service bifrost:{{ .Values.service.port.bifrost.api }}
+
+    listen thor-daemon-rpc
+        bind *:{{ include "thor-gateway.rpc" . }}
+        server thor_daemon_service thor-daemon:{{ include "thor-gateway.rpc" . }}
+
+    listen thor-daemon-p2p
+        bind *:{{ include "thor-gateway.p2p" . }}
+        server thor_daemon_service thor-daemon:{{ include "thor-gateway.p2p" . }}
+
+    listen midgard
+        bind *:{{ .Values.service.port.midgard }}
+        server midgard_service midgard:{{ .Values.service.port.midgard }}
+
+    listen api
+        bind *:{{ .Values.service.port.api }}
+        server thor_api_service thor-api:{{ .Values.service.port.api }}
