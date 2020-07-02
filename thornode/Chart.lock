@@ -1,7 +1,7 @@
 dependencies:
-- name: istio-ingress
-  repository: file://../istio-ingress
-  version: 1.1.0
+- name: thor-gateway
+  repository: file://../thor-gateway
+  version: 0.1.0
 - name: thor-daemon
   repository: file://../thor-daemon
   version: 0.1.0
@@ -26,5 +26,5 @@ dependencies:
 - name: bepswap
   repository: file://../bepswap
   version: 0.1.0
-digest: sha256:4db631dfc94c53d8653155721e30cc141e587246fa9087070841be31975cf011
-generated: "2020-06-26T15:13:35.060863+10:00"
+digest: sha256:6219e7b3fe5e3a93fbf043054bb804261c65c7addf8e860b6dde7ded0d7176e7
+generated: "2020-07-02T15:42:25.180781+10:00"

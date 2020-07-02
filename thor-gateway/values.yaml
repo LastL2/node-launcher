@@ -1,0 +1,65 @@
+# Default values for thor-gateway.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+net: mainnet
+
+replicaCount: 1
+
+image:
+  repository: haproxy
+  pullPolicy: IfNotPresent
+  tag: 2.1.7-alpine
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: LoadBalancer
+  port:
+    bifrost:
+      p2p: 5040
+      api: 6040
+    midgard: 8080
+    api: 1317
+    mainnet:
+      p2p: 27146
+      rpc: 27147
+    testnet:
+      p2p: 26656
+      rpc: 26657
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  limits:
+    cpu: 0.5
+    memory: 256Mi
+  requests:
+    cpu: 0.5
+    memory: 256Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+global: {}

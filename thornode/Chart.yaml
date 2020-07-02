@@ -7,10 +7,10 @@ version: 0.1.0
 appVersion: 0.1.0
 
 dependencies:
-  - name: istio-ingress
-    repository: file://../istio-ingress
-    version: 1.1.0
-    condition: istio-ingress.enabled
+  - name: thor-gateway
+    repository: file://../thor-gateway
+    version: 0.1.0
+    condition: thor-gateway.enabled
 
   - name: thor-daemon
     repository: file://../thor-daemon

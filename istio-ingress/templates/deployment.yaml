@@ -16,6 +16,7 @@ spec:
   selector:
     matchLabels:
 {{ $gateway.labels | toYaml | indent 6 }}
+      release: {{ .Release.Name }}
   strategy:
     rollingUpdate:
       maxSurge: {{ $gateway.rollingMaxSurge }}
@@ -24,6 +25,7 @@ spec:
     metadata:
       labels:
 {{ $gateway.labels | toYaml | indent 8 }}
+        release: {{ .Release.Name }}
 {{- if eq .Release.Namespace "istio-system"}}
         heritage: Tiller
         release: istio
