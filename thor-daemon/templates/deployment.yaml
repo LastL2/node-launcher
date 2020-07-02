@@ -75,9 +75,6 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /root/
-          - name: scripts
-            mountPath: /scripts/core.sh
-            subPath: core.sh
         env:
           - name: EXTERNAL_IP
             valueFrom:
