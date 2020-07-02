@@ -36,8 +36,8 @@ spec:
       initContainers:
       - name: init-external-ip
         image: alpine/k8s:1.18.2
-        {{- if .Values.global.gateway }}
-        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway }}', '{{ include "bifrost.fullname" . }}-external-ip']
+        {{- if .Values.global.gateway.enabled }}
+        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway.name }}', '{{ include "bifrost.fullname" . }}-external-ip']
         {{- else }}
         command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "bifrost.fullname" . }}', '{{ include "bifrost.fullname" . }}-external-ip']
         {{- end }}

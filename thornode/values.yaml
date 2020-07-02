@@ -1,6 +1,8 @@
 global:
   net: mainnet
-  gateway: thor-gateway
+  gateway:
+    enabled: true
+    name: thor-gateway
 
 thor-gateway:
   fullnameOverride: thor-gateway

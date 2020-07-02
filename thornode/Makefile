@@ -1,8 +1,8 @@
 NAME?=thornode
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
-MNEMONIC_CMD=kubectl run -n default -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC= | awk -F= '{print $$NF}'
+MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC= | awk -F= '{print $$NF}'
 MNEMONIC_SECRET=thornode-mnemonic
-ARGS=${NAME} ./thornode --namespace ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
+ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
 
 define node_attach
 	kubectl exec -it --namespace ${NAME} deploy/thor-daemon -- ${1}

@@ -36,8 +36,8 @@ spec:
       initContainers:
       - name: init-external-ip
         image: alpine/k8s:1.18.2
-        {{- if .Values.global.gateway }}
-        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
+        {{- if .Values.global.gateway.enabled }}
+        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway.name }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
         {{- else }}
         command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "thor-daemon.fullname" . }}', '{{ include "thor-daemon.fullname" . }}-external-ip']
         {{- end }}
@@ -73,8 +73,11 @@ spec:
         command: ["/scripts/genesis.sh"]
         {{- end }}
         volumeMounts:
-          - mountPath: /root/
-            name: data
+          - name: data
+            mountPath: /root/
+          - name: scripts
+            mountPath: /scripts/core.sh
+            subPath: core.sh
         env:
           - name: EXTERNAL_IP
             valueFrom:
