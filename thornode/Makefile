@@ -74,11 +74,11 @@ shell:
 	@exec ${THORD_CMD} sh
 
 set-node-keys:
-	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null)
+	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null
 	@echo THORNode Keys updated
 
 set-ip-address:
-	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})" > /dev/null)
+	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})" > /dev/null
 	@echo THORNode IP address updated
 
 .PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
