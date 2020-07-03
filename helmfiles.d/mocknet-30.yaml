@@ -189,7 +189,7 @@ releases:
       - mnemonic: cupboard wrong drive pepper scrub heavy repeat expire volume legend border poet shell fancy devote crowd crucial section actual connect sure stay honey feature
 
   - name: validator-21
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-21
     values:
@@ -198,7 +198,7 @@ releases:
       - mnemonic: term cherry busy blast flock wisdom female manage luxury boat measure place impose light camp arctic lobster dizzy notable capable runway regret message weapon
 
   - name: validator-22
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-22
     values:
@@ -207,7 +207,7 @@ releases:
       - mnemonic: drill raccoon mansion suggest base lunar inner industry shoe auto pair melt entry gauge lobster vivid labor pledge another interest parade labor canal domain
 
   - name: validator-23
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-23
     values:
@@ -216,7 +216,7 @@ releases:
       - mnemonic: fortune omit message sweet purity page green seed meat dose owner gas citizen cat service neutral dilemma vast enact mixed bonus atom inform floor
 
   - name: validator-24
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-24
     values:
@@ -225,7 +225,7 @@ releases:
       - mnemonic: adapt mushroom club noodle win clump door sunset cycle size punch airport favorite broom combine addict aware mixture lucky wage hollow tenant smart final
 
   - name: validator-25
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-25
     values:
@@ -234,7 +234,7 @@ releases:
       - mnemonic: surge drive surge vault bottom salad april glad zero evidence short load repeat quick quit chicken nerve fiber cancel merit either air wage buzz
 
   - name: validator-26
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-26
     values:
@@ -243,7 +243,7 @@ releases:
       - mnemonic: math girl panic party mention rebel custom tattoo good sunny icon mad couch shaft velvet apology regret end anger iron tiger pottery often hour
 
   - name: validator-27
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-27
     values:
@@ -252,7 +252,7 @@ releases:
       - mnemonic: happy bomb flame denial shoe modify bone correct banner mansion gallery answer tobacco sign payment cat avocado vanish immense soap best possible sell patch
 
   - name: validator-28
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-28
     values:
@@ -261,7 +261,7 @@ releases:
       - mnemonic: try whale organ balcony bacon noble iron carpet satisfy sunny anger stable innocent render strategy radio best library drum dove blanket kingdom tomato moment
 
   - name: validator-29
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-29
     values:
@@ -270,7 +270,7 @@ releases:
       - mnemonic: cruise narrow chest spare wink front swarm food parade bench bid tuna lecture maple report rain bulb badge version small teach fringe shove burden
 
   - name: validator-30
-    chart: ./
+    chart: ../thornode
     version: 0.1.0
     namespace: validator-30
     values:
