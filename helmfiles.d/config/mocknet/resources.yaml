@@ -4,8 +4,8 @@ bifrost:
       cpu: 0.5
       memory: 256Mi
     limits:
-      cpu: 0.5
-      memory: 256Mi
+      cpu: 2
+      memory: 1Gi
 
 binance-daemon:
   resources:
@@ -14,7 +14,7 @@ binance-daemon:
       memory: 128Mi
     limits:
       cpu: 0.2
-      memory: 128Mi
+      memory: 256Mi
 
 thor-daemon:
   resources:
@@ -22,8 +22,8 @@ thor-daemon:
       cpu: 0.5
       memory: 256Mi
     limits:
-      cpu: 0.5
-      memory: 256Mi
+      cpu: 1
+      memory: 512Mi
 
 thor-api:
   resources:
@@ -51,4 +51,3 @@ midgard:
     limits:
       cpu: 0.2
       memory: 256Mi
-

@@ -3,6 +3,27 @@ kind: ConfigMap
 metadata:
   name: {{ include "thor-daemon.fullname" . }}-scripts
 data:
+  node-status.sh: |
+    #!/bin/sh
+
+    source /scripts/core.sh
+
+    API=http://thor-api:1317
+    NODE_ADDRESS=$(echo $SIGNER_PASSWD | thorcli keys show $SIGNER_NAME -a)
+    NODE_IP=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
+    VERSION=$(fetch_version)
+    PREFLIGHT=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS/preflight)
+    VAULT=$(curl -s $API/thorchain/pool_addresses | jq -r ".current[0].address")
+
+    echo "THORNode Status"
+    echo "Address   $NODE_ADDRESS"
+    echo "IP        $NODE_IP"
+    echo "Version   $VERSION"
+    echo "API       http://$NODE_IP:1317"
+    echo "RPC       http://$NODE_IP:$THOR_DAEMON_SERVICE_PORT_RPC"
+    echo "Midgard   http://$NODE_IP:8080"
+    echo "Vault BNB Bond Address $VAULT"
+
   entrypoint.sh: |
     #!/bin/sh
 

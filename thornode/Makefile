@@ -3,10 +3,7 @@ BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC= | awk -F= '{print $$NF}'
 MNEMONIC_SECRET=thornode-mnemonic
 ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
-
-define node_attach
-	kubectl exec -it --namespace ${NAME} deploy/thor-daemon -- ${1}
-endef
+THORD_CMD=kubectl exec -it --namespace ${NAME} deploy/thor-daemon --
 
 mnemonic:
 	@exec ${MNEMONIC_CMD}
@@ -67,30 +64,21 @@ destroy:
 	@kubectl delete namespace ${NAME}
 
 status:
-	@echo THORNode Status:
-	@echo IP: $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP} > .node_ip && cat .node_ip)
-	@echo Address: $(shell $(call node_attach,sh -c "echo \$$SIGNER_PASSWD | thorcli keys show \$$SIGNER_NAME -a") > .node_address && cat .node_address)
-	@echo Version: $(shell $(call node_attach,sh -c "source /scripts/core.sh;fetch_version"))
-	@echo API: http://$(shell cat .node_ip):1317
-	@echo RPC: http://$(shell cat .node_ip):$(shell kubectl get -n ${NAME} -o jsonpath="{.spec.ports[?(@.name=='rpc')].port}" services thor-daemon)
-	@echo Midgard API: http://$(shell cat .node_ip):8080
-	@echo Preflight: $(shell curl -s $(shell cat .node_ip):1317/thorchain/nodeaccount/$(shell cat .node_address)/preflight)
-	@echo Vault BNB Bond address: $(shell curl -s $(shell cat .node_ip):1317/thorchain/pool_addresses | jq -r ".current[0].address")
-	@rm .node_ip .node_address
+	@exec ${THORD_CMD} /scripts/node-status.sh
 
 midgard:
 	@echo Open your browser at http://localhost:8080
 	@kubectl -n ${NAME} port-forward service/midgard 8080
 
 shell:
-	@$(call node_attach,sh)
+	@exec ${THORD_CMD} sh
 
 set-node-keys:
-	@$(call node_attach,sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null)
+	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null)
 	@echo THORNode Keys updated
 
 set-ip-address:
-	@$(call node_attach,sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})" > /dev/null)
+	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})" > /dev/null)
 	@echo THORNode IP address updated
 
 .PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
