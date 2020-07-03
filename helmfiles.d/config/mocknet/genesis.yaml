@@ -1,0 +1,12 @@
+global:
+  tag: mocknet
+  net: mocknet
+  mnemonicSecret: thornode-mnemonic
+  gateway:
+    enabled: false
+
+thor-gateway:
+  enabled: false
+
+bifrost:
+  binanceStartBlockHeight: 1

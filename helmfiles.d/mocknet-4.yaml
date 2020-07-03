@@ -1,0 +1,45 @@
+releases:
+  - name: genesis
+    chart: ../thornode
+    version: 0.1.0
+    namespace: genesis
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/genesis.yaml
+      - mnemonic: soldier tank ribbon above result process tide avocado enforce twice myself taste arrow stamp trend hub relax tired monster bone inch steel uphold charge
+
+  - name: validator-1
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-1
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: infant exchange ripple diet rebuild enact apology erode job throw faculty flight sock october same melt defense cook echo wise tobacco fatal egg nothing
+
+  - name: validator-2
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-2
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: edit tenant confirm word debate ginger urge bus cushion normal surface depend film much interest subway august frozen hobby fatal soon shock life message
+
+  - name: validator-3
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-3
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: noodle deer august stay cradle shrug inform alpha recycle audit tribe pelican payment produce appear region economy annual nut frown sauce much kick warrior
+
+  - name: validator-4
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-4
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: project pride grant dawn soccer couple snap swing laundry until icon weather because obvious clog often huge whisper unit side suit employ borrow reunion

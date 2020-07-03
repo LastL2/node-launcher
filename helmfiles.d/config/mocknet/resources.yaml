@@ -1,0 +1,54 @@
+bifrost:
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 256Mi
+    limits:
+      cpu: 0.5
+      memory: 256Mi
+
+binance-daemon:
+  resources:
+    requests:
+      cpu: 0.2
+      memory: 128Mi
+    limits:
+      cpu: 0.2
+      memory: 128Mi
+
+thor-daemon:
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 256Mi
+    limits:
+      cpu: 0.5
+      memory: 256Mi
+
+thor-api:
+  resources:
+    requests:
+      cpu: 0.2
+      memory: 128Mi
+    limits:
+      cpu: 0.2
+      memory: 128Mi
+
+thor-gateway:
+  resources:
+    requests:
+      cpu: 0.2
+      memory: 128Mi
+    limits:
+      cpu: 0.2
+      memory: 128Mi
+
+midgard:
+  resources:
+    requests:
+      cpu: 0.2
+      memory: 256Mi
+    limits:
+      cpu: 0.2
+      memory: 256Mi
+
