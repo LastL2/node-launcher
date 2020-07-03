@@ -23,6 +23,7 @@ data:
     echo "RPC       http://$NODE_IP:$THOR_DAEMON_SERVICE_PORT_RPC"
     echo "Midgard   http://$NODE_IP:8080"
     echo "Vault BNB Bond Address $VAULT"
+    echo Preflight $PREFLIGHT
 
   entrypoint.sh: |
     #!/bin/sh
