@@ -1,0 +1,279 @@
+releases:
+  - name: genesis
+    chart: ../thornode
+    version: 0.1.0
+    namespace: genesis
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/genesis.yaml
+      - mnemonic: soldier tank ribbon above result process tide avocado enforce twice myself taste arrow stamp trend hub relax tired monster bone inch steel uphold charge
+
+  - name: validator-1
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-1
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: infant exchange ripple diet rebuild enact apology erode job throw faculty flight sock october same melt defense cook echo wise tobacco fatal egg nothing
+
+  - name: validator-2
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-2
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: edit tenant confirm word debate ginger urge bus cushion normal surface depend film much interest subway august frozen hobby fatal soon shock life message
+
+  - name: validator-3
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-3
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: noodle deer august stay cradle shrug inform alpha recycle audit tribe pelican payment produce appear region economy annual nut frown sauce much kick warrior
+
+  - name: validator-4
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-4
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: project pride grant dawn soccer couple snap swing laundry until icon weather because obvious clog often huge whisper unit side suit employ borrow reunion
+
+  - name: validator-5
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-5
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: what sell bitter enjoy frozen pizza myth pepper garment chapter drill rural globe please clap sing title enroll ladder siren flock donate liberty remove
+
+  - name: validator-6
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-6
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: original dirt tiny note pledge hint rather code ugly kite rain stamp exile until plate jazz reason nation mom penalty portion glue spring limit
+
+  - name: validator-7
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-7
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: two almost ball rule lawsuit soon chaos ignore concert proud interest find tissue cram skate gospel damage mountain club review shield anger giant diary
+
+  - name: validator-8
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-8
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: service junk alone utility pear profit used draw girl rack car cattle hurdle donkey empty shift setup creek grit volume crime spin silk token
+
+  - name: validator-9
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-9
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: attack payment curious dwarf attack robust purchase trade when report good curtain detail want eagle riot use volume radar lamp spike caution drift mobile
+
+  - name: validator-10
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-10
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: jacket bachelor fine rookie maid shiver title illegal essay afraid enjoy sauce diesel onion turkey crew record fade analyst romance warrior annual blame furnace
+
+  - name: validator-11
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-11
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: project point select blur hospital liar galaxy crucial bottom flush fetch faith grief valid retreat drastic fence pepper ivory advance equip hire shallow marble
+
+  - name: validator-12
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-12
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: emerge transfer spatial electric hint quarter modify matrix bench whip canoe super unveil entry put horse barely canyon poverty quarter police train fuel body
+
+  - name: validator-13
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-13
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: sign beef glue custom slot jelly identify sheriff magnet click index dove inspire long often spice roof run asset position home nest sausage owner
+
+  - name: validator-14
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-14
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: sea outside control burden fog reduce nature festival verb type tumble blind entire glimpse chapter claw bid diet lady focus pen ritual effort limit
+
+  - name: validator-15
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-15
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: blade such habit october danger scare since sister now hurry garden fatal fat animal memory glove volcano start illness express great diary pyramid suffer
+
+  - name: validator-16
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-16
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: fold argue fever away fame motion goose pond dry chair remain barrel ranch unfold forget fade defy crime history pledge disagree loud ten misery
+
+  - name: validator-17
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-17
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: floor naive chase erase company arena manage custom rose vintage cute fork peasant latin fork senior equal domain faith grid quarter stage improve student
+
+  - name: validator-18
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-18
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: sting winter punch floor clinic used alert hurry damp elevator remember retreat absent example rent divorce green wave receive element medal nation myth police
+
+  - name: validator-19
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-19
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: wolf system range dance vendor across address pink vital about remove steel warrior property clean female fish stairs tent silly setup safe chair picnic
+
+  - name: validator-20
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-20
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: cupboard wrong drive pepper scrub heavy repeat expire volume legend border poet shell fancy devote crowd crucial section actual connect sure stay honey feature
+
+  - name: validator-21
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-21
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: term cherry busy blast flock wisdom female manage luxury boat measure place impose light camp arctic lobster dizzy notable capable runway regret message weapon
+
+  - name: validator-22
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-22
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: drill raccoon mansion suggest base lunar inner industry shoe auto pair melt entry gauge lobster vivid labor pledge another interest parade labor canal domain
+
+  - name: validator-23
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-23
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: fortune omit message sweet purity page green seed meat dose owner gas citizen cat service neutral dilemma vast enact mixed bonus atom inform floor
+
+  - name: validator-24
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-24
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: adapt mushroom club noodle win clump door sunset cycle size punch airport favorite broom combine addict aware mixture lucky wage hollow tenant smart final
+
+  - name: validator-25
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-25
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: surge drive surge vault bottom salad april glad zero evidence short load repeat quick quit chicken nerve fiber cancel merit either air wage buzz
+
+  - name: validator-26
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-26
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: math girl panic party mention rebel custom tattoo good sunny icon mad couch shaft velvet apology regret end anger iron tiger pottery often hour
+
+  - name: validator-27
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-27
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: happy bomb flame denial shoe modify bone correct banner mansion gallery answer tobacco sign payment cat avocado vanish immense soap best possible sell patch
+
+  - name: validator-28
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-28
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: try whale organ balcony bacon noble iron carpet satisfy sunny anger stable innocent render strategy radio best library drum dove blanket kingdom tomato moment
+
+  - name: validator-29
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-29
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: cruise narrow chest spare wink front swarm food parade bench bid tuna lecture maple report rain bulb badge version small teach fringe shove burden
+
+  - name: validator-30
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-30
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: punch water dinner hybrid mesh desert mail nominee actual bleak corn dolphin piano dream also collect mule depart refuse chimney input message clump patch

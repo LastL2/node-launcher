@@ -1,0 +1,20 @@
+global:
+  tag: mocknet
+  net: mocknet
+  mnemonicSecret: thornode-mnemonic
+  gateway:
+    enabled: false
+  binanceDaemon: http://binance-daemon.genesis:26657
+
+bifrost:
+  peer: bifrost.genesis
+
+thor-daemon:
+  peer: thor-daemon.genesis
+  peerApi: thor-api.genesis
+
+thor-gateway:
+  enabled: false
+
+binance-daemon:
+  enabled: false

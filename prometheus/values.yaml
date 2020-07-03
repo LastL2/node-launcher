@@ -40,8 +40,7 @@ grafana:
             "editable": true,
             "gnetId": 11036,
             "graphTooltip": 0,
-            "id": 25,
-            "iteration": 1593044664764,
+            "iteration": 1593587560059,
             "links": [],
             "panels": [
               {
@@ -82,29 +81,26 @@ grafana:
               },
               {
                 "cacheTimeout": null,
-                "colorBackground": false,
-                "colorValue": true,
-                "colors": [
-                  "#FF780A",
-                  "#FF780A",
-                  "#FF780A"
-                ],
                 "datasource": "$DS",
-                "decimals": 0,
                 "description": "",
                 "fieldConfig": {
                   "defaults": {
-                    "custom": {}
+                    "custom": {},
+                    "decimals": 0,
+                    "mappings": [],
+                    "nullValueMode": "connected",
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        }
+                      ]
+                    },
+                    "unit": "locale"
                   },
                   "overrides": []
-                },
-                "format": "locale",
-                "gauge": {
-                  "maxValue": 100,
-                  "minValue": 0,
-                  "show": false,
-                  "thresholdLabels": false,
-                  "thresholdMarkers": true
                 },
                 "gridPos": {
                   "h": 4,
@@ -116,38 +112,26 @@ grafana:
                 "id": 4,
                 "interval": null,
                 "links": [],
-                "mappingType": 1,
-                "mappingTypes": [
-                  {
-                    "name": "value to text",
-                    "value": 1
-                  },
-                  {
-                    "name": "range to text",
-                    "value": 2
-                  }
-                ],
                 "maxDataPoints": 100,
-                "nullPointMode": "connected",
-                "nullText": null,
-                "postfix": "",
-                "postfixFontSize": "100%",
-                "prefix": "",
-                "prefixFontSize": "100%",
-                "rangeMaps": [
-                  {
-                    "from": "null",
-                    "text": "N/A",
-                    "to": "null"
+                "options": {
+                  "colorMode": "value",
+                  "fieldOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ]
+                  },
+                  "graphMode": "none",
+                  "justifyMode": "auto",
+                  "orientation": "horizontal",
+                  "reduceOptions": {
+                    "calcs": [
+                      "mean"
+                    ],
+                    "fields": "",
+                    "values": false
                   }
-                ],
-                "sparkline": {
-                  "fillColor": "rgb(45, 41, 32)",
-                  "full": false,
-                  "lineColor": "#ef843c",
-                  "show": false
                 },
-                "tableColumn": "tendermint_consensus_height{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.223:26660\", job=\"thor-daemon\", namespace=\"thornode\", pod=\"thor-daemon-7db7b6c9f8-vpsbg\", service=\"thor-daemon\"}",
+                "pluginVersion": "7.0.3",
                 "targets": [
                   {
                     "expr": "tendermint_consensus_height{chain_id=\"$chain_id\", instance=\"$instance\"}",
@@ -159,40 +143,33 @@ grafana:
                     "refId": "A"
                   }
                 ],
-                "thresholds": "",
                 "timeFrom": null,
                 "timeShift": null,
                 "title": "Block Height",
-                "type": "singlestat",
-                "valueFontSize": "120%",
-                "valueMaps": [],
-                "valueName": "current"
+                "type": "stat"
               },
               {
                 "cacheTimeout": null,
-                "colorBackground": false,
-                "colorValue": true,
-                "colors": [
-                  "#FF780A",
-                  "#FF780A",
-                  "#FF780A"
-                ],
                 "datasource": "$DS",
-                "decimals": 0,
                 "description": "",
                 "fieldConfig": {
                   "defaults": {
-                    "custom": {}
+                    "custom": {},
+                    "decimals": 0,
+                    "mappings": [],
+                    "nullValueMode": "connected",
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        }
+                      ]
+                    },
+                    "unit": "locale"
                   },
                   "overrides": []
-                },
-                "format": "locale",
-                "gauge": {
-                  "maxValue": 100,
-                  "minValue": 0,
-                  "show": false,
-                  "thresholdLabels": false,
-                  "thresholdMarkers": true
                 },
                 "gridPos": {
                   "h": 4,
@@ -204,38 +181,26 @@ grafana:
                 "id": 40,
                 "interval": null,
                 "links": [],
-                "mappingType": 1,
-                "mappingTypes": [
-                  {
-                    "name": "value to text",
-                    "value": 1
-                  },
-                  {
-                    "name": "range to text",
-                    "value": 2
-                  }
-                ],
                 "maxDataPoints": 100,
-                "nullPointMode": "connected",
-                "nullText": null,
-                "postfix": "",
-                "postfixFontSize": "80%",
-                "prefix": "",
-                "prefixFontSize": "50%",
-                "rangeMaps": [
-                  {
-                    "from": "null",
-                    "text": "N/A",
-                    "to": "null"
+                "options": {
+                  "colorMode": "value",
+                  "fieldOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ]
+                  },
+                  "graphMode": "none",
+                  "justifyMode": "auto",
+                  "orientation": "horizontal",
+                  "reduceOptions": {
+                    "calcs": [
+                      "mean"
+                    ],
+                    "fields": "",
+                    "values": false
                   }
-                ],
-                "sparkline": {
-                  "fillColor": "rgb(45, 41, 32)",
-                  "full": false,
-                  "lineColor": "#ef843c",
-                  "show": false
                 },
-                "tableColumn": "tendermint_consensus_total_txs{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.223:26660\", job=\"thor-daemon\", namespace=\"thornode\", pod=\"thor-daemon-7db7b6c9f8-vpsbg\", service=\"thor-daemon\"}",
+                "pluginVersion": "7.0.3",
                 "targets": [
                   {
                     "expr": "tendermint_consensus_total_txs{chain_id=\"$chain_id\", instance=\"$instance\"}",
@@ -245,41 +210,49 @@ grafana:
                     "refId": "A"
                   }
                 ],
-                "thresholds": "",
                 "timeFrom": null,
                 "timeShift": null,
                 "title": "Total Transactions",
-                "type": "singlestat",
-                "valueFontSize": "120%",
-                "valueMaps": [],
-                "valueName": "current"
+                "type": "stat"
               },
               {
                 "cacheTimeout": null,
-                "colorBackground": false,
-                "colorPostfix": false,
-                "colorValue": true,
-                "colors": [
-                  "#FF780A",
-                  "#FF780A",
-                  "#FF780A"
-                ],
                 "datasource": "$DS",
-                "decimals": 2,
                 "description": "",
                 "fieldConfig": {
                   "defaults": {
-                    "custom": {}
+                    "custom": {},
+                    "decimals": 2,
+                    "mappings": [
+                      {
+                        "from": "null",
+                        "id": 0,
+                        "text": "N/A",
+                        "to": "null",
+                        "type": 2
+                      }
+                    ],
+                    "nullValueMode": "connected",
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "#EAB839",
+                          "value": 6
+                        },
+                        {
+                          "color": "red",
+                          "value": 10
+                        }
+                      ]
+                    },
+                    "unit": "s"
                   },
                   "overrides": []
-                },
-                "format": "s",
-                "gauge": {
-                  "maxValue": 100,
-                  "minValue": 0,
-                  "show": false,
-                  "thresholdLabels": false,
-                  "thresholdMarkers": true
                 },
                 "gridPos": {
                   "h": 4,
@@ -291,38 +264,26 @@ grafana:
                 "id": 39,
                 "interval": null,
                 "links": [],
-                "mappingType": 2,
-                "mappingTypes": [
-                  {
-                    "name": "value to text",
-                    "value": 1
-                  },
-                  {
-                    "name": "range to text",
-                    "value": 2
-                  }
-                ],
                 "maxDataPoints": 100,
-                "nullPointMode": "connected",
-                "nullText": null,
-                "postfix": "",
-                "postfixFontSize": "120%",
-                "prefix": "",
-                "prefixFontSize": "50%",
-                "rangeMaps": [
-                  {
-                    "from": "null",
-                    "text": "N/A",
-                    "to": "null"
+                "options": {
+                  "colorMode": "value",
+                  "fieldOptions": {
+                    "calcs": [
+                      "mean"
+                    ]
+                  },
+                  "graphMode": "area",
+                  "justifyMode": "auto",
+                  "orientation": "horizontal",
+                  "reduceOptions": {
+                    "calcs": [
+                      "mean"
+                    ],
+                    "fields": "",
+                    "values": false
                   }
-                ],
-                "sparkline": {
-                  "fillColor": "rgb(45, 41, 32)",
-                  "full": false,
-                  "lineColor": "#FF780A",
-                  "show": true
                 },
-                "tableColumn": "tendermint_consensus_block_interval_seconds{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.223:26660\", job=\"thor-daemon\", namespace=\"thornode\", pod=\"thor-daemon-7db7b6c9f8-vpsbg\", service=\"thor-daemon\"}",
+                "pluginVersion": "7.0.3",
                 "targets": [
                   {
                     "expr": "tendermint_consensus_block_interval_seconds{chain_id=\"$chain_id\", instance=\"$instance\"}",
@@ -332,41 +293,33 @@ grafana:
                     "refId": "A"
                   }
                 ],
-                "thresholds": "",
                 "timeFrom": "1h",
                 "timeShift": null,
                 "title": "Avg Block Time",
-                "type": "singlestat",
-                "valueFontSize": "120%",
-                "valueMaps": [],
-                "valueName": "avg"
+                "type": "stat"
               },
               {
                 "cacheTimeout": null,
-                "colorBackground": false,
-                "colorPostfix": false,
-                "colorValue": true,
-                "colors": [
-                  "#FF780A",
-                  "#FF780A",
-                  "#FF780A"
-                ],
                 "datasource": "$DS",
-                "decimals": 0,
                 "description": "",
                 "fieldConfig": {
                   "defaults": {
-                    "custom": {}
+                    "custom": {},
+                    "decimals": 0,
+                    "mappings": [],
+                    "nullValueMode": "connected",
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        }
+                      ]
+                    },
+                    "unit": "short"
                   },
                   "overrides": []
-                },
-                "format": "short",
-                "gauge": {
-                  "maxValue": 100,
-                  "minValue": 0,
-                  "show": false,
-                  "thresholdLabels": false,
-                  "thresholdMarkers": true
                 },
                 "gridPos": {
                   "h": 4,
@@ -378,38 +331,26 @@ grafana:
                 "id": 47,
                 "interval": null,
                 "links": [],
-                "mappingType": 1,
-                "mappingTypes": [
-                  {
-                    "name": "value to text",
-                    "value": 1
-                  },
-                  {
-                    "name": "range to text",
-                    "value": 2
-                  }
-                ],
                 "maxDataPoints": 100,
-                "nullPointMode": "connected",
-                "nullText": null,
-                "postfix": "",
-                "postfixFontSize": "80%",
-                "prefix": "",
-                "prefixFontSize": "50%",
-                "rangeMaps": [
-                  {
-                    "from": "null",
-                    "text": "N/A",
-                    "to": "null"
+                "options": {
+                  "colorMode": "value",
+                  "fieldOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ]
+                  },
+                  "graphMode": "area",
+                  "justifyMode": "auto",
+                  "orientation": "horizontal",
+                  "reduceOptions": {
+                    "calcs": [
+                      "mean"
+                    ],
+                    "fields": "",
+                    "values": false
                   }
-                ],
-                "sparkline": {
-                  "fillColor": "rgb(45, 41, 32)",
-                  "full": false,
-                  "lineColor": "#FF780A",
-                  "show": true
                 },
-                "tableColumn": "tendermint_consensus_validators_power{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.223:26660\", job=\"thor-daemon\", namespace=\"thornode\", pod=\"thor-daemon-7db7b6c9f8-vpsbg\", service=\"thor-daemon\"}",
+                "pluginVersion": "7.0.3",
                 "targets": [
                   {
                     "expr": "tendermint_consensus_validators_power{chain_id=\"$chain_id\", instance=\"$instance\"}",
@@ -420,14 +361,10 @@ grafana:
                     "refId": "A"
                   }
                 ],
-                "thresholds": "",
                 "timeFrom": null,
                 "timeShift": null,
                 "title": "Bonded Tokens",
-                "type": "singlestat",
-                "valueFontSize": "120%",
-                "valueMaps": [],
-                "valueName": "current"
+                "type": "stat"
               },
               {
                 "aliasColors": {
@@ -898,8 +835,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   }
                 },
                 "title": "instance overview: $instance",
@@ -966,8 +903,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   }
                 },
                 "targets": [
@@ -1046,8 +983,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   }
                 },
                 "targets": [
@@ -1124,8 +1061,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   }
                 },
                 "sparkline": {
@@ -1219,8 +1156,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   }
                 },
                 "sparkline": {
@@ -1229,7 +1166,7 @@ grafana:
                   "lineColor": "#ef843c",
                   "show": false
                 },
-                "tableColumn": "tendermint_mempool_recheck_times{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.1.231:26660\", job=\"thor-daemon\", namespace=\"thorchain\", pod=\"thor-daemon-5c858dbc8c-p9gd5\", service=\"thor-daemon\"}",
+                "tableColumn": "tendermint_mempool_recheck_times{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.181:26660\", job=\"thor-daemon\", namespace=\"validator-1\", pod=\"thor-daemon-845c9bfdf-wgxlg\", service=\"thor-daemon\"}",
                 "targets": [
                   {
                     "expr": "tendermint_mempool_recheck_times{chain_id=\"$chain_id\", instance=~\"$instance\"}",
@@ -1296,8 +1233,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   }
                 },
                 "seriesOverrides": [],
@@ -1402,8 +1339,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   }
                 },
                 "seriesOverrides": [],
@@ -1520,8 +1457,8 @@ grafana:
                   "allValue": "",
                   "current": {
                     "selected": false,
-                    "text": "10.0.2.223:26660",
-                    "value": "10.0.2.223:26660"
+                    "text": "10.0.2.181:26660",
+                    "value": "10.0.2.181:26660"
                   },
                   "datasource": "$DS",
                   "definition": "label_values(tendermint_consensus_height{chain_id=\"$chain_id\"}, instance)",
@@ -1575,5 +1512,5 @@ grafana:
             "timezone": "",
             "title": "THORChain Dashboard",
             "uid": "UJyurCTWz",
-            "version": 2
+            "version": 1
           }

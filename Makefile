@@ -63,4 +63,28 @@ dashboard:
 	@echo Open your browser at http://localhost:8000
 	@kubectl -n kube-system port-forward service/kubernetes-dashboard 8000:443
 
+mocknet-4:
+	@helmfile -f helmfiles.d/mocknet-4.yaml sync
+
+destroy-mocknet-4:
+	@helmfile -f helmfiles.d/mocknet-4.yaml destroy
+
+mocknet-10:
+	@helmfile -f helmfiles.d/mocknet-10.yaml sync
+
+destroy-mocknet-10:
+	@helmfile -f helmfiles.d/mocknet-10.yaml destroy
+
+mocknet-20:
+	@helmfile -f helmfiles.d/mocknet-20.yaml sync
+
+destroy-mocknet-20:
+	@helmfile -f helmfiles.d/mocknet-20.yaml destroy
+
+mocknet-30:
+	@helmfile -f helmfiles.d/mocknet-30.yaml sync
+
+destroy-mocknet-30:
+	@helmfile -f helmfiles.d/mocknet-30.yaml destroy
+
 .PHONY: helm repo tools install-logs install-metrics install-dashboard destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard
