@@ -69,6 +69,12 @@ mocknet-4:
 destroy-mocknet-4:
 	@helmfile -f helmfiles.d/mocknet-4.yaml destroy
 
+mocknet-6:
+	@helmfile -f helmfiles.d/mocknet-6.yaml sync
+
+destroy-mocknet-6:
+	@helmfile -f helmfiles.d/mocknet-6.yaml destroy
+
 mocknet-10:
 	@helmfile -f helmfiles.d/mocknet-10.yaml sync
 
