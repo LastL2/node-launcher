@@ -18,3 +18,8 @@ thor-gateway:
 
 binance-daemon:
   enabled: false
+
+midgard:
+  enabled: false
+  image:
+    tag: mocknet

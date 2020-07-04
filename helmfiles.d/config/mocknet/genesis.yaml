@@ -10,3 +10,7 @@ thor-gateway:
 
 bifrost:
   binanceStartBlockHeight: 1
+
+midgard:
+  image:
+    tag: mocknet

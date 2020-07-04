@@ -40,7 +40,8 @@ grafana:
             "editable": true,
             "gnetId": 11036,
             "graphTooltip": 0,
-            "iteration": 1593587560059,
+            "id": 26,
+            "iteration": 1593824093029,
             "links": [],
             "panels": [
               {
@@ -256,7 +257,7 @@ grafana:
                 },
                 "gridPos": {
                   "h": 4,
-                  "w": 6,
+                  "w": 4,
                   "x": 12,
                   "y": 3
                 },
@@ -323,8 +324,8 @@ grafana:
                 },
                 "gridPos": {
                   "h": 4,
-                  "w": 6,
-                  "x": 18,
+                  "w": 4,
+                  "x": 16,
                   "y": 3
                 },
                 "hideTimeOverride": false,
@@ -365,6 +366,67 @@ grafana:
                 "timeShift": null,
                 "title": "Bonded Tokens",
                 "type": "stat"
+              },
+              {
+                "datasource": null,
+                "fieldConfig": {
+                  "defaults": {
+                    "custom": {},
+                    "mappings": [],
+                    "max": 30,
+                    "min": 1,
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "red",
+                          "value": null
+                        },
+                        {
+                          "color": "orange",
+                          "value": 4
+                        },
+                        {
+                          "color": "green",
+                          "value": 6
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 4,
+                  "w": 4,
+                  "x": 20,
+                  "y": 3
+                },
+                "id": 66,
+                "options": {
+                  "orientation": "auto",
+                  "reduceOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                  },
+                  "showThresholdLabels": false,
+                  "showThresholdMarkers": true
+                },
+                "pluginVersion": "7.0.3",
+                "targets": [
+                  {
+                    "expr": "tendermint_consensus_validators{chain_id=\"$chain_id\", instance=\"$instance\"}",
+                    "interval": "",
+                    "legendFormat": "",
+                    "refId": "A"
+                  }
+                ],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Validators",
+                "type": "gauge"
               },
               {
                 "aliasColors": {
@@ -835,8 +897,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   }
                 },
                 "title": "instance overview: $instance",
@@ -903,8 +965,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   }
                 },
                 "targets": [
@@ -983,8 +1045,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   }
                 },
                 "targets": [
@@ -1061,8 +1123,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   }
                 },
                 "sparkline": {
@@ -1156,8 +1218,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   }
                 },
                 "sparkline": {
@@ -1166,7 +1228,7 @@ grafana:
                   "lineColor": "#ef843c",
                   "show": false
                 },
-                "tableColumn": "tendermint_mempool_recheck_times{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.181:26660\", job=\"thor-daemon\", namespace=\"validator-1\", pod=\"thor-daemon-845c9bfdf-wgxlg\", service=\"thor-daemon\"}",
+                "tableColumn": "tendermint_mempool_recheck_times{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.67:26660\", job=\"thor-daemon\", namespace=\"genesis\", pod=\"thor-daemon-55f544d977-wchd8\", service=\"thor-daemon\"}",
                 "targets": [
                   {
                     "expr": "tendermint_mempool_recheck_times{chain_id=\"$chain_id\", instance=~\"$instance\"}",
@@ -1233,8 +1295,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   }
                 },
                 "seriesOverrides": [],
@@ -1339,8 +1401,8 @@ grafana:
                 "scopedVars": {
                   "instance": {
                     "selected": true,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   }
                 },
                 "seriesOverrides": [],
@@ -1403,10 +1465,7 @@ grafana:
             "refresh": "5s",
             "schemaVersion": 25,
             "style": "dark",
-            "tags": [
-              "Blockchain",
-              "Cosmos"
-            ],
+            "tags": [],
             "templating": {
               "list": [
                 {
@@ -1457,8 +1516,8 @@ grafana:
                   "allValue": "",
                   "current": {
                     "selected": false,
-                    "text": "10.0.2.181:26660",
-                    "value": "10.0.2.181:26660"
+                    "text": "10.0.2.67:26660",
+                    "value": "10.0.2.67:26660"
                   },
                   "datasource": "$DS",
                   "definition": "label_values(tendermint_consensus_height{chain_id=\"$chain_id\"}, instance)",
@@ -1510,7 +1569,7 @@ grafana:
               ]
             },
             "timezone": "",
-            "title": "THORChain Dashboard",
-            "uid": "UJyurCTWz",
-            "version": 1
+            "title": "THORNode / THORChain",
+            "uid": "W9vKt2GGz",
+            "version": 2
           }
