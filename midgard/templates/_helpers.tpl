@@ -63,24 +63,10 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Tag
-*/}}
-{{- define "midgard.tag" -}}
-{{- default .Values.image.tag .Values.global.tag -}}
-{{- end -}}
-
-{{/*
-Image
-*/}}
-{{- define "midgard.image" -}}
-{{- .Values.image.repository -}}:{{ include "midgard.tag" . }}
-{{- end -}}
-
-{{/*
 Thor daemon
 */}}
 {{- define "midgard.thorDaemon" -}}
-{{- if eq (include "midgard.tag" .) "mainnet" -}}
+{{- if eq .Values.image.tag "mainnet" -}}
     {{ .Values.thorDaemon.mainnet }}
 {{- else -}}
     {{ .Values.thorDaemon.testnet }}

@@ -18,34 +18,36 @@ create-mnemonic: create-namespace
 
 mocknet: create-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
+	@helm upgrade --install ${ARGS} \
+		--set global.net=mocknet,global.tag=$${TAG:-mocknet},midgard.image.tag=mocknet \
 		--set binance-daemon.service.type=LoadBalancer \
 		--set bifrost.binanceStartBlockHeight=1
 
 mocknet-validator: create-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=mocknet,global.tag=$${TAG:-mocknet} \
+	@helm upgrade --install ${ARGS} \
+		--set global.net=mocknet,global.tag=$${TAG:-mocknet},midgard.image.tag=mocknet \
 		--set binance-daemon.enabled=false \
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE}
 
 testnet: create-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet}
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet
 
 testnet-validator: create-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet} --set global.peer=${PEER}
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,global.peer=${PEER}
 
 testnet-slim: create-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet} \
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet \
 		--set binance-daemon.enabled=false \
 		--set global.binanceDaemon=${BINANCE_TESTNET}
 
 testnet-slim-validator: create-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet} \
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet \
 		--set binance-daemon.enabled=false \
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE_TESTNET}
