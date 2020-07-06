@@ -8,10 +8,31 @@ metadata:
 spec:
   version: {{ .Chart.AppVersion }}
   nodeSets:
-  - name: default
+  - name: masters
+    count: 3
+    config:
+      node.master: true
+      node.data: false
+      node.ingest: false
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+  - name: data
     count: {{ .Values.elasticsearch.replicas }}
     config:
-      node.master: {{ .Values.elasticsearch.master }}
-      node.data: {{ .Values.elasticsearch.data }}
-      node.ingest: {{ .Values.elasticsearch.ingest }}
-      node.store.allow_mmap: {{ .Values.elasticsearch.allow_mmap }}
+      node.master: false
+      node.data: true
+      node.ingest: true
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi

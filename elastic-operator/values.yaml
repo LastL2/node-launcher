@@ -5,11 +5,7 @@
 fullnameOverride: elasticsearch
 
 elasticsearch:
-  replicas: 1
-  master: true
-  data: true
-  ingest: true
-  allow_mmap: false
+  replicas: 3
 
 kibana:
   replicas: 1
