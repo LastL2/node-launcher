@@ -16,6 +16,9 @@ thor-daemon:
 thor-gateway:
   enabled: false
 
+thor-api:
+  enabled: false
+
 binance-daemon:
   enabled: false
 
