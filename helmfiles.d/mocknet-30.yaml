@@ -277,3 +277,12 @@ releases:
       - config/mocknet/resources.yaml
       - config/mocknet/validator.yaml
       - mnemonic: punch water dinner hybrid mesh desert mail nominee actual bleak corn dolphin piano dream also collect mule depart refuse chimney input message clump patch
+
+  - name: validator-31
+    chart: ../thornode
+    version: 0.1.0
+    namespace: validator-31
+    values:
+      - config/mocknet/resources.yaml
+      - config/mocknet/validator.yaml
+      - mnemonic: guilt document tag chief dignity pistol wheel essence damage estate fury endorse happy inherit ankle solution praise toast tuition long toilet long broken illegal
