@@ -59,10 +59,12 @@ spec:
               containerPort: 28660
               protocol: TCP
           livenessProbe:
+            timeoutSeconds: 10
             httpGet:
               path: /status
               port: rpc
           readinessProbe:
+            timeoutSeconds: 10
             httpGet:
               path: /status
               port: rpc

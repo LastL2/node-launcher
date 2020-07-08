@@ -14,7 +14,7 @@ Helm Charts
 ========
 
 Charts to deploy THORNode stack and tools.
-It is recommended to use the make commands available in this repo
+It is recommended to use the Makefile commands available in this repo
 to start the charts with predefined configuration for most environments.
 
 Once you have your THORNode up and running, please follow instructions [here](https://gitlab.com/thorchain/thornode) for the next steps.
@@ -54,10 +54,15 @@ You can install those tools separately using the sections below.
 
 ## Deploy THORNode
 
+It is important to deploy the tools first before deploying the THORNode services as
+some services will have metrics configuration that would fail and stop the THORNode deployment.
+
 You have multiple commands available to deploy different configurations of THORNode.
 You can deploy mainnet / testnet / mocknet.
-The commands deploy the umbrella chart `thornode` in the background in the kubernetes
+The commands deploy the umbrella chart `thornode` in the background in the Kubernetes
 namespace `thornode` by default.
+Unless you specify the name of your deployment using the environment variable `NAME`,
+all the commands are run against the default Kubernetes namespace `thornode` set up in the Makefile.
 
 ### Deploy Mainnet Genesis
 
@@ -87,11 +92,12 @@ make testnet-slim
 
 ### Deploy Testnet Validator
 
-To retrieve the PEER IP of your genesis node run that command on the cluster running
-the genesis node:
+To retrieve the PEER IP of your genesis node run the status command against the cluster running
+the genesis node, then export the node IP in the environment variable `PEER`:
 
 ```bash
-export PEER=$(kubectl get pods --namespace thornode -l "app.kubernetes.io/name=thor-daemon,app.kubernetes.io/instance=thornode" -o jsonpath="{.items[0].status.podIP}")
+make status
+export PEER=<node-ip>
 echo $PEER
 ```
 Then in the same terminal where you previously exported the PEER env variable, you can run:
@@ -112,13 +118,44 @@ Slim version validator:
 PEER=1.2.3.4 make testnet-slim-validator
 ```
 
-## Status THORNode
+## THORNode commands
+
+The Makefile provide different commands to help you operate your THORNode.
+
+# status
 
 To get information about your node on how to connect to services or its IP, run the command below.
 You will also get your node address and the vault address where you will need to send your bond.
 
 ```bash
 make status
+```
+
+# shell
+
+Opens a shell into your `thor-daemon` deployment:
+From within that shell you have access to the `thorcli` command.
+
+```bash
+make shell
+```
+
+# set-node-keys
+
+Send a `set-node-keys` to your node, which will set your node keys automatically for you
+by retrieving them directly from the `thor-daemon` deployment.
+
+```bash
+make set-node-keys
+```
+
+# set-ip-address
+
+Send a `set-ip-address` to your node, which will set your node ip address automatically for you
+by retrieving the load balancer deployed directly.
+
+```bash
+make set-ip-address
 ```
 
 ## Destroy THORNode
