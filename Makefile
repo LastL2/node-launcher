@@ -44,14 +44,14 @@ destroy-dashboard:
 	@helm delete kubernetes-dashboard -n kube-system
 
 kibana:
-	@echo "User 'elastic' password:"
-	@kubectl -n elastic-system get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
+	@echo User: elastic
+	@echo Password: $(shell kubectl -n elastic-system get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo)
 	@echo Open your browser at https://localhost:5601
 	@kubectl -n elastic-system port-forward service/elasticsearch-kb-http 5601
 
 grafana:
-	@echo "User 'admin' password:"
-	@echo prom-operator
+	@echo User: admin
+	@echo Password: prom-operator
 	@echo Open your browser at http://localhost:3000
 	@kubectl -n prometheus-system port-forward service/prometheus-grafana 3000:80
 
