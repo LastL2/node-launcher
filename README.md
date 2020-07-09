@@ -140,6 +140,14 @@ From within that shell you have access to the `thorcli` command.
 make shell
 ```
 
+# logs
+
+Display stream of logs of `thor-daemon` deployment:
+
+```bash
+make logs
+```
+
 # set-node-keys
 
 Send a `set-node-keys` to your node, which will set your node keys automatically for you

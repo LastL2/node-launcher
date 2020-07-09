@@ -75,6 +75,9 @@ midgard:
 shell:
 	@exec ${THORD_CMD} sh
 
+logs:
+	@kubectl logs -f -n ${NAME} deploy/thor-daemon
+
 set-node-keys:
 	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null
 	@echo THORNode Keys updated
