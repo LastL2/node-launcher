@@ -2,10 +2,10 @@ bifrost:
   resources:
     requests:
       cpu: 1
-      memory: 512Mi
+      memory: 2Gi
     limits:
       cpu: 2
-      memory: 2Gi
+      memory: 4Gi
 
 binance-daemon:
   resources:
