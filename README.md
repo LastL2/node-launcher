@@ -328,6 +328,7 @@ you know what you are doing and want to run each chart separately (not recommend
 
 - thor-daemon: THORNode daemon
 - thor-api: THORNode API
+- thor-gateway: THORNode gateway proxy to get a single IP address for multiple deployments
 - bepswap: BEPSwap UI frontend
 - bifrost: Bifrost service
 - midgard: Midgard service
@@ -343,3 +344,4 @@ you know what you are doing and want to run each chart separately (not recommend
 - elastic: ELK stack, deperecated. Use elastic-operator chart
 - elastic-operator: ELK stack using operator for logs management
 - prometheus: Prometheus stack for metrics
+- kubernetes-dashboard: Kubernetes dashboard
