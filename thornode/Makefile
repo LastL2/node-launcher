@@ -82,6 +82,10 @@ set-node-keys:
 	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null
 	@echo THORNode Keys updated
 
+set-version:
+	@exec ${THORD_CMD} sh -c "printf \"\$$SIGNER_PASSWD\n\$$SIGNER_PASSWD\n\" | thorcli tx thorchain set-version --from \$$SIGNER_NAME --yes" > /dev/null
+	@echo THORNode version updated
+
 set-ip-address:
 	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})" > /dev/null
 	@echo THORNode IP address updated
