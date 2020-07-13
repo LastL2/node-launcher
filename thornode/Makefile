@@ -66,7 +66,7 @@ destroy:
 	@kubectl delete namespace ${NAME}
 
 status:
-	@exec ${THORD_CMD} /scripts/node-status.sh
+	@exec ${THORD_CMD} /kube-scripts/node-status.sh
 
 midgard:
 	@echo Open your browser at http://localhost:8080
@@ -79,15 +79,15 @@ logs:
 	@kubectl logs -f -n ${NAME} deploy/thor-daemon
 
 set-node-keys:
-	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_node_keys \$$SIGNER_NAME \$$SIGNER_PASSWD localhost" > /dev/null
+	@exec ${THORD_CMD} /kube-scripts/set-node-keys.sh > /dev/null
 	@echo THORNode Keys updated
 
 set-version:
-	@exec ${THORD_CMD} sh -c "printf \"\$$SIGNER_PASSWD\n\$$SIGNER_PASSWD\n\" | thorcli tx thorchain set-version --from \$$SIGNER_NAME --yes" > /dev/null
+	@exec ${THORD_CMD} /kube-scripts/set-version.sh > /dev/null
 	@echo THORNode version updated
 
 set-ip-address:
-	@exec ${THORD_CMD} sh -c "source /scripts/core.sh;set_ip_address \$$SIGNER_NAME \$$SIGNER_PASSWD localhost $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP})" > /dev/null
+	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP}) > /dev/null
 	@echo THORNode IP address updated
 
 .PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address

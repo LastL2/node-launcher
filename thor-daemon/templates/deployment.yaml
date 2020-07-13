@@ -114,16 +114,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "thor-daemon.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/scripts/entrypoint.sh"]
+          command: ["/kube-scripts/entrypoint.sh"]
           volumeMounts:
             - name: data
               mountPath: /root/
             - name: scripts
-              mountPath: /scripts/entrypoint.sh
-              subPath: entrypoint.sh
-            - name: scripts
-              mountPath: /scripts/node-status.sh
-              subPath: node-status.sh
+              mountPath: /kube-scripts/
           env:
             - name: DEBUG
               value: "{{ .Values.debug }}"

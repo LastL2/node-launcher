@@ -3,6 +3,24 @@ kind: ConfigMap
 metadata:
   name: {{ include "thor-daemon.fullname" . }}-scripts
 data:
+  set-node-keys.sh: |
+    #!/bin/sh
+
+    NODE_PUB_KEY=$(echo $SIGNER_PASSWD | thorcli keys show thorchain --pubkey)
+    VALIDATOR=$(thord tendermint show-validator)
+    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-node-keys $NODE_PUB_KEY $NODE_PUB_KEY $VALIDATOR --from $SIGNER_NAME --yes --gas auto
+
+  set-ip-address.sh: |
+    #!/bin/sh
+
+    NODE_IP_ADDRESS=${1:-$(curl -s http://whatismyip.akamai.com)}
+    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-ip-address $NODE_IP_ADDRESS --from $SIGNER_NAME --yes --gas auto
+
+  set-version.sh: |
+    #!/bin/sh
+
+    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-version --from $SIGNER_NAME --yes --gas auto
+
   node-status.sh: |
     #!/bin/sh
 
