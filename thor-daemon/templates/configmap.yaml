@@ -29,7 +29,7 @@ data:
     API=http://thor-api:1317
     NODE_ADDRESS=$(echo $SIGNER_PASSWD | thorcli keys show $SIGNER_NAME -a)
     NODE_IP=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
-    VERSION=$(fetch_version)
+    VERSION=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".version")
     PREFLIGHT=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS/preflight)
     VAULT=$(curl -s $API/thorchain/pool_addresses | jq -r ".current[0].address")
 
