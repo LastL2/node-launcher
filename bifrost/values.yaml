@@ -14,6 +14,8 @@ peer:
 
 hostNetwork: false
 
+debug: false
+
 thorApi: thor-api:1317
 
 thorDaemon:

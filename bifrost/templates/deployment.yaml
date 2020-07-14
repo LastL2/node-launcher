@@ -67,7 +67,11 @@ spec:
           image: {{ include "bifrost.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/bifrost.sh"]
+          {{- if .Values.debug }}
           args: ["bifrost", "-c", "/etc/bifrost/config.json", "-l", "debug"]
+          {{- else }}
+          args: ["bifrost", "-c", "/etc/bifrost/config.json"]
+          {{- end }}
           volumeMounts:
             - mountPath: /var/data/bifrost
               name: data
