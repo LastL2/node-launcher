@@ -7,7 +7,7 @@ net: mainnet
 replicaCount: 1
 
 image:
-  repository: varnav/binance-node
+  repository: mcadm/binance-node
   mocknet: registry.gitlab.com/thorchain/bepswap/mock-binance
   pullPolicy: IfNotPresent
   tag: latest
@@ -55,7 +55,7 @@ resources:
     cpu: 2
     memory: 12Gi
   limits:
-    cpu: 2
+    # cpu: 2
     memory: 16Gi
 
 nodeSelector: {}
