@@ -49,7 +49,7 @@ spec:
         command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done']
       - name: init-binance
         image: appropriate/curl
-        command: ['sh', '-c', 'until curl -s {{ include "bifrost.binanceDaemon" . }}/abci_info | grep last_block_height > /dev/null; do echo waiting for binance; sleep 2; done']
+        command: ['sh', '-c', 'until curl -s {{ include "bifrost.binanceDaemon" . }}/abci_info > /dev/null; do echo waiting for binance; sleep 2; done']
       {{- if .Values.bitcoinDaemon.enabled }}
       - name: init-bitcoin
         image: appropriate/curl
