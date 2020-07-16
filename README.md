@@ -67,10 +67,12 @@ all the commands are run against the default Kubernetes namespace `thornode` set
 ### Deploy Mainnet Genesis
 
 ```bash
-make mainnet
+make mainnet-genesis
 ```
 
 ### Deploy Mainnet Validator
+
+To automatically select the current mainnet chain, run that command:
 
 ```bash
 make mainnet-validator
@@ -78,44 +80,22 @@ make mainnet-validator
 
 ### Deploy Testnet Genesis
 
-If you want to run your own Binance Node included in your stack, run:
-
 ```bash
-make testnet
-```
-
-Or to connect to Binance Testnet available at http://testnet-binance.thorchain.info:26657, run:
-
-```bash
-make testnet-slim
+make testnet-genesis
 ```
 
 ### Deploy Testnet Validator
 
-To retrieve the PEER IP of your genesis node run the status command against the cluster running
-the genesis node, then export the node IP in the environment variable `PEER`:
-
-```bash
-make status
-export PEER=<node-ip>
-echo $PEER
-```
-Then in the same terminal where you previously exported the PEER env variable, you can run:
+To automatically select the current testnet chain, run that command:
 
 ```bash
 make testnet-validator
 ```
 
-Or to manually specify the PEER IP, run that command:
+Or to manually specify the seed genesis IP, run that command:
 
 ```bash
-PEER=1.2.3.4 make testnet-validator
-```
-
-Slim version validator:
-
-```bash
-PEER=1.2.3.4 make testnet-slim-validator
+SEED_TESTNET=1.2.3.4 make testnet-validator
 ```
 
 ## THORNode commands
@@ -164,6 +144,15 @@ by retrieving the load balancer deployed directly.
 
 ```bash
 make set-ip-address
+```
+
+# set-version
+
+Send a `set-version` to your node, which will set your node version according to the
+docker image you last deployed.
+
+```bash
+make set-version
 ```
 
 ## Destroy THORNode
