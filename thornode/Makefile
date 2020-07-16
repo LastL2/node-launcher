@@ -4,6 +4,7 @@ MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.co
 MNEMONIC_SECRET=thornode-mnemonic
 ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
 THORD_CMD=kubectl exec -it --namespace ${NAME} deploy/thor-daemon --
+SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | sed 's/\["\(.*\)"\]/\1/')
 
 mnemonic:
 	@exec ${MNEMONIC_CMD}
@@ -16,7 +17,7 @@ create-mnemonic: create-namespace
 	@echo Generating THORNode Mnemonic phrase
 	@kubectl get -n ${NAME} secrets/${MNEMONIC_SECRET} &> /dev/null || kubectl -n ${NAME} create secret generic ${MNEMONIC_SECRET} --from-literal='mnemonic=$(shell exec ${MNEMONIC_CMD})'
 
-mocknet: create-mnemonic
+mocknet-genesis: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=mocknet,global.tag=$${TAG:-mocknet},midgard.image.tag=mocknet \
@@ -31,28 +32,15 @@ mocknet-validator: create-mnemonic
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE}
 
-testnet: create-mnemonic
+testnet-genesis: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet
 
 testnet-validator: create-mnemonic
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,global.peer=${PEER}
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,global.peer=${SEED_TESTNET}
 
-testnet-slim: create-mnemonic
-	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet \
-		--set binance-daemon.enabled=false \
-		--set global.binanceDaemon=${BINANCE_TESTNET}
-
-testnet-slim-validator: create-mnemonic
-	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet \
-		--set binance-daemon.enabled=false \
-		--set global.peer=${PEER} \
-		--set global.binanceDaemon=${BINANCE_TESTNET}
-
-mainnet: create-mnemonic
+mainnet-genesis: create-mnemonic
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS}
 
@@ -90,4 +78,4 @@ set-ip-address:
 	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP}) > /dev/null
 	@echo THORNode IP address updated
 
-.PHONY: mnemonic mocknet mocknet-validator testnet testnet-validator testnet-slim testnet-slim-validator mainnet mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
+.PHONY: mnemonic mocknet-genesis mocknet-validator testnet-genesis testnet-validator mainnet-genesis mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
