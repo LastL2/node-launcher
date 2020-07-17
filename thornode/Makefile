@@ -11,20 +11,23 @@ mnemonic:
 
 create-namespace:
 	@echo Creating THORNode Namespace
-	@kubectl get ns ${NAME} &> /dev/null || kubectl create ns ${NAME}
+	@kubectl get ns ${NAME} > /dev/null 2>&1 || kubectl create ns ${NAME}
 
 create-mnemonic: create-namespace
 	@echo Generating THORNode Mnemonic phrase
-	@kubectl get -n ${NAME} secrets/${MNEMONIC_SECRET} &> /dev/null || kubectl -n ${NAME} create secret generic ${MNEMONIC_SECRET} --from-literal='mnemonic=$(shell exec ${MNEMONIC_CMD})'
+	@kubectl get -n ${NAME} secrets/${MNEMONIC_SECRET} > /dev/null 2>&1 || kubectl -n ${NAME} create secret generic ${MNEMONIC_SECRET} --from-literal='mnemonic=$(shell exec ${MNEMONIC_CMD})'
 
-mocknet-genesis: create-mnemonic
+update-dependencies:
+	@helm dependencies update ./thornode
+
+mocknet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=mocknet,global.tag=$${TAG:-mocknet},midgard.image.tag=mocknet \
 		--set binance-daemon.service.type=LoadBalancer \
 		--set bifrost.binanceStartBlockHeight=1
 
-mocknet-validator: create-mnemonic
+mocknet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=mocknet,global.tag=$${TAG:-mocknet},midgard.image.tag=mocknet \
@@ -32,19 +35,19 @@ mocknet-validator: create-mnemonic
 		--set global.peer=${PEER} \
 		--set global.binanceDaemon=${BINANCE}
 
-testnet-genesis: create-mnemonic
+testnet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet
 
-testnet-validator: create-mnemonic
+testnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,global.peer=${SEED_TESTNET}
 
-mainnet-genesis: create-mnemonic
+mainnet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS}
 
-mainnet-validator: create-mnemonic
+mainnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.peer=${PEER}
 
