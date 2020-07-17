@@ -9,12 +9,14 @@ replicaCount: 1
 image:
   repository: mcadm/binance-node
   mocknet: registry.gitlab.com/thorchain/bepswap/mock-binance
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+hostNetwork: true
 
 service:
   type: ClusterIP

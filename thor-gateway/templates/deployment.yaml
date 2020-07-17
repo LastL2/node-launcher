@@ -21,6 +21,13 @@ spec:
       serviceAccountName: {{ include "thor-gateway.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-external-ip
+        image: alpine/k8s:1.18.2
+        command: ['/scripts/external-ip.sh', 'false', '{{ include "thor-gateway.fullname" . }}', '{{ include "thor-gateway.fullname" . }}-external-ip']
+        volumeMounts:
+        - name: config
+          mountPath: /scripts
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -66,6 +73,7 @@ spec:
       - name: config
         configMap:
           name: {{ include "thor-gateway.fullname" . }}
+          defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
