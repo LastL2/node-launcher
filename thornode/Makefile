@@ -78,7 +78,7 @@ set-version:
 	@echo THORNode version updated
 
 set-ip-address:
-	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-daemon-external-ip -o jsonpath={.data.externalIP}) > /dev/null
+	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-gateway-external-ip -o jsonpath={.data.externalIP}) > /dev/null
 	@echo THORNode IP address updated
 
 .PHONY: mnemonic mocknet-genesis mocknet-validator testnet-genesis testnet-validator mainnet-genesis mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
