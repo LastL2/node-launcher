@@ -16,7 +16,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-hostNetwork: true
+hostNetwork: false
 
 service:
   type: ClusterIP

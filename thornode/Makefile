@@ -69,6 +69,9 @@ shell:
 logs:
 	@kubectl logs -f -n ${NAME} deploy/thor-daemon
 
+logs-binance:
+	@kubectl logs -f -n ${NAME} deploy/binance-daemon
+
 set-node-keys:
 	@exec ${THORD_CMD} /kube-scripts/set-node-keys.sh > /dev/null
 	@echo THORNode Keys updated
