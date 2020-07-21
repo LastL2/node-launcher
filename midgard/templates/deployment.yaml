@@ -67,7 +67,7 @@ spec:
               path: /v1/health
               port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.midgard | nindent 12 }}
       volumes:
         - name: scripts
           emptyDir: {}
@@ -131,7 +131,7 @@ spec:
               containerPort: 5432
               protocol: TCP
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.timescaledb | nindent 12 }}
       volumes:
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
