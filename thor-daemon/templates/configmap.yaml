@@ -52,13 +52,15 @@ data:
     BNB_PROGRESS=$(printf "%.2f\n" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100))
 
     # calculate THOR chain sync progress
-    THOR_HEIGHT=$(curl -s $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-    THOR_SYNC_HEIGHT=$(curl -s localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-    THOR_PROGRESS=$(printf "%.2f\n" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100))
+    if [ -z $PEER ]; then
+      THOR_HEIGHT=$(curl -s $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+      THOR_SYNC_HEIGHT=$(curl -s localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+      THOR_PROGRESS=$(printf "%.2f\n" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100))
+    fi
 
     echo
     echo Syncing Chain Status
-    echo "THORChain $THOR_PROGRESS% ($THOR_SYNC_HEIGHT/$THOR_HEIGHT blocks)"
+    [ -z $PEER ] && echo "THORChain $THOR_PROGRESS% ($THOR_SYNC_HEIGHT/$THOR_HEIGHT blocks)"
     echo "Binance $BNB_PROGRESS% ($BNB_SYNC_HEIGHT/$BNB_HEIGHT blocks)"
 
   entrypoint.sh: |
