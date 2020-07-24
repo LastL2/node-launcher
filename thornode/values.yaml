@@ -1,7 +1,7 @@
 global:
   net: mainnet
   gateway:
-    enabled: true
+    enabled: false
     name: thor-gateway
 
 thor-gateway:
@@ -11,6 +11,8 @@ thor-daemon:
   fullnameOverride: thor-daemon
   image:
     pullPolicy: Always
+  service:
+    type: LoadBalancer
 
 thor-api:
   fullnameOverride: thor-api
@@ -21,6 +23,8 @@ bifrost:
   fullnameOverride: bifrost
   image:
     pullPolicy: Always
+  service:
+    type: LoadBalancer
 
 midgard:
   fullnameOverride: midgard

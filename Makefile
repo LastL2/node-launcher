@@ -51,7 +51,7 @@ kibana:
 
 grafana:
 	@echo User: admin
-	@echo Password: prom-operator
+	@echo Password: thorchain
 	@echo Open your browser at http://localhost:3000
 	@kubectl -n prometheus-system port-forward service/prometheus-grafana 3000:80
 

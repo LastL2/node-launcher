@@ -6,6 +6,7 @@ prometheusOperator:
   createCustomResource: false
 
 grafana:
+  adminPassword: thorchain
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1

@@ -75,12 +75,20 @@ ingress:
   #      - chart-example.local
 
 resources:
-  requests:
-    cpu: 1
-    memory: 512Mi
-  limits:
-    cpu: 1
-    memory: 512Mi
+  midgard:
+    requests:
+      cpu: 0.5
+      memory: 256Mi
+    limits:
+      cpu: 0.5
+      memory: 256Mi
+  timescaledb:
+    requests:
+      cpu: 2
+      memory: 1Gi
+    limits:
+      # cpu: 2
+      memory: 1Gi
 
 nodeSelector: {}
 

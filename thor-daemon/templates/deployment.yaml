@@ -121,6 +121,10 @@ spec:
             - name: scripts
               mountPath: /kube-scripts/
           env:
+            - name: PEER
+              value: {{ default .Values.peer .Values.global.peer }}
+            - name: PEER_API
+              value: {{ .Values.peerApi }}
             - name: DEBUG
               value: "{{ .Values.debug }}"
             - name: NET

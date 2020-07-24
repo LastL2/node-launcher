@@ -44,9 +44,17 @@ thor-gateway:
 
 midgard:
   resources:
-    requests:
-      cpu: 0.2
-      memory: 256Mi
-    limits:
-      cpu: 0.2
-      memory: 256Mi
+    midgard:
+      requests:
+        cpu: 0.2
+        memory: 256Mi
+      limits:
+        cpu: 0.2
+        memory: 256Mi
+    timescaledb:
+      requests:
+        cpu: 0.5
+        memory: 256Mi
+      limits:
+        cpu: 0.5
+        memory: 256Mi
