@@ -32,6 +32,7 @@ data:
       elif [ "$type" = "LoadBalancer" ]; then
         # Hack TODO remove when this is fixed here https://github.com/kubernetes/kubernetes/issues/82595
         kubectl annotate svc $SERVICE service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=false --overwrite
+        sleep 5
         kubectl annotate svc $SERVICE service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=true --overwrite
 
         while [ -z $external_ip ]; do

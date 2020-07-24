@@ -28,6 +28,8 @@ bifrost:
 
 midgard:
   fullnameOverride: midgard
+  image:
+    pullPolicy: Always
 
 binance-daemon:
   fullnameOverride: binance-daemon
