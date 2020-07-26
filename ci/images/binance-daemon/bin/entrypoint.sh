@@ -46,6 +46,7 @@ sed -i 's/logToConsole = false/logToConsole = true/g' ${BNCHOME}/config/app.toml
 
 # Enable telemetry
 sed -i "s/prometheus = false/prometheus = true/g" ${BNCHOME}/config/config.toml
+sed -i -e "s/prometheus_listen_addr = \":26660\"/prometheus_listen_addr = \":28660\"/g" ${BNCHOME}/config/config.toml
 
 # advertise external ip if available
 if [ ! -z $EXTERNAL_IP ]; then
