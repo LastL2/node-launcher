@@ -11,7 +11,9 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   type: {{ .Values.service.type }}
+  {{- if ne "ClusterIP" .Values.service.type }}
   externalTrafficPolicy: Local
+  {{- end }}
   ports:
     - port: {{ .Values.service.port.http }}
       targetPort: http
