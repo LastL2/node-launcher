@@ -8,8 +8,14 @@ global:
 thor-gateway:
   enabled: false
 
+thor-daemon:
+  service:
+    type: ClusterIP
+
 bifrost:
   binanceStartBlockHeight: 1
+  service:
+    type: ClusterIP
 
 midgard:
   image:

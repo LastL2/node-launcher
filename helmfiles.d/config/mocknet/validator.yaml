@@ -8,10 +8,14 @@ global:
 
 bifrost:
   peer: bifrost.genesis
+  service:
+    type: ClusterIP
 
 thor-daemon:
   peer: thor-daemon.genesis
   peerApi: thor-api.genesis
+  service:
+    type: ClusterIP
 
 thor-gateway:
   enabled: false
