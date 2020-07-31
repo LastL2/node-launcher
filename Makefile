@@ -25,7 +25,7 @@ destroy-logs:
 
 install-metrics: repos
 	@echo Installing Metrics
-	@helm upgrade --install metrics-server stable/metrics-server -n prometheus-system --create-namespace --wait
+	@helm upgrade --install metrics-server stable/metrics-server -n prometheus-system --create-namespace --wait -f ./metrics-server/values.yaml
 	@helm upgrade --install prometheus stable/prometheus-operator -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
 
 destroy-metrics:
