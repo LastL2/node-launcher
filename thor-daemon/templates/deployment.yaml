@@ -67,7 +67,7 @@ spec:
       - name: init-thor-daemon
         image: {{ include "thor-daemon.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if default .Values.peer .Values.global.peer }}
+        {{- if or (default .Values.peer .Values.global.peer) .Values.seeds }}
         command: ["/scripts/validator.sh"]
         {{- else }}
         command: ["/scripts/genesis.sh"]
@@ -83,6 +83,8 @@ spec:
                 key: externalIP
           - name: PEER
             value: {{ default .Values.peer .Values.global.peer }}
+          - name: SEEDS
+            value: {{ .Values.seeds }}
           - name: PEER_API
             value: {{ .Values.peerApi }}
           - name: BINANCE
@@ -123,6 +125,8 @@ spec:
           env:
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
+            - name: SEEDS
+              value: {{ .Values.seeds }}
             - name: PEER_API
               value: {{ .Values.peerApi }}
             - name: DEBUG

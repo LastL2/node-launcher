@@ -10,6 +10,7 @@ signer:
   mnemonicSecret: ""
 
 peer:
+seeds:
 peerApi:
 binanceDaemon:
 
