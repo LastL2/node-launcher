@@ -22,6 +22,8 @@ ARG CLI_PROD=0.7.2
 
 ENV BNCHOME=/opt/bnbchaind
 
+RUN apt-get update && apt-get install -y --no-install-recommends curl jq
+
 # Copy binaries for cli tool
 COPY --from=builder /node-binary/cli/testnet/${CLI_TESTNET}/linux/tbnbcli /usr/local/bin/tbnbcli
 COPY --from=builder /node-binary/cli/prod/${CLI_PROD}/linux/bnbcli /usr/local/bin/bnbcli
