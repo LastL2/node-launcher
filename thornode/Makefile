@@ -5,6 +5,8 @@ MNEMONIC_SECRET=thornode-mnemonic
 ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
 THORD_CMD=kubectl exec -it --namespace ${NAME} deploy/thor-daemon --
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")')
+SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")')
+SEED?=$(shell curl -s https://seed.thorchain.info/ | jq -r '. | join(",")')
 
 mnemonic:
 	@exec ${MNEMONIC_CMD}
@@ -43,13 +45,31 @@ testnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,bifrost.peer=${SEED_TESTNET},thor-daemon.seeds=${SEED_TESTNET}
 
+testnet-fullnode: create-namespace update-dependencies
+	@echo Installing THORNode
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false
+
 mainnet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS}
 
 mainnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.peer=${PEER}
+	@helm upgrade --install ${ARGS} --set bifrost.peer=${SEED},thor-daemon.seeds=${SEED}
+
+mainnet-fullnode: create-namespace update-dependencies
+	@echo Installing THORNode
+	@helm upgrade --install ${ARGS} --set bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED}
+
+chaosnet-genesis: mainnet-genesis
+
+chaosnet-validator: create-mnemonic update-dependencies
+	@echo Installing THORNode
+	@helm upgrade --install ${ARGS} --set bifrost.peer=${SEED_CHAOSNET},thor-daemon.seeds=${SEED_CHAOSNET}
+
+chaosnet-fullnode: create-namespace update-dependencies
+	@echo Installing THORNode
+	@helm upgrade --install ${ARGS} --set bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED_CHAOSNET}
 
 destroy:
 	@echo Deleting THORNode
@@ -84,4 +104,4 @@ set-ip-address:
 	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-gateway-external-ip -o jsonpath={.data.externalIP}) > /dev/null
 	@echo THORNode IP address updated
 
-.PHONY: mnemonic mocknet-genesis mocknet-validator testnet-genesis testnet-validator mainnet-genesis mainnet-validator destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
+.PHONY: mnemonic mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode chaosnet-genesis chaosnet-validator chaosnet-fullnode mainnet-genesis mainnet-validator mainnet-fullnode destroy midgard status shell mnemonic create-mnemonic set-node-keys set-ip-address
