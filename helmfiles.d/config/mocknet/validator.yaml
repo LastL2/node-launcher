@@ -13,6 +13,7 @@ bifrost:
 
 thor-daemon:
   peer: thor-daemon.genesis
+  seeds: thor-daemon.genesis
   peerApi: thor-api.genesis
   service:
     type: ClusterIP

@@ -4,7 +4,7 @@ MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.co
 MNEMONIC_SECRET=thornode-mnemonic
 ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
 THORD_CMD=kubectl exec -it --namespace ${NAME} deploy/thor-daemon --
-SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | sed 's/\["\(.*\)"\]/\1/')
+SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")')
 
 mnemonic:
 	@exec ${MNEMONIC_CMD}
@@ -41,7 +41,7 @@ testnet-genesis: create-mnemonic update-dependencies
 
 testnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,global.peer=${SEED_TESTNET}
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,bifrost.peer=${SEED_TESTNET},thor-daemon.seeds=${SEED_TESTNET}
 
 mainnet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode

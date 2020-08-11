@@ -67,3 +67,20 @@ data:
     echo "Running $0 in $PWD"
     set -ev
     su bnbchaind -c "/usr/local/bin/bnbchaind start --home ${BNCHOME}"
+
+  probe.sh: |
+    #!/bin/bash
+
+    FILE=.probe_last_height
+    ENDPOINT=localhost:$BINANCE_DAEMON_SERVICE_PORT_RPC/status
+
+    STATUS=$(curl -sL --fail -m 10 $ENDPOINT) || exit 1
+    if [ ! -f "$FILE" ];then
+      echo $STATUS | jq -r ".result.sync_info.index_height" > $FILE
+      exit 0
+    fi
+
+    OLD=$(cat $FILE)
+    echo $STATUS | jq -r ".result.sync_info.index_height" > $FILE
+    CURRENT=$(cat $FILE)
+    [ "$OLD" == "$CURRENT" ] && exit 1 || exit 0

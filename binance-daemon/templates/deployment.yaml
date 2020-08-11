@@ -62,10 +62,11 @@ spec:
               containerPort: 28660
               protocol: TCP
           livenessProbe:
+            initialDelaySeconds: 30
             timeoutSeconds: 10
-            httpGet:
-              path: /status
-              port: rpc
+            exec:
+              command:
+                - /scripts/probe.sh
           readinessProbe:
             timeoutSeconds: 10
             httpGet:
