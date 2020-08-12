@@ -45,9 +45,9 @@ testnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,bifrost.peer=${SEED_TESTNET},thor-daemon.seeds=${SEED_TESTNET}
 
-testnet-fullnode: create-namespace update-dependencies
+testnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED_TESTNET},thor-daemon.validator=false,thor-gateway.validator=false
 
 mainnet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode
@@ -57,9 +57,9 @@ mainnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set bifrost.peer=${SEED},thor-daemon.seeds=${SEED}
 
-mainnet-fullnode: create-namespace update-dependencies
+mainnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED}
+	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED},thor-daemon.validator=false,thor-gateway.validator=false
 
 chaosnet-genesis: mainnet-genesis
 
@@ -67,9 +67,9 @@ chaosnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set bifrost.peer=${SEED_CHAOSNET},thor-daemon.seeds=${SEED_CHAOSNET}
 
-chaosnet-fullnode: create-namespace update-dependencies
+chaosnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED_CHAOSNET}
+	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED_CHAOSNET},thor-daemon.validator=false,thor-gateway.validator=false
 
 destroy:
 	@echo Deleting THORNode

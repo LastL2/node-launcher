@@ -14,6 +14,8 @@ seeds:
 peerApi:
 binanceDaemon:
 
+validator: true
+
 debug: false
 
 replicaCount: 1

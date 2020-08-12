@@ -4,6 +4,8 @@
 
 net: mainnet
 
+validator: true
+
 replicaCount: 1
 
 image:

@@ -65,13 +65,17 @@ data:
       monitor-uri /healthz
       option      dontlognull
 
+    {{- if .Values.validator }}
     listen bifrost-p2p
         bind *:{{ .Values.service.port.bifrost.p2p }}
         server bifrost_service bifrost:{{ .Values.service.port.bifrost.p2p }}
+    {{- end }}
 
+    {{- if .Values.validator }}
     listen bifrost-api
         bind *:{{ .Values.service.port.bifrost.api }}
         server bifrost_service bifrost:{{ .Values.service.port.bifrost.api }}
+    {{- end }}
 
     listen thor-daemon-rpc
         bind *:{{ include "thor-gateway.rpc" . }}

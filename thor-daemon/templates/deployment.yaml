@@ -83,6 +83,8 @@ spec:
                 key: externalIP
           - name: PEER
             value: {{ default .Values.peer .Values.global.peer }}
+          - name: VALIDATOR
+            value: "{{ .Values.validator }}"
           - name: SEEDS
             value: {{ .Values.seeds }}
           - name: PEER_API
@@ -123,6 +125,13 @@ spec:
             - name: scripts
               mountPath: /kube-scripts/
           env:
+            - name: EXTERNAL_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "thor-daemon.fullname" . }}-external-ip
+                  key: externalIP
+            - name: VALIDATOR
+              value: "{{ .Values.validator }}"
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
             - name: SEEDS
