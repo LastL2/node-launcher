@@ -35,8 +35,9 @@ spec:
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-            - mountPath: /usr/local/etc/haproxy/
-              name: config
+          - mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+            name: config
           ports:
             - name: bifrost-api
               containerPort: {{ .Values.service.port.bifrost.api }}
