@@ -31,37 +31,60 @@ data:
     NODE_IP=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
     VERSION=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".version")
     BOND=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".bond")
+    STATUS=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".status")
     PREFLIGHT=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS/preflight)
     VAULT=$(curl -s $API/thorchain/pool_addresses | jq -r ".current[0].address")
+    [ "$VALIDATOR" == "false" ] && NODE_IP=$EXTERNAL_IP
 
-    echo "THORNode Status"
-    echo "Address   $NODE_ADDRESS"
-    echo "IP        $NODE_IP"
-    echo "Version   $VERSION"
-    echo "Bond      $BOND"
-    echo "API       http://$NODE_IP:1317"
-    echo "RPC       http://$NODE_IP:$THOR_DAEMON_SERVICE_PORT_RPC"
-    echo "Midgard   http://$NODE_IP:8080"
-    echo "Vault BNB Bond Address $VAULT"
-    echo Preflight $PREFLIGHT
-
-    # calculate BNB chain sync progress
-    [ "$NET" = "mainnet" ] && BNB_PEER=dataseed1.binance.org || BNB_PEER=data-seed-pre-0-s1.binance.org
-    BNB_HEIGHT=$(curl -s $BNB_PEER/status | jq -r ".result.sync_info.latest_block_height" || 1)
-    BNB_SYNC_HEIGHT=$(curl -s binance-daemon:$BINANCE_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.index_height")
-    BNB_PROGRESS=$(printf "%.2f\n" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100))
-
-    # calculate THOR chain sync progress
-    if [ ! "$PEER" = "" ]; then
-      THOR_HEIGHT=$(curl -s $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-      THOR_SYNC_HEIGHT=$(curl -s localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-      THOR_PROGRESS=$(printf "%.2f\n" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100))
+    if [ "$VALIDATOR" == "true" ]; then
+      echo "THORNode Status"
+      echo "Address   $NODE_ADDRESS"
+      echo "IP        $NODE_IP"
+      echo "Version   $VERSION"
+      echo "Status    $STATUS"
+      echo "Bond      $BOND"
+      echo "Vault BNB Bond Address $VAULT"
+      echo Preflight $PREFLIGHT
     fi
 
     echo
+    echo "Endpoints"
+    echo "API       http://$NODE_IP:1317"
+    echo "RPC       http://$NODE_IP:$THOR_DAEMON_SERVICE_PORT_RPC"
+    echo "Midgard   http://$NODE_IP:8080"
+
+    # calculate BNB chain sync progress
+    if [ "$VALIDATOR" == "true" ]; then
+      [ "$NET" = "mainnet" ] && BNB_PEER=dataseed1.binance.org || BNB_PEER=data-seed-pre-0-s1.binance.org
+      BNB_HEIGHT=$(curl -s $BNB_PEER/status | jq -r ".result.sync_info.latest_block_height" || 1)
+      BNB_SYNC_HEIGHT=$(curl -s binance-daemon:$BINANCE_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.index_height")
+      BNB_PROGRESS=$(printf "%.2f\n" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100))
+    fi
+
+    # calculate THOR chain sync progress
+    if [ "$PEER" != "" ]; then
+      THOR_HEIGHT=$(curl -s $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+      THOR_SYNC_HEIGHT=$(curl -s localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+      THOR_PROGRESS=$(printf "%.2f\n" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100))
+    elif [ "$SEEDS" != "" ]; then
+      OLD_IFS=$IFS
+      IFS=","
+      for PEER in $SEEDS
+      do
+        THOR_HEIGHT=$(curl -s $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height") || continue
+        THOR_SYNC_HEIGHT=$(curl -s localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+        THOR_PROGRESS=$(printf "%.2f\n" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100))
+        break
+      done
+      IFS=$OLD_IFS
+    fi
+
+
+    echo
     echo Syncing Chain Status
-    [ ! "$PEER" = "" ] && echo "THORChain $THOR_PROGRESS% ($THOR_SYNC_HEIGHT/$THOR_HEIGHT blocks)"
-    echo "Binance $BNB_PROGRESS% ($BNB_SYNC_HEIGHT/$BNB_HEIGHT blocks)"
+    [ "$PEER" != "" ] && echo "THORChain $THOR_PROGRESS% ($THOR_SYNC_HEIGHT/$THOR_HEIGHT blocks)"
+    [ "$VALIDATOR" == "true" ] && echo "Binance $BNB_PROGRESS% ($BNB_SYNC_HEIGHT/$BNB_HEIGHT blocks)"
+    exit 0
 
   entrypoint.sh: |
     #!/bin/sh
