@@ -73,7 +73,7 @@ chaosnet-fullnode: create-mnemonic update-dependencies
 
 reset-midgard:
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
-	@kubectl delete pod -l app.kubernetes.io/name=midgard
+	@kubectl delete -n ${NAME} pod -l app.kubernetes.io/name=midgard
 
 destroy:
 	@echo Deleting THORNode
