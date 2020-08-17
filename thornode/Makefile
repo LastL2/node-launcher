@@ -71,6 +71,10 @@ chaosnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED_CHAOSNET},thor-daemon.validator=false,thor-gateway.validator=false
 
+reset-midgard:
+	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
+	@kubectl delete -n ${NAME} pod -l app.kubernetes.io/name=midgard
+
 destroy:
 	@echo Deleting THORNode
 	@helm delete ${NAME} -n ${NAME}
