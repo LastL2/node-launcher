@@ -8,6 +8,7 @@ signer:
   name: thorchain
   password: password
   mnemonicSecret: ""
+  passwordSecret: ""
 
 # use in multi nodes envs
 peer:
