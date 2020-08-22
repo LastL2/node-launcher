@@ -23,7 +23,7 @@ create-mnemonic: create-namespace
 
 create-password:
 	@echo Creating THORNode Password
-	@kubectl get -n ${NAME} secrets/${PASSWORD_SECRET} > /dev/null 2>&1 || PASS="$$(${PASSWORD_CMD})" && kubectl -n ${NAME} create secret generic ${PASSWORD_SECRET} --from-literal=password="$$PASS"
+	@kubectl get -n ${NAME} secrets/${PASSWORD_SECRET} > /dev/null 2>&1 || (PASS="$$(${PASSWORD_CMD})" && kubectl -n ${NAME} create secret generic ${PASSWORD_SECRET} --from-literal=password="$$PASS")
 
 update-dependencies:
 	@helm dependencies update ./thornode
@@ -67,15 +67,17 @@ mainnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED},thor-daemon.validator=false,thor-gateway.validator=false
 
-chaosnet-genesis: mainnet-genesis
+chaosnet-genesis: create-mnemonic create-password update-dependencies
+	@echo Installing THORNode
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},global.passwordSecret=${PASSWORD_SECRET}
 
 chaosnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set bifrost.peer=${SEED_CHAOSNET},thor-daemon.seeds=${SEED_CHAOSNET},global.passwordSecret=${PASSWORD_SECRET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},bifrost.peer=${SEED_CHAOSNET},thor-daemon.seeds=${SEED_CHAOSNET},global.passwordSecret=${PASSWORD_SECRET}
 
 chaosnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED_CHAOSNET},thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds=${SEED_CHAOSNET},thor-daemon.validator=false,thor-gateway.validator=false
 
 reset-midgard:
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
