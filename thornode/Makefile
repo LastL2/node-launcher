@@ -71,7 +71,7 @@ chaosnet-genesis: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},global.passwordSecret=${PASSWORD_SECRET}
 
-chaosnet-validator: create-mnemonic update-dependencies
+chaosnet-validator: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},bifrost.peer=${SEED_CHAOSNET},thor-daemon.seeds=${SEED_CHAOSNET},global.passwordSecret=${PASSWORD_SECRET}
 
