@@ -104,7 +104,14 @@ spec:
           - name: SIGNER_NAME
             value: {{ .Values.signer.name }}
           - name: SIGNER_PASSWD
+            {{- if default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+                key: password
+            {{- else}}
             value: {{ .Values.signer.password }}
+            {{- end }}
           {{- if default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
           - name: SIGNER_SEED_PHRASE
             valueFrom:
@@ -145,7 +152,14 @@ spec:
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
             - name: SIGNER_PASSWD
+              {{- if default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+                  key: password
+              {{- else}}
               value: {{ .Values.signer.password }}
+              {{- end }}
           ports:
             - name: p2p
               containerPort: {{ include "thor-daemon.p2p" . }}

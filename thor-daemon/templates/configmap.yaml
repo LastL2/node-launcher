@@ -8,18 +8,18 @@ data:
 
     NODE_PUB_KEY=$(echo $SIGNER_PASSWD | thorcli keys show thorchain --pubkey)
     VALIDATOR=$(thord tendermint show-validator)
-    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-node-keys $NODE_PUB_KEY $NODE_PUB_KEY $VALIDATOR --from $SIGNER_NAME --yes --gas auto
+    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-node-keys $NODE_PUB_KEY $NODE_PUB_KEY $VALIDATOR --from $SIGNER_NAME --yes --gas auto --node tcp://localhost:$THOR_DAEMON_SERVICE_PORT_RPC
 
   set-ip-address.sh: |
     #!/bin/sh
 
     NODE_IP_ADDRESS=${1:-$(curl -s http://whatismyip.akamai.com)}
-    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-ip-address $NODE_IP_ADDRESS --from $SIGNER_NAME --yes --gas auto
+    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-ip-address $NODE_IP_ADDRESS --from $SIGNER_NAME --yes --gas auto --node tcp://localhost:$THOR_DAEMON_SERVICE_PORT_RPC
 
   set-version.sh: |
     #!/bin/sh
 
-    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-version --from $SIGNER_NAME --yes --gas auto
+    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thorcli tx thorchain set-version --from $SIGNER_NAME --yes --gas auto --node tcp://localhost:$THOR_DAEMON_SERVICE_PORT_RPC
 
   node-status.sh: |
     #!/bin/sh
@@ -92,7 +92,7 @@ data:
     # allow duplicate peers ip behind load balancer
     sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" ~/.thord/config/config.toml
 
-    ARGS="--rpc.laddr tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}"
+    ARGS="--p2p.laddr tcp://0.0.0.0:{{ include "thor-daemon.p2p" . }} --rpc.laddr tcp://0.0.0.0:{{ include "thor-daemon.rpc" . }}"
     [ "$DEBUG" = "true" ] && ARGS="$ARGS --trace --log_level *:debug" || ARGS="$ARGS --log_level main:info,state:debug,*:error"
     printf "$SIGNER_NAME\n$SIGNER_PASSWD\n" | thord start $ARGS
 

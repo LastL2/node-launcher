@@ -106,8 +106,15 @@ spec:
               value: {{ default .Values.peer .Values.global.peer }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
-            - name: SIGNER_PASSWORD
+            - name: SIGNER_PASSWD
+              {{- if default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+                  key: password
+              {{- else}}
               value: {{ .Values.signer.password }}
+              {{- end }}
             {{- if default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
             - name: SIGNER_SEED_PHRASE
               valueFrom:
