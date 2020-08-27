@@ -24,34 +24,25 @@ data:
   node-status.sh: |
     #!/bin/sh
 
-    source /scripts/core.sh
+    format_1e8 () {
+      printf "%.2f\n" $(jq -n $1/100000000) | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
+    }
 
+    format_int () {
+      printf "%.0f\n" $1 | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
+    }
+
+    THOR_PROGRESS="100.00"
     API=http://thor-api:1317
     NODE_ADDRESS=$(echo $SIGNER_PASSWD | thorcli keys show $SIGNER_NAME -a)
     NODE_IP=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
     VERSION=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".version")
     BOND=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".bond")
+    REWARDS=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".current_award")
     STATUS=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".status")
     PREFLIGHT=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS/preflight)
     VAULT=$(curl -s $API/thorchain/pool_addresses | jq -r ".current[0].address")
     [ "$VALIDATOR" == "false" ] && NODE_IP=$EXTERNAL_IP
-
-    if [ "$VALIDATOR" == "true" ]; then
-      echo "THORNode Status"
-      echo "Address   $NODE_ADDRESS"
-      echo "IP        $NODE_IP"
-      echo "Version   $VERSION"
-      echo "Status    $STATUS"
-      echo "Bond      $BOND"
-      echo "Vault BNB Bond Address $VAULT"
-      echo Preflight $PREFLIGHT
-    fi
-
-    echo
-    echo "Endpoints"
-    echo "API       http://$NODE_IP:1317"
-    echo "RPC       http://$NODE_IP:$THOR_DAEMON_SERVICE_PORT_RPC"
-    echo "Midgard   http://$NODE_IP:8080"
 
     # calculate BNB chain sync progress
     if [ "$VALIDATOR" == "true" ]; then
@@ -79,11 +70,36 @@ data:
       IFS=$OLD_IFS
     fi
 
+    [ "$THOR_PROGRESS" != "100.00" ] && VAULT="standby"
+
+    cat << "EOF"
+     ________ ______  ___  _  __        __
+    /_  __/ // / __ \/ _ \/ |/ /__  ___/ /__
+     / / / _  / /_/ / , _/    / _ \/ _  / -_)
+    /_/ /_//_/\____/_/|_/_/|_/\___/\_,_/\__/
+    EOF
+    echo
+
+    if [ "$VALIDATOR" == "true" ]; then
+      echo "ADDRESS     $NODE_ADDRESS"
+      echo "IP          $NODE_IP"
+      echo "VERSION     $VERSION"
+      echo "STATUS      $STATUS"
+      echo "BOND        $(format_1e8 $BOND)"
+      echo "REWARDS     $(format_1e8 $REWARDS)"
+      echo "VAULT       $VAULT"
+      echo "PREFLIGHT   "$PREFLIGHT
+    fi
 
     echo
-    echo Syncing Chain Status
-    [ "$PEER" != "" ] && echo "THORChain $THOR_PROGRESS% ($THOR_SYNC_HEIGHT/$THOR_HEIGHT blocks)"
-    [ "$VALIDATOR" == "true" ] && echo "Binance $BNB_PROGRESS% ($BNB_SYNC_HEIGHT/$BNB_HEIGHT blocks)"
+    echo "API         http://$NODE_IP:1317"
+    echo "RPC         http://$NODE_IP:$THOR_DAEMON_SERVICE_PORT_RPC"
+    echo "MIDGARD     http://$NODE_IP:8080"
+
+    echo
+    printf "%-11s %-10s %-10s\n" CHAIN SYNC BLOCKS
+    [ "$PEER" != "" ] && printf "%-11s %-10s %-10s\n" THORChain "$THOR_PROGRESS%" "$(format_int $THOR_SYNC_HEIGHT)/$(format_int $THOR_HEIGHT)"
+    [ "$VALIDATOR" == "true" ] && printf "%-11s %-10s %-10s\n" Binance "$BNB_PROGRESS%" "$(format_int $BNB_SYNC_HEIGHT)/$(format_int $BNB_HEIGHT)"
     exit 0
 
   entrypoint.sh: |
