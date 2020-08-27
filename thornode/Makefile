@@ -1,3 +1,5 @@
+SHELL:=/bin/bash
+
 NAME?=thornode
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC | cut -d '=' -f 2 | tr -d '\r'
