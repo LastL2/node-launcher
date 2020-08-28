@@ -1,11 +1,3 @@
-FROM ubuntu:20.04 as builder
-ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates wget git git-lfs binutils
-RUN git lfs clone --depth 1 https://github.com/binance-chain/node-binary.git
-
-# Final stage
-
 FROM ubuntu:20.04
 
 ARG HOST_USER_UID=1000
@@ -20,25 +12,31 @@ ARG LIGHTNODE_PROD=0.6.3
 ARG CLI_TESTNET=0.7.2
 ARG CLI_PROD=0.8.0-hotfix
 
+ARG REPO_URL=https://github.com/binance-chain/node-binary/raw/master
+
 ENV BNCHOME=/opt/bnbchaind
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl jq
+RUN apt-get update && apt-get install -y --no-install-recommends curl jq ca-certificates
 
 # Copy binaries for cli tool
-COPY --from=builder /node-binary/cli/testnet/${CLI_TESTNET}/linux/tbnbcli /usr/local/bin/tbnbcli
-COPY --from=builder /node-binary/cli/prod/${CLI_PROD}/linux/bnbcli /usr/local/bin/bnbcli
+RUN curl -Ls --create-dirs -o /usr/local/bin/tbnbcli ${REPO_URL}/cli/testnet/${CLI_TESTNET}/linux/tbnbcli \
+  && curl -Ls --create-dirs -o /usr/local/bin/bnbcli ${REPO_URL}/cli/prod/${CLI_PROD}/linux/bnbcli \
 
-# Copy binaries for lightd
-COPY --from=builder /node-binary/lightnode/testnet/${LIGHTNODE_TESTNET}/linux/lightd /node-binary/lightnode/testnet/lightd
-COPY --from=builder /node-binary/lightnode/prod/${LIGHTNODE_PROD}/linux/lightd /node-binary/lightnode/prod/lightd
+  # Copy binaries for lightd
+  && curl -Ls --create-dirs -o /node-binary/lightnode/testnet/lightd ${REPO_URL}/lightnode/testnet/${LIGHTNODE_TESTNET}/linux/lightd \
+  && curl -Ls --create-dirs -o /node-binary/lightnode/prod/lightd ${REPO_URL}/lightnode/prod/${LIGHTNODE_PROD}/linux/lightd \
 
-# Copy binaries for bnbchaind
-COPY --from=builder /node-binary/fullnode/testnet/${FULLNODE_TESTNET}/linux/bnbchaind /node-binary/fullnode/testnet/bnbchaind
-COPY --from=builder /node-binary/fullnode/prod/${FULLNODE_PROD}/linux/bnbchaind /node-binary/fullnode/prod/bnbchaind
+  # Copy binaries for bnbchaind
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/bnbchaind ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/linux/bnbchaind \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/prod/bnbchaind ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/linux/bnbchaind \
 
-# Copy config files for testnet and prod chains of fullnode
-COPY --from=builder /node-binary/fullnode/testnet/${FULLNODE_TESTNET}/config/* /node-binary/fullnode/testnet/config/
-COPY --from=builder /node-binary/fullnode/prod/${FULLNODE_PROD}/config/* /node-binary/fullnode/prod/config/
+  # Copy config files for testnet and prod chains of fullnode
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/app.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/app.toml \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/config.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/config.toml \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/genesis.json ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/genesis.json \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/app.toml ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/app.toml \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/config.toml ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/config.toml \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/genesis.json ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/genesis.json
 
 # Copy scripts
 COPY ./bin/*.sh /usr/local/bin/
@@ -48,7 +46,7 @@ RUN set -ex \
 && mkdir -p "$BNCHOME" \
 && groupadd --gid "$HOST_USER_GID" bnbchaind \
 && useradd --uid "$HOST_USER_UID" --gid "$HOST_USER_GID" --shell /bin/bash --no-create-home bnbchaind \
-&& chown -R bnbchaind:bnbchaind "$BNCHOME"
+&& chown -R bnbchaind:bnbchaind "$BNCHOME" /node-binary
 
 VOLUME ${BNCHOME}
 
