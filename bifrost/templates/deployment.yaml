@@ -44,6 +44,17 @@ spec:
         volumeMounts:
         - name: scripts
           mountPath: /scripts
+      - name: init-keepalive
+        image: busybox
+        command:
+        - /bin/sh
+        - -c
+        - |
+          sysctl -w net.ipv4.tcp_keepalive_time=120
+          sysctl -w net.ipv4.tcp_keepalive_intvl=60
+          sysctl -w net.ipv4.tcp_keepalive_probes=3
+        securityContext:
+          privileged: true
       - name: init-thorchain
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done']
