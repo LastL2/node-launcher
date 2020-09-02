@@ -13,7 +13,10 @@ SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. 
 SEED?=$(shell curl -s https://seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 
 mnemonic:
-	@exec ${MNEMONIC_CMD}
+	@kubectl get -n ${NAME} secrets/${MNEMONIC_SECRET} --template={{.data.mnemonic}} | base64 --decode
+
+password:
+	@kubectl get -n ${NAME} secrets/${PASSWORD_SECRET} --template={{.data.password}} | base64 --decode
 
 create-namespace:
 	@echo Creating THORNode Namespace
