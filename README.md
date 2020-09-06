@@ -264,6 +264,18 @@ make prometheus
 
 Open http://localhost:9090 in your browser.
 
+### Configure alert manager within Prometheus
+
+Full documentation can be found here https://prometheus.io/docs/alerting/latest/configuration.
+You can see an example of a slack configuration and adding prometheus rules in the file `prometheus/values.yaml`.
+
+Once you have updated the configuration, you can update your current metrics deployment
+by running the install command again:
+
+```bash
+make install-metrics
+```
+
 ### Destroy metrics management stack
 
 ```bash
