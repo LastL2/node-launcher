@@ -59,6 +59,10 @@ prometheus:
 	@echo Open your browser at http://localhost:9090
 	@kubectl -n prometheus-system port-forward service/prometheus-prometheus-oper-prometheus 9090
 
+alert-manager:
+	@echo Open your browser at http://localhost:9093
+	@kubectl -n prometheus-system port-forward service/prometheus-prometheus-oper-alertmanager 9093
+
 dashboard:
 	@echo Open your browser at http://localhost:8000
 	@kubectl -n kube-system port-forward service/kubernetes-dashboard 8000:443
