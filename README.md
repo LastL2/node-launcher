@@ -276,6 +276,14 @@ by running the install command again:
 make install-metrics
 ```
 
+You can access the alert-manager administration dashboard by running the command below:
+
+```bash
+make alert-manager
+```
+
+This dashboard will allow you to "silence" alerts for a specific period of time.
+
 ### Destroy metrics management stack
 
 ```bash
