@@ -88,7 +88,10 @@ reset-midgard:
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
 	@kubectl delete -n ${NAME} pod -l app.kubernetes.io/name=midgard
 
-destroy:
+destroy: status
+	@echo
+	@echo !!! Make sure your got your BOND back before destroying your THORNode !!!
+	@echo -n "Are you sure? Confirm [y/n] " && read ans && [ $${ans:-N} == y ]
 	@echo Deleting THORNode
 	@helm delete ${NAME} -n ${NAME}
 	@kubectl delete namespace ${NAME}
