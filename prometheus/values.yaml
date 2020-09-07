@@ -56,7 +56,7 @@ prometheusOperator:
 #           {{- end }}
 #         text: >-
 #           {{ range .Alerts -}}
-#           *Alert:* {{ .CommonLabels.alertname }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+#           *Alert:* {{ .Labels.alertname }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
 
 #           *Description:* {{ .Annotations.message }}
 
