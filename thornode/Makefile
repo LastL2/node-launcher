@@ -91,7 +91,7 @@ reset-midgard:
 recover-binance:
 	@kubectl patch -n ${NAME} deploy/binance-daemon -p '{"spec":{"template":{"spec":{"containers":[{"name":"binance-daemon","command":["sleep", "1000000"]}]}}}}'
 	@echo -n "From which height do you want to recover? Check the logs of your current dpeloyment and get the last height-1 at which it's crashing: " && read HEIGHT && kubectl exec -it -n ${NAME} deploy/binance-daemon -- sh -c "/node-binary/tools/state_recover $$HEIGHT \$$BNCHOME"
-	@kubectl patch deploy/binance-daemon  --type json   -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
+	@kubectl patch -n ${NAME} deploy/binance-daemon --type json -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
 
 destroy: status
 	@echo
