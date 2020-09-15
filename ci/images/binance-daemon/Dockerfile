@@ -30,6 +30,9 @@ RUN curl -Ls --create-dirs -o /usr/local/bin/tbnbcli ${REPO_URL}/cli/testnet/${C
   && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/bnbchaind ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/linux/bnbchaind \
   && curl -Ls --create-dirs -o /node-binary/fullnode/prod/bnbchaind ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/linux/bnbchaind \
 
+  # Copy binary for state_recover
+  && curl -Ls --create-dirs -o /node-binary/tools/state_recover ${REPO_URL}/tools/recover/linux/state_recover \
+
   # Copy config files for testnet and prod chains of fullnode
   && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/app.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/app.toml \
   && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/config.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/config.toml \
@@ -42,7 +45,7 @@ RUN curl -Ls --create-dirs -o /usr/local/bin/tbnbcli ${REPO_URL}/cli/testnet/${C
 COPY ./bin/*.sh /usr/local/bin/
 
 RUN set -ex \
-&& chmod +x /usr/local/bin/*.sh \
+&& chmod +x /usr/local/bin/*.sh /node-binary/tools/* \
 && mkdir -p "$BNCHOME" \
 && groupadd --gid "$HOST_USER_GID" bnbchaind \
 && useradd --uid "$HOST_USER_UID" --gid "$HOST_USER_GID" --shell /bin/bash --no-create-home bnbchaind \
