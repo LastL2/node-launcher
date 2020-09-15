@@ -88,8 +88,15 @@ reset-midgard:
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
 	@kubectl delete -n ${NAME} pod -l app.kubernetes.io/name=midgard
 
+reset-binance:
+	@kubectl patch -n ${NAME} deploy/binance-daemon -p '{"spec":{"template":{"spec":{"containers":[{"name":"binance-daemon","command":["sleep", "1000000"]}]}}}}'
+	@sleep 10
+	@kubectl exec -it -n ${NAME} deploy/binance-daemon -- rm -rf /opt/bnbchaind/data /opt/bnbchaind/config
+	@kubectl patch -n ${NAME} deploy/binance-daemon --type json -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
+
 recover-binance:
 	@kubectl patch -n ${NAME} deploy/binance-daemon -p '{"spec":{"template":{"spec":{"containers":[{"name":"binance-daemon","command":["sleep", "1000000"]}]}}}}'
+	@sleep 10
 	@echo -n "From which height do you want to recover? Check the logs of your current dpeloyment and get the last height-1 at which it's crashing: " && read HEIGHT && kubectl exec -it -n ${NAME} deploy/binance-daemon -- sh -c "/node-binary/tools/state_recover $$HEIGHT \$$BNCHOME"
 	@kubectl patch -n ${NAME} deploy/binance-daemon --type json -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
 
