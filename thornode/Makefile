@@ -11,6 +11,7 @@ THORD_CMD=kubectl exec -it --namespace ${NAME} deploy/thor-daemon --
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 SEED?=$(shell curl -s https://seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
+BNB_RECOVER_HEIGHT_CMD=kubectl logs -n ${NAME} deploy/binance-daemon | grep "Wrong Block.Header.AppHash" | awk -F"[()]" '{print $2}' |  cut -d ':' -f 1 | awk '{print $1-1}'
 
 mnemonic:
 	@kubectl get -n ${NAME} secrets/${MNEMONIC_SECRET} --template={{.data.mnemonic}} | base64 --decode
@@ -89,16 +90,31 @@ reset-midgard:
 	@kubectl delete -n ${NAME} pod -l app.kubernetes.io/name=midgard
 
 reset-binance:
-	@kubectl patch -n ${NAME} deploy/binance-daemon -p '{"spec":{"template":{"spec":{"containers":[{"name":"binance-daemon","command":["sleep", "1000000"]}]}}}}'
-	@sleep 10
-	@kubectl exec -it -n ${NAME} deploy/binance-daemon -- rm -rf /opt/bnbchaind/data /opt/bnbchaind/config
-	@kubectl patch -n ${NAME} deploy/binance-daemon --type json -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
+	@echo !!! Destructive command, be careful, your Binance node data will be wiped out and your Binance node will restart from scratch and sync again !!!
+	@echo -n "Are you sure? Confirm [y/n] " && read ans && [ $${ans:-N} == y ]
+	@kubectl scale -n ${NAME} --replicas=0 deploy/binance-daemon --timeout=5m
+	@kubectl wait --for=delete pods -l app.kubernetes.io/name=binance-daemon -n ${NAME} --timeout=5m > /dev/null 2>&1 || true
+	@kubectl run -n ${NAME} -it reset-binance --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["rm", "-rf", "/bnb/config", "/bnb/data"], "name": "reset-binance", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/bnb", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "binance-daemon"}}]}}'
+	@kubectl scale -n ${NAME} --replicas=1 deploy/binance-daemon --timeout=5m
 
 recover-binance:
-	@kubectl patch -n ${NAME} deploy/binance-daemon -p '{"spec":{"template":{"spec":{"containers":[{"name":"binance-daemon","command":["sleep", "1000000"]}]}}}}'
-	@sleep 10
-	@echo -n "From which height do you want to recover? Check the logs of your current dpeloyment and get the last height-1 at which it's crashing: " && read HEIGHT && kubectl exec -it -n ${NAME} deploy/binance-daemon -- sh -c "/node-binary/tools/state_recover $$HEIGHT \$$BNCHOME"
-	@kubectl patch -n ${NAME} deploy/binance-daemon --type json -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
+	@HEIGHT="$$(${BNB_RECOVER_HEIGHT_CMD})"; [ "$$HEIGHT" == "" ] && echo Binance node height could not be parsed automatically, make sure your Binance node is currently failing from a consensus failure. || echo Binance node height parsed from logs: $$HEIGHT
+	@echo -n "Check Binance node height was parsed correctly. Are you sure? Confirm [y/n] " && read ans && [ $${ans:-N} == y ]
+	@kubectl scale -n ${NAME} --replicas=0 deploy/binance-daemon --timeout=5m
+	@kubectl wait --for=delete pods -l app.kubernetes.io/name=binance-daemon -n ${NAME} --timeout=5m
+	@kubectl run -n ${NAME} -it recover-binance --rm --restart=Never --image=registry.gitlab.com/thorchain/devops/binance-node:latest --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["/node-binary/tools/state_recover", "$(shell ${BNB_RECOVER_HEIGHT_CMD})", "/bnb"], "name": "recover-binance", "stdin": true, "stdinOnce": true, "tty": true, "image": "registry.gitlab.com/thorchain/devops/binance-node:latest", "volumeMounts": [{"mountPath": "/bnb", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "binance-daemon"}}]}}'
+	@kubectl scale -n ${NAME} --replicas=1 deploy/binance-daemon --timeout=5m
+
+wait-ready:
+	@kubectl wait --for=condition=Ready --all pods -n ${NAME} --timeout=5m
+
+update-image:
+	@echo -n "Enter thor-daemon / thor-api / bifrost image version: " && read VERSION && \
+		kubectl -n ${NAME} set image deploy/thor-daemon init-thor-daemon=registry.gitlab.com/thorchain/thornode:$$VERSION thor-daemon=registry.gitlab.com/thorchain/thornode:$$VERSION && \
+		kubectl -n ${NAME} set image deploy/thor-api thor-api=registry.gitlab.com/thorchain/thornode:$$VERSION && \
+		kubectl -n ${NAME} set image deploy/bifrost bifrost=registry.gitlab.com/thorchain/thornode:$$VERSION
+	@for deploy in thor-daemon thor-api bifrost; do kubectl -n ${NAME} rollout status deploy/$$deploy; done;
+	@echo Image version updated
 
 destroy: status
 	@echo
