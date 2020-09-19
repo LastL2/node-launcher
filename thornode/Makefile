@@ -51,15 +51,15 @@ mocknet-validator: create-mnemonic update-dependencies
 
 testnet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet-0.14.0},midgard.image.tag=testnet
 
 testnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},midgard.image.tag=testnet,bifrost.peer='${SEED_TESTNET}',thor-daemon.seeds='${SEED_TESTNET}'
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet-0.14.0},midgard.image.tag=testnet,bifrost.peer='${SEED_TESTNET}',thor-daemon.seeds='${SEED_TESTNET}'
 
 testnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet-0.14.0},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
 mainnet-genesis: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
@@ -75,15 +75,15 @@ mainnet-fullnode: create-mnemonic update-dependencies
 
 chaosnet-genesis: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},global.passwordSecret=${PASSWORD_SECRET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet-0.13.0},global.passwordSecret=${PASSWORD_SECRET}
 
 chaosnet-validator: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},bifrost.peer='${SEED_CHAOSNET}',thor-daemon.seeds='${SEED_CHAOSNET}',global.passwordSecret=${PASSWORD_SECRET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet-0.13.0},bifrost.peer='${SEED_CHAOSNET}',thor-daemon.seeds='${SEED_CHAOSNET}',global.passwordSecret=${PASSWORD_SECRET}
 
 chaosnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet-0.13.0},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
 reset-midgard:
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
@@ -107,14 +107,6 @@ recover-binance:
 
 wait-ready:
 	@kubectl wait --for=condition=Ready --all pods -n ${NAME} --timeout=5m
-
-update-image:
-	@echo -n "Enter thor-daemon / thor-api / bifrost image version: " && read VERSION && \
-		kubectl -n ${NAME} set image deploy/thor-daemon init-thor-daemon=registry.gitlab.com/thorchain/thornode:$$VERSION thor-daemon=registry.gitlab.com/thorchain/thornode:$$VERSION && \
-		kubectl -n ${NAME} set image deploy/thor-api thor-api=registry.gitlab.com/thorchain/thornode:$$VERSION && \
-		kubectl -n ${NAME} set image deploy/bifrost bifrost=registry.gitlab.com/thorchain/thornode:$$VERSION
-	@for deploy in thor-daemon thor-api bifrost; do kubectl -n ${NAME} rollout status deploy/$$deploy; done;
-	@echo Image version updated
 
 destroy: status
 	@echo
@@ -140,16 +132,22 @@ logs:
 logs-binance:
 	@kubectl logs -f -n ${NAME} deploy/binance-daemon
 
+logs-bifrost:
+	@kubectl logs -f -n ${NAME} deploy/bifrost
+
+logs-midgard:
+	@kubectl logs -f -n ${NAME} deploy/midgard
+
 set-node-keys:
 	@exec ${THORD_CMD} /kube-scripts/set-node-keys.sh > /dev/null
-	@echo THORNode Keys updated
+	@sleep 5 && echo THORNode Keys updated
 
 set-version:
 	@exec ${THORD_CMD} /kube-scripts/set-version.sh > /dev/null
-	@echo THORNode version updated
+	@sleep 5 && echo THORNode version updated
 
 set-ip-address:
 	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-gateway-external-ip -o jsonpath={.data.externalIP}) > /dev/null
-	@echo THORNode IP address updated
+	@sleep 5 && echo THORNode IP address updated
 
 .PHONY: mnemonic create-mnemonic create-password create-namespace update-dependencies mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode chaosnet-genesis chaosnet-validator chaosnet-fullnode mainnet-genesis mainnet-validator mainnet-fullnode destroy midgard status shell set-node-keys set-ip-address
