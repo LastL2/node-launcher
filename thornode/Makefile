@@ -1,16 +1,19 @@
 SHELL:=/bin/bash
 
 NAME?=thornode
+VERSION_TESTNET=testnet-0.14.0
+VERSION_CHAOSNET=chaosnet-0.13.0
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
+SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
+SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
+SEED?=$(shell curl -s https://seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
+
 MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC | cut -d '=' -f 2 | tr -d '\r'
 MNEMONIC_SECRET=thornode-mnemonic
 PASSWORD_CMD=read -s -p "Enter Password: " pwd; echo >&2;read -s -p "Confirm Password: " pwdconf; [ "$$pwd" = "$$pwdconf" ] && (echo >&2; echo $$pwd) || (echo >&2; echo "Passwords mismatch" >&2 && exit 1)
 PASSWORD_SECRET=thornode-password
 ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
 THORD_CMD=kubectl exec -it --namespace ${NAME} deploy/thor-daemon --
-SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
-SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
-SEED?=$(shell curl -s https://seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 BNB_RECOVER_HEIGHT_CMD=kubectl logs -n ${NAME} deploy/binance-daemon | grep "Wrong Block.Header.AppHash" | awk -F"[()]" '{print $2}' |  cut -d ':' -f 1 | awk '{print $1-1}'
 
 mnemonic:
@@ -51,15 +54,15 @@ mocknet-validator: create-mnemonic update-dependencies
 
 testnet-genesis: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet-0.14.0},midgard.image.tag=testnet
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},midgard.image.tag=testnet
 
 testnet-validator: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet-0.14.0},midgard.image.tag=testnet,bifrost.peer='${SEED_TESTNET}',thor-daemon.seeds='${SEED_TESTNET}'
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},midgard.image.tag=testnet,bifrost.peer='${SEED_TESTNET}',thor-daemon.seeds='${SEED_TESTNET}'
 
 testnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-testnet-0.14.0},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
 mainnet-genesis: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
@@ -75,15 +78,15 @@ mainnet-fullnode: create-mnemonic update-dependencies
 
 chaosnet-genesis: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet-0.13.0},global.passwordSecret=${PASSWORD_SECRET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.passwordSecret=${PASSWORD_SECRET}
 
 chaosnet-validator: create-mnemonic create-password update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet-0.13.0},bifrost.peer='${SEED_CHAOSNET}',thor-daemon.seeds='${SEED_CHAOSNET}',global.passwordSecret=${PASSWORD_SECRET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},bifrost.peer='${SEED_CHAOSNET}',thor-daemon.seeds='${SEED_CHAOSNET}',global.passwordSecret=${PASSWORD_SECRET}
 
 chaosnet-fullnode: create-mnemonic update-dependencies
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-chaosnet-0.13.0},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
 reset-midgard:
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
