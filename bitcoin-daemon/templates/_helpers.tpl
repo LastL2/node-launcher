@@ -61,3 +61,32 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Net
+*/}}
+{{- define "bitcoin-daemon.net" -}}
+{{- default .Values.net .Values.global.net -}}
+{{- end -}}
+
+{{/*
+RPC Port
+*/}}
+{{- define "bitcoin-daemon.rpc" -}}
+{{- if eq (include "bitcoin-daemon.net" .) "mainnet" -}}
+    {{ .Values.service.port.mainnet.rpc}}
+{{- else -}}
+    {{ .Values.service.port.testnet.rpc }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+P2P Port
+*/}}
+{{- define "bitcoin-daemon.p2p" -}}
+{{- if eq (include "bitcoin-daemon.net" .) "mainnet" -}}
+    {{ .Values.service.port.mainnet.p2p}}
+{{- else -}}
+    {{ .Values.service.port.testnet.p2p }}
+{{- end -}}
+{{- end -}}
