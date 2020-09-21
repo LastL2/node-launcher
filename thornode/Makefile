@@ -118,6 +118,16 @@ recover-binance: ## Recover current Binance Node service on your THORNode by pro
 		kubectl run -n ${NAME} -it recover-binance --rm --restart=Never --image=registry.gitlab.com/thorchain/devops/binance-node:latest --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["/node-binary/tools/state_recover", "'$$HEIGHT'", "/bnb"], "name": "recover-binance", "stdin": true, "stdinOnce": true, "tty": true, "image": "registry.gitlab.com/thorchain/devops/binance-node:latest", "volumeMounts": [{"mountPath": "/bnb", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "binance-daemon"}}]}}' && \
 		kubectl scale -n ${NAME} --replicas=1 deploy/binance-daemon --timeout=5m
 
+recover-thord: ## Recover current Thor-daemon service on your THORNode and resync THORChain after a consensus failure
+	@echo !!! Destructive command, only apply in case of consensus failure on thor-daemon !!!
+	@echo Be careful, your thor-daemon data will be deleted, the service will restart and sync again
+	@echo -n "Are you sure? Confirm [y/n] " && read ans && [ $${ans:-N} == y ]
+	@kubectl scale -n ${NAME} --replicas=0 deploy/thor-daemon --timeout=5m
+	@kubectl wait --for=delete pods -l app.kubernetes.io/name=thor-daemon -n ${NAME} --timeout=5m > /dev/null 2>&1 || true
+	@kubectl run -n ${NAME} -it recover-thord --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["sh", "-c", "cd /root/.thord/data && mkdir -p bak && mv application.db blockstore.db cs.wal evidence.db state.db tx_index.db bak/"], "name": "recover-thord", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/root", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "thor-daemon"}}]}}'
+	@kubectl scale -n ${NAME} --replicas=1 deploy/thor-daemon --timeout=5m
+
+
 wait-ready: ## Wait for all pods to be in Ready state
 	@kubectl wait --for=condition=Ready --all pods -n ${NAME} --timeout=5m
 
