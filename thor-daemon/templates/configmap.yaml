@@ -32,7 +32,7 @@ data:
       printf "%.0f\n" $1 | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
     }
 
-    THOR_PROGRESS="100.00"
+    THOR_PROGRESS="100.000"
     API=http://thor-api:1317
     NODE_ADDRESS=$(echo $SIGNER_PASSWD | thorcli keys show $SIGNER_NAME -a)
     NODE_IP=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
@@ -71,7 +71,7 @@ data:
       IFS=$OLD_IFS
     fi
 
-    [ "$THOR_PROGRESS" != "100.00" ] && VAULT="standby"
+    [ "$THOR_PROGRESS" != "100.000" ] && VAULT="standby"
 
     cat << "EOF"
      ________ ______  ___  _  __        __
