@@ -1,7 +1,7 @@
 SHELL:=/bin/bash
 
 NAME?=thornode
-VERSION_TESTNET=testnet-0.14.0
+VERSION_TESTNET=testnet-0.15.0
 VERSION_CHAOSNET=chaosnet-0.14.0
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
