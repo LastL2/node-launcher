@@ -25,6 +25,9 @@ mnemonic: ## Retrieve and display current mnemonic for backup from your THORNode
 password: ## Retrieve and display current password for backup from your THORNode
 	@kubectl get -n ${NAME} secrets/${PASSWORD_SECRET} --template={{.data.password}} | base64 --decode
 
+pods: ## Get THORNode Kubernetes pods
+	@kubectl -n ${NAME} get pods
+
 create-namespace:
 	@echo Creating THORNode Namespace
 	@kubectl get ns ${NAME} > /dev/null 2>&1 || kubectl create ns ${NAME}
@@ -67,6 +70,8 @@ testnet-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNE
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
+testnet-update: pull testnet-validator set-version status ## Update a TESTNET Fullnode THORNode and set version
+
 mainnet-genesis: create-mnemonic create-password update-dependencies ## Install/Update a MAINNET Genesis THORNode
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.passwordSecret=${PASSWORD_SECRET}
@@ -79,6 +84,8 @@ mainnet-fullnode: create-mnemonic update-dependencies ## Install/Update a MAINNE
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED}',thor-daemon.validator=false,thor-gateway.validator=false
 
+mainnet-update: pull mainnet-validator set-version status ## Update a MAINNET Fullnode THORNode and set version
+
 chaosnet-genesis: create-mnemonic create-password update-dependencies ## Install/Update a CHAOSNET Genesis THORNode
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.passwordSecret=${PASSWORD_SECRET}
@@ -90,6 +97,8 @@ chaosnet-validator: create-mnemonic create-password update-dependencies ## Inst
 chaosnet-fullnode: create-mnemonic update-dependencies ## Install/Update a CHAOSNET Fullnode THORNode
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false
+
+chaosnet-update: pull chaosnet-validator set-version status ## Update a CHAOSNET Fullnode THORNode and set version
 
 reset-midgard: ## Reset and resync current Midgard service from scratch on your THORNode. This command can take a while to sync back to 100%.
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
@@ -173,4 +182,4 @@ set-ip-address: ## Send a set-ip-address transaction to your THORNode
 	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-gateway-external-ip -o jsonpath={.data.externalIP}) > /dev/null
 	@sleep 5 && echo THORNode IP address updated
 
-.PHONY: help mnemonic create-mnemonic create-password create-namespace update-dependencies mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode chaosnet-genesis chaosnet-validator chaosnet-fullnode mainnet-genesis mainnet-validator mainnet-fullnode destroy midgard status shell set-node-keys set-ip-address set-version
+.PHONY: help mnemonic create-mnemonic create-password create-namespace update-dependencies pods mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode testnet-update chaosnet-genesis chaosnet-validator chaosnet-fullnode chaosnet-update mainnet-genesis mainnet-validator mainnet-fullnode mainnet-update destroy midgard status shell set-node-keys set-ip-address set-version

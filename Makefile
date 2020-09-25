@@ -13,6 +13,9 @@ repos: ## Add Helm repositories for dependencies
 
 tools: install-logs install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
 
+pull: ## Git pull node-launcher repository
+	@git pull
+
 destroy-tools: destroy-logs destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
 
 install-logs: repos ## Install/Update logs management stack
@@ -100,4 +103,4 @@ mocknet-30: ## Install/Update a Mocknet development environment with 30 THORNode
 destroy-mocknet-30: ## Uninstall a Mocknet development environment with 30 THORNodes
 	@helmfile -f helmfiles.d/mocknet-30.yaml destroy
 
-.PHONY: help helm repo tools install-logs install-metrics install-dashboard destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard alert-manager mocknet-4 destroy-mocknet-4 mocknet-6 destroy-mocknet-6 mocknet-10 destroy-mocknet-10 mocknet-20 destroy-mocknet-20 mocknet-30 destroy-mocknet-30
+.PHONY: help helm repo pull tools install-logs install-metrics install-dashboard destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard alert-manager mocknet-4 destroy-mocknet-4 mocknet-6 destroy-mocknet-6 mocknet-10 destroy-mocknet-10 mocknet-20 destroy-mocknet-20 mocknet-30 destroy-mocknet-30
