@@ -52,14 +52,14 @@ data:
       [ "$NET" = "mainnet" ] && BNB_PEER=dataseed1.binance.org || BNB_PEER=data-seed-pre-0-s1.binance.org
       BNB_HEIGHT=$(curl -sL --fail -m 10 $BNB_PEER/status | jq -r ".result.sync_info.latest_block_height")
       BNB_SYNC_HEIGHT=$(curl -sL --fail -m 10 binance-daemon:$BINANCE_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.index_height")
-      BNB_PROGRESS=$(printf "%.3f%%" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100 2> /dev/null) 2> /dev/null) || BNB_PROGRESS=Error)
+      BNB_PROGRESS=$(printf "%.3f%%" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100 2> /dev/null) 2> /dev/null) || BNB_PROGRESS=Error
     fi
 
     # calculate THOR chain sync progress
     if [ "$PEER" != "" ]; then
       THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
       THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-      THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error)
+      THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error
     elif [ "$SEEDS" != "" ]; then
       OLD_IFS=$IFS
       IFS=","
@@ -67,7 +67,7 @@ data:
       do
         THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height") || continue
         THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-        THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error)
+        THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error
         break
       done
       IFS=$OLD_IFS
