@@ -24,54 +24,56 @@ data:
   node-status.sh: |
     #!/bin/sh
 
+    set -o pipefail
+
     format_1e8 () {
-      printf "%.2f\n" $(jq -n $1/100000000) | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
+      printf "%.2f\n" $(jq -n $1/100000000 2> /dev/null) 2> /dev/null | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
     }
 
     format_int () {
-      printf "%.0f\n" $1 | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
+      printf "%.0f\n" $1 2> /dev/null | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
     }
 
-    THOR_PROGRESS="100.000"
+    THOR_PROGRESS="100.000%"
     API=http://thor-api:1317
     NODE_ADDRESS=$(echo $SIGNER_PASSWD | thorcli keys show $SIGNER_NAME -a)
-    NODE_IP=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
-    VERSION=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".version")
-    BOND=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".bond")
-    REWARDS=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".current_award")
-    SLASH=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".slash_points")
-    STATUS=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".status")
-    PREFLIGHT=$(curl -s $API/thorchain/nodeaccount/$NODE_ADDRESS/preflight)
-    VAULT=$(curl -s $API/thorchain/pool_addresses | jq -r ".current[0].address")
+    NODE_IP=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
+    VERSION=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".version")
+    BOND=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".bond")
+    REWARDS=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".current_award")
+    SLASH=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".slash_points")
+    STATUS=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".status")
+    PREFLIGHT=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS/preflight)
+    VAULT=$(curl -sL --fail -m 10 $API/thorchain/pool_addresses | jq -r ".current[0].address")
     [ "$VALIDATOR" == "false" ] && NODE_IP=$EXTERNAL_IP
 
     # calculate BNB chain sync progress
     if [ "$VALIDATOR" == "true" ]; then
       [ "$NET" = "mainnet" ] && BNB_PEER=dataseed1.binance.org || BNB_PEER=data-seed-pre-0-s1.binance.org
-      BNB_HEIGHT=$(curl -s $BNB_PEER/status | jq -r ".result.sync_info.latest_block_height" || 1)
-      BNB_SYNC_HEIGHT=$(curl -s binance-daemon:$BINANCE_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.index_height")
-      BNB_PROGRESS=$(printf "%.3f\n" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100))
+      BNB_HEIGHT=$(curl -sL --fail -m 10 $BNB_PEER/status | jq -r ".result.sync_info.latest_block_height")
+      BNB_SYNC_HEIGHT=$(curl -sL --fail -m 10 binance-daemon:$BINANCE_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.index_height")
+      BNB_PROGRESS=$(printf "%.3f%%" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100 2> /dev/null) 2> /dev/null) || BNB_PROGRESS=Error)
     fi
 
     # calculate THOR chain sync progress
     if [ "$PEER" != "" ]; then
-      THOR_HEIGHT=$(curl -s $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-      THOR_SYNC_HEIGHT=$(curl -s localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-      THOR_PROGRESS=$(printf "%.3f\n" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100))
+      THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+      THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+      THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error)
     elif [ "$SEEDS" != "" ]; then
       OLD_IFS=$IFS
       IFS=","
       for PEER in $SEEDS
       do
-        THOR_HEIGHT=$(curl -s $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height") || continue
-        THOR_SYNC_HEIGHT=$(curl -s localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-        THOR_PROGRESS=$(printf "%.3f\n" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100))
+        THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height") || continue
+        THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+        THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error)
         break
       done
       IFS=$OLD_IFS
     fi
 
-    [ "$THOR_PROGRESS" != "100.000" ] && VAULT="standby"
+    [ "$THOR_PROGRESS" != "100.000%" ] && VAULT="standby"
 
     cat << "EOF"
      ________ ______  ___  _  __        __
@@ -100,8 +102,8 @@ data:
 
     echo
     printf "%-11s %-10s %-10s\n" CHAIN SYNC BLOCKS
-    [ "$PEER" != "" ] && printf "%-11s %-10s %-10s\n" THORChain "$THOR_PROGRESS%" "$(format_int $THOR_SYNC_HEIGHT)/$(format_int $THOR_HEIGHT)"
-    [ "$VALIDATOR" == "true" ] && printf "%-11s %-10s %-10s\n" Binance "$BNB_PROGRESS%" "$(format_int $BNB_SYNC_HEIGHT)/$(format_int $BNB_HEIGHT)"
+    [ "$PEER" != "" ] && printf "%-11s %-10s %-10s\n" THORChain "$THOR_PROGRESS" "$(format_int $THOR_SYNC_HEIGHT)/$(format_int $THOR_HEIGHT)"
+    [ "$VALIDATOR" == "true" ] && printf "%-11s %-10s %-10s\n" Binance "$BNB_PROGRESS" "$(format_int $BNB_SYNC_HEIGHT)/$(format_int $BNB_HEIGHT)"
     exit 0
 
   entrypoint.sh: |
