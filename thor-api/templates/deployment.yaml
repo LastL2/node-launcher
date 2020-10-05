@@ -42,7 +42,7 @@ spec:
           image: {{ include "thor-api.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/rest.sh"]
-          args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:1317", "--node", 'tcp://{{ include "thor-api.thorDaemon" . }}']
+          args: ["thorcli", "rest-server", "--chain-id", "thorchain", "--laddr", "tcp://0.0.0.0:1317", "--node", 'tcp://{{ include "thor-api.thorDaemon" . }}', '--trust-node']
           env:
             - name: NET
               value: {{ include "thor-api.net" . }}

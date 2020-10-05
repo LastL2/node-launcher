@@ -70,7 +70,7 @@ testnet-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNE
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
-testnet-update: pull testnet-validator set-version status ## Update a TESTNET Fullnode THORNode and set version
+testnet-update: pull testnet-validator set-version status ## Update a TESTNET Validator THORNode and set version
 
 mainnet-genesis: create-mnemonic create-password update-dependencies ## Install/Update a MAINNET Genesis THORNode
 	@echo Installing THORNode
@@ -84,7 +84,7 @@ mainnet-fullnode: create-mnemonic update-dependencies ## Install/Update a MAINNE
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED}',thor-daemon.validator=false,thor-gateway.validator=false
 
-mainnet-update: pull mainnet-validator set-version status ## Update a MAINNET Fullnode THORNode and set version
+mainnet-update: pull mainnet-validator set-version status ## Update a MAINNET Validator THORNode and set version
 
 chaosnet-genesis: create-mnemonic create-password update-dependencies ## Install/Update a CHAOSNET Genesis THORNode
 	@echo Installing THORNode
@@ -98,7 +98,7 @@ chaosnet-fullnode: create-mnemonic update-dependencies ## Install/Update a CHAO
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
-chaosnet-update: pull chaosnet-validator set-version status ## Update a CHAOSNET Fullnode THORNode and set version
+chaosnet-update: pull chaosnet-validator set-version status ## Update a CHAOSNET Validator THORNode and set version
 
 reset-midgard: ## Reset and resync current Midgard service from scratch on your THORNode. This command can take a while to sync back to 100%.
 	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
