@@ -57,7 +57,7 @@ data:
 
     # calculate BTC chain sync progress
     if [ "$VALIDATOR" == "true" ]; then
-      BTC_RESULT=$(curl -sL --faill -m 10 --data-binary '{"jsonrpc": "1.0", "id": "curltest", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://thorchain:password@bitcoin-daemon:$BITCOIN_DAEMON_SERVICE_PORT_RPC)
+      BTC_RESULT=$(curl -sL --fail -m 10 --data-binary '{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://thorchain:password@bitcoin-daemon:$BITCOIN_DAEMON_SERVICE_PORT_RPC)
       BTC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.headers")
       BTC_SYNC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.blocks")
       BTC_PROGRESS=$(echo $BTC_RESULT | jq -r ".result.verificationprogress")
