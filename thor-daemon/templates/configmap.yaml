@@ -61,7 +61,7 @@ data:
       BTC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.headers")
       BTC_SYNC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.blocks")
       BTC_PROGRESS=$(echo $BTC_RESULT | jq -r ".result.verificationprogress")
-      BTC_PROGRESS=$(printf "%.3f\n" $(jq -n $BTC_PROGRESS*100) 2> /dev/null) || BTC_PROGRESS=Error
+      BTC_PROGRESS=$(printf "%.3f%%" $(jq -n $BTC_PROGRESS*100 2> /dev/null) 2> /dev/null) || BTC_PROGRESS=Error
     fi
 
     # calculate THOR chain sync progress

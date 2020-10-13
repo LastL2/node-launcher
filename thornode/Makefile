@@ -60,7 +60,7 @@ mocknet-validator: create-mnemonic update-dependencies ## Install/Update a MOCKN
 
 testnet-genesis: create-mnemonic update-dependencies ## Install/Update a TESTNET Genesis THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},midgard.image.tag=testnet
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},midgard.image.tag=testnet,bifrost.bitcoinStartBlockHeight=1862669
 
 testnet-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET Validator THORNode
 	@echo Installing THORNode
