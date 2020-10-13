@@ -119,6 +119,8 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: data
+            - mountPath: /dev/shm
+              name: dshm
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
@@ -133,6 +135,10 @@ spec:
           resources:
             {{- toYaml .Values.resources.timescaledb | nindent 12 }}
       volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
