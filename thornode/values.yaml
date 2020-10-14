@@ -21,8 +21,6 @@ thor-api:
 
 bifrost:
   fullnameOverride: bifrost
-  bitcoinDaemon:
-    enabled: true
   image:
     pullPolicy: Always
   service:
@@ -37,7 +35,7 @@ binance-daemon:
   fullnameOverride: binance-daemon
 
 bitcoin-daemon:
-  enabled: true
+  enabled: false
   fullnameOverride: bitcoin-daemon
 
 ethereum-daemon:
