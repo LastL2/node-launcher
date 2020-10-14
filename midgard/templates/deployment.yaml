@@ -93,6 +93,8 @@ metadata:
     app.kubernetes.io/component: timescaledb
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "midgard.selectorLabels" . | nindent 6 }}
