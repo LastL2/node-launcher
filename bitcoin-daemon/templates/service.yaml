@@ -7,17 +7,17 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port.p2p }}
+    - name: p2p
+      port: {{ include "bitcoin-daemon.p2p" . }}
       targetPort: p2p
       protocol: TCP
-      name: p2p
       {{ if eq .Values.service.type "NodePort" }}
       nodePort: {{.Values.service.port.p2p}}
       {{ end }}
-    - port: {{ .Values.service.port.rpc }}
+    - name: rpc
+      port: {{ include "bitcoin-daemon.rpc" . }}
       targetPort: rpc
       protocol: TCP
-      name: rpc
       {{ if eq .Values.service.type "NodePort" }}
       nodePort: {{.Values.service.port.rpc}}
       {{ end }}

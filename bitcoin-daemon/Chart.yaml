@@ -4,4 +4,4 @@ description: Bitcoin Core Daemon component
 type: application
 version: 0.1.0
 
-appVersion: 0.19.1
+appVersion: 0.20.1

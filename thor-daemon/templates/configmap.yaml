@@ -55,6 +55,15 @@ data:
       BNB_PROGRESS=$(printf "%.3f%%" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100 2> /dev/null) 2> /dev/null) || BNB_PROGRESS=Error
     fi
 
+    # calculate BTC chain sync progress
+    if [ "$VALIDATOR" == "true" ]; then
+      BTC_RESULT=$(curl -sL --fail -m 10 --data-binary '{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://thorchain:password@bitcoin-daemon:$BITCOIN_DAEMON_SERVICE_PORT_RPC)
+      BTC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.headers")
+      BTC_SYNC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.blocks")
+      BTC_PROGRESS=$(echo $BTC_RESULT | jq -r ".result.verificationprogress")
+      BTC_PROGRESS=$(printf "%.3f%%" $(jq -n $BTC_PROGRESS*100 2> /dev/null) 2> /dev/null) || BTC_PROGRESS=Error
+    fi
+
     # calculate THOR chain sync progress
     if [ "$PEER" != "" ]; then
       THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
@@ -104,6 +113,7 @@ data:
     printf "%-11s %-10s %-10s\n" CHAIN SYNC BLOCKS
     [ "$PEER" != "" ] && printf "%-11s %-10s %-10s\n" THORChain "$THOR_PROGRESS" "$(format_int $THOR_SYNC_HEIGHT)/$(format_int $THOR_HEIGHT)"
     [ "$VALIDATOR" == "true" ] && printf "%-11s %-10s %-10s\n" Binance "$BNB_PROGRESS" "$(format_int $BNB_SYNC_HEIGHT)/$(format_int $BNB_HEIGHT)"
+    [ "$VALIDATOR" == "true" ] && printf "%-11s %-10s %-10s\n" Bitcoin "$BTC_PROGRESS" "$(format_int $BTC_SYNC_HEIGHT)/$(format_int $BTC_HEIGHT)"
     exit 0
 
   entrypoint.sh: |

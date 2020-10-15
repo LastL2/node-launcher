@@ -60,16 +60,16 @@ spec:
         command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done']
       - name: init-binance
         image: appropriate/curl
-        command: ['sh', '-c', 'until curl -s {{ include "bifrost.binanceDaemon" . }}/abci_info > /dev/null; do echo waiting for binance; sleep 2; done']
+        command: ['sh', '-c', 'until curl -sL --fail {{ include "bifrost.binanceDaemon" . }}/abci_info > /dev/null; do echo waiting for binance; sleep 2; done']
       {{- if .Values.bitcoinDaemon.enabled }}
       - name: init-bitcoin
         image: appropriate/curl
-        command: ['sh', '-c', 'until curl -s {{ include "bifrost.bitcoinDaemon" . }} > /dev/null; do echo waiting for bitcoin; sleep 2; done']
+        command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.bitcoinDaemon" . }} > /dev/null; do echo waiting for bitcoin; sleep 2; done']
       {{- end }}
       {{- if .Values.ethereumDaemon.enabled }}
       - name: init-ethereum
         image: appropriate/curl
-        command: ['sh', '-c', 'until curl -s {{ include "bifrost.ethereumDaemon" . }} > /dev/null; do echo waiting for ethereum; sleep 2; done']
+        command: ['sh', '-c', 'until curl -sL --fail {{ include "bifrost.ethereumDaemon" . }} > /dev/null; do echo waiting for ethereum; sleep 2; done']
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -111,8 +111,12 @@ spec:
               value: "{{ .Values.binanceStartBlockHeight }}"
             - name: BTC_HOST
               value: {{ include "bifrost.bitcoinDaemon" . }}
+            - name: BTC_START_BLOCK_HEIGHT
+              value: "{{ .Values.bitcoinStartBlockHeight }}"
             - name: ETH_HOST
               value: {{ include "bifrost.ethereumDaemon" . }}
+            - name: ETH_START_BLOCK_HEIGHT
+              value: "{{ .Values.ethereumStartBlockHeight }}"
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
             - name: SIGNER_NAME

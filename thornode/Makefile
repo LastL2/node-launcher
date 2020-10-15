@@ -3,11 +3,12 @@ SHELL:=/bin/bash
 NAME?=thornode
 VERSION_TESTNET=testnet-0.15.1
 VERSION_CHAOSNET=chaosnet-0.15.1
+VERSION_TESTNET_MULTICHAIN=testnet-multichain-0.14.0
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 SEED?=$(shell curl -s https://seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
-
+TESTNET_MULTICHAIN_SEED?=$(shell curl -s https://testnet.multichain.seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC | cut -d '=' -f 2 | tr -d '\r'
 MNEMONIC_SECRET=thornode-mnemonic
 PASSWORD_CMD=read -s -p "Enter Password: " pwd; echo >&2;read -s -p "Confirm Password: " pwdconf; [ "$$pwd" = "$$pwdconf" ] && (echo >&2; echo $$pwd) || (echo >&2; echo "Passwords mismatch" >&2 && exit 1)
@@ -71,6 +72,16 @@ testnet-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNE
 	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=testnet,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
 testnet-update: pull testnet-validator set-version status ## Update a TESTNET Validator THORNode and set version
+
+testnet-multichain-genesis: create-mnemonic update-dependencies ## Install/Update a TESTNET Genesis THORNode
+	@echo Installing THORNode
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=1863114
+
+testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET Validator THORNode
+	@echo Installing THORNode
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}'
+
+testnet-multichain-update: pull testnet-multichain-validator set-version status ## Update a TESTNET Validator THORNode and set version
 
 mainnet-genesis: create-mnemonic create-password update-dependencies ## Install/Update a MAINNET Genesis THORNode
 	@echo Installing THORNode

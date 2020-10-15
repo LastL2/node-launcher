@@ -10,7 +10,7 @@ image:
   bitcoin:
     repository: ruimarinho/bitcoin-core
     pullPolicy: IfNotPresent
-    tag: 0.19-alpine
+    tag: 0.20.1-alpine
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
@@ -21,8 +21,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 persistence:
-  enabled: false
-  size: 10Gi
+  enabled: true
+  size: 500Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
@@ -47,24 +47,23 @@ securityContext: {}
 service:
   type: ClusterIP
   port:
-    # p2p: 8333 # mainnet
-    # p2p: 18333 # testnet
-    p2p: 18444 # regtest
-    # rpc: 8332 # mainnet
-    # rpc: 18332 # testnet
-    rpc: 18443 # regtest
+    mainnet:
+      p2p: 8333
+      rpc: 8332
+    testnet:
+      p2p: 18333
+      rpc: 18332
+    regtest:
+      p2p: 18444
+      rpc: 18443
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  limits:
+    cpu: 1
+    memory: 10Gi
+  requests:
+    cpu: 1
+    memory: 10Gi
 
 nodeSelector: {}
 
