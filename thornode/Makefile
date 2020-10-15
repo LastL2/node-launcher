@@ -79,7 +79,7 @@ testnet-multichain-genesis: create-mnemonic update-dependencies ## Install/Updat
 
 testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET Validator THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}'
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}',bifrost.bitcoinStartBlockHeight=1863114
 
 testnet-multichain-update: pull testnet-multichain-validator set-version status ## Update a TESTNET Validator THORNode and set version
 
