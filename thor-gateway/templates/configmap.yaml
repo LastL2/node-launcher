@@ -116,6 +116,8 @@ data:
 
       proxy_cache_path  /var/cache/nginx/thornode levels=1:2 keys_zone=thornode:10m;
 
+      limit_req_zone $binary_remote_addr zone=binance:1m rate=10r/s;
+
       server {
         listen 80;
         location /healthz {
@@ -123,6 +125,16 @@ data:
           return 200 "healthy\n";
         }
       }
+
+      {{- if .Values.validator }}
+      server {
+        listen {{ .Values.service.port.binance}};
+        location / {
+          limit_req zone=binance;
+          proxy_pass http://binance-daemon:{{ include "thor-gateway.rpc" . }};
+        }
+      }
+      {{- end }}
 
       server {
         listen {{ .Values.service.port.midgard }};
