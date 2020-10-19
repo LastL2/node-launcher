@@ -33,6 +33,10 @@ spec:
       targetPort: api
       protocol: TCP
       name: api
+    - port: {{ .Values.service.port.binance }}
+      targetPort: binance
+      protocol: TCP
+      name: binance
     - port: {{ include "thor-gateway.rpc" . }}
       targetPort: rpc
       protocol: TCP

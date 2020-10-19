@@ -51,6 +51,9 @@ spec:
             - name: api
               containerPort: {{ .Values.service.port.api }}
               protocol: TCP
+            - name: binance
+              containerPort: {{ .Values.service.port.binance }}
+              protocol: TCP
             - name: rpc
               containerPort: {{ include "thor-gateway.rpc" . }}
               protocol: TCP

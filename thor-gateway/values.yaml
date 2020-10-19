@@ -20,6 +20,7 @@ fullnameOverride: ""
 service:
   type: LoadBalancer
   port:
+    binance: 6657
     bifrost:
       p2p: 5040
       api: 6040
