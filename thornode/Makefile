@@ -3,7 +3,7 @@ SHELL:=/bin/bash
 NAME?=thornode
 VERSION_TESTNET=testnet-0.16.0
 VERSION_CHAOSNET=chaosnet-0.16.0
-VERSION_TESTNET_MULTICHAIN=testnet-multichain-0.14.0
+VERSION_TESTNET_MULTICHAIN=testnet-multichain-0.16.0
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
@@ -75,11 +75,11 @@ testnet-update: pull testnet-validator set-version status ## Update a TESTNET V
 
 testnet-multichain-genesis: create-mnemonic update-dependencies ## Install/Update a TESTNET Genesis THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=1863114
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=1863591
 
 testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET Validator THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}',bifrost.bitcoinStartBlockHeight=1863114
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=testnet,bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}',bifrost.bitcoinStartBlockHeight=1863591
 
 testnet-multichain-update: pull testnet-multichain-validator set-version status ## Update a TESTNET Validator THORNode and set version
 
