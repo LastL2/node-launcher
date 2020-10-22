@@ -134,6 +134,13 @@ data:
           proxy_pass http://binance-daemon:{{ include "thor-gateway.rpc" . }};
         }
       }
+
+      server {
+        listen {{ .Values.service.port.bifrost.api }};
+        location / {
+          proxy_pass http://bifrost:{{ .Values.service.port.bifrost.api }};
+        }
+      }
       {{- end }}
 
       server {
@@ -154,6 +161,16 @@ data:
           proxy_pass http://midgard:{{ .Values.service.port.midgard }};
         }
       }
+
+      server {
+        listen {{ .Values.service.port.api }};
+        location / {
+          add_header Cache-Control "no-cache, must-revalidate, max-age=0";
+          proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
+          proxy_pass http://thor-api:{{ .Values.service.port.api }};
+        }
+      }
+
     }
 
 
@@ -163,17 +180,7 @@ data:
         listen {{ .Values.service.port.bifrost.p2p }};
         proxy_pass bifrost:{{ .Values.service.port.bifrost.p2p }};
       }
-
-      server {
-        listen {{ .Values.service.port.bifrost.api }};
-        proxy_pass bifrost:{{ .Values.service.port.bifrost.api }};
-      }
-
       {{- end }}
-      server {
-        listen {{ .Values.service.port.api }};
-        proxy_pass thor-api:{{ .Values.service.port.api }};
-      }
 
       server {
         listen {{ include "thor-gateway.p2p" . }};
