@@ -4,7 +4,8 @@ NAME?=thornode
 VERSION_TESTNET=testnet-0.16.0
 VERSION_CHAOSNET=chaosnet-0.16.0
 VERSION_TESTNET_MULTICHAIN=testnet-multichain-0.16.0
-MIDGARD_TESTNET_TAG=0.4.0
+VERSION_MIDGARD_TESTNET=0.4.0
+VERSION_MIDGARD_CHAOSNET=0.3.0
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
@@ -66,21 +67,21 @@ testnet-genesis: create-mnemonic update-dependencies ## Install/Update a TESTNET
 
 testnet-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET Validator THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},midgard.image.tag=${MIDGARD_TESTNET_TAG},bifrost.peer='${SEED_TESTNET}',thor-daemon.seeds='${SEED_TESTNET}'
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},midgard.image.tag=${VERSION_MIDGARD_TESTNET},bifrost.peer='${SEED_TESTNET}',thor-daemon.seeds='${SEED_TESTNET}'
 
 testnet-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNET Fullnode THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=${MIDGARD_TESTNET_TAG},bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=${VERSION_MIDGARD_TESTNET},bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
 
 testnet-update: pull testnet-validator set-version status ## Update a TESTNET Validator THORNode and set version
 
 testnet-multichain-genesis: create-mnemonic update-dependencies ## Install/Update a TESTNET Genesis THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=${MIDGARD_TESTNET_TAG},bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=1863591
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=${VERSION_MIDGARD_TESTNET},bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=1863591
 
 testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET Validator THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=${MIDGARD_TESTNET_TAG},bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}',bifrost.bitcoinStartBlockHeight=1863591
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}},midgard.image.tag=${VERSION_MIDGARD_TESTNET},bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}',bifrost.bitcoinStartBlockHeight=1863591
 
 testnet-multichain-update: pull testnet-multichain-validator set-version status ## Update a TESTNET Validator THORNode and set version
 
@@ -100,15 +101,15 @@ mainnet-update: pull mainnet-validator set-version status ## Update a MAINNET V
 
 chaosnet-genesis: create-mnemonic create-password update-dependencies ## Install/Update a CHAOSNET Genesis THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.passwordSecret=${PASSWORD_SECRET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.passwordSecret=${PASSWORD_SECRET},midgard.image.tag=${VERSION_MIDGARD_CHAOSNET}
 
 chaosnet-validator: create-mnemonic create-password update-dependencies ## Install/Update a CHAOSNET Validator THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},bifrost.peer='${SEED_CHAOSNET}',thor-daemon.seeds='${SEED_CHAOSNET}',global.passwordSecret=${PASSWORD_SECRET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},bifrost.peer='${SEED_CHAOSNET}',thor-daemon.seeds='${SEED_CHAOSNET}',global.passwordSecret=${PASSWORD_SECRET},midgard.image.tag=${VERSION_MIDGARD_CHAOSNET}
 
 chaosnet-fullnode: create-mnemonic update-dependencies ## Install/Update a CHAOSNET Fullnode THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false,midgard.image.tag=${VERSION_MIDGARD_CHAOSNET}
 
 chaosnet-update: pull chaosnet-validator set-version status ## Update a CHAOSNET Validator THORNode and set version
 
