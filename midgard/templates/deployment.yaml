@@ -7,6 +7,8 @@ metadata:
     app.kubernetes.io/component: midgard
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "midgard.selectorLabels" . | nindent 6 }}
@@ -40,6 +42,8 @@ spec:
           command: ["/go/scripts/midgard.sh"]
           args: ["midgard", "-c", "/etc/midgard/config.json"]
           env:
+            - name: TIMESCALE_MAX_CONNECTIONS
+              value: "400"
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
             - name: CHAIN_RPC
@@ -58,13 +62,17 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /v1/health
+              port: http
           livenessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: 300
             httpGet:
               path: /v1/health
               port: http
           readinessProbe:
-            initialDelaySeconds: 30
             httpGet:
               path: /v1/health
               port: http
@@ -125,6 +133,9 @@ spec:
               name: data
             - mountPath: /dev/shm
               name: dshm
+          args:
+          - -c
+          - max_connections=500
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata

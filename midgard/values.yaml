@@ -78,17 +78,17 @@ resources:
   midgard:
     requests:
       cpu: 0.5
-      memory: 256Mi
+      memory: 512Mi
     limits:
       cpu: 0.5
-      memory: 256Mi
+      memory: 512Mi
   timescaledb:
     requests:
       cpu: 2
-      memory: 1Gi
+      memory: 3Gi
     limits:
       # cpu: 2
-      memory: 1Gi
+      memory: 3Gi
 
 nodeSelector: {}
 
