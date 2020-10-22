@@ -147,6 +147,26 @@ spec:
             - name: postgres
               containerPort: 5432
               protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -h
+              - localhost
+              - -U
+              - postgres
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -h
+              - localhost
+              - -U
+              - postgres
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
           resources:
             {{- toYaml .Values.resources.timescaledb | nindent 12 }}
       volumes:
