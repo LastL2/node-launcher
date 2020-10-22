@@ -14,7 +14,7 @@ repos: ## Add Helm repositories for dependencies
 tools: install-logs install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
 
 pull: ## Git pull node-launcher repository
-	@git pull origin master
+	@git pull origin master && sleep 3
 
 destroy-tools: destroy-logs destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
 
