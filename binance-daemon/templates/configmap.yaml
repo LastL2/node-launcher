@@ -68,10 +68,21 @@ data:
     set -ev
     su bnbchaind -c "/usr/local/bin/bnbchaind start --home ${BNCHOME}"
 
+  recover.sh: |
+    #!/bin/bash
+
+    FILE=/opt/bnbchaind/.probe_last_height
+    [ ! -f "$FILE" ] && exit 0
+
+    HEIGHT=$(($(cat $FILE) - 1))
+    if [ "$HEIGHT" -gt "1" ];then
+      su bnbchaind -c "/node-binary/tools/state_recover $HEIGHT /opt/bnbchaind"
+    fi
+
   probe.sh: |
     #!/bin/bash
 
-    FILE=.probe_last_height
+    FILE=/opt/bnbchaind/.probe_last_height
     ENDPOINT=localhost:$BINANCE_DAEMON_SERVICE_PORT_RPC/status
 
     STATUS=$(curl -sL --fail -m 10 $ENDPOINT) || exit 1
