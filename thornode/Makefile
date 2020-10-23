@@ -122,7 +122,7 @@ reset-binance: ## Reset and resync current Binance Node service on your THORNode
 	@echo -n "Are you sure? Confirm [y/n] " && read ans && [ $${ans:-N} == y ]
 	@kubectl scale -n ${NAME} --replicas=0 deploy/binance-daemon --timeout=5m
 	@kubectl wait --for=delete pods -l app.kubernetes.io/name=binance-daemon -n ${NAME} --timeout=5m > /dev/null 2>&1 || true
-	@kubectl run -n ${NAME} -it reset-binance --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["rm", "-rf", "/bnb/config", "/bnb/data"], "name": "reset-binance", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/bnb", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "binance-daemon"}}]}}'
+	@kubectl run -n ${NAME} -it reset-binance --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["rm", "-rf", "/bnb/config", "/bnb/data", "/bnb/.probe_last_height"], "name": "reset-binance", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/bnb", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "binance-daemon"}}]}}'
 	@kubectl scale -n ${NAME} --replicas=1 deploy/binance-daemon --timeout=5m
 
 recover-binance-auto: ## Recover current Binance Node service on your THORNode while trying to automatically parse the height where the consens failure happened
