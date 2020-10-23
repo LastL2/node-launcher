@@ -35,6 +35,14 @@ spec:
         command: ["sh", "-c", "ulimit -n 65536"]
         securityContext:
           privileged: true
+      - name: recover
+        image: {{ include "binance-daemon.image" . }}
+        command: ["/scripts/recover.sh"]
+        volumeMounts:
+          - name: data
+            mountPath: /opt/bnbchaind
+          - name: scripts
+            mountPath: /scripts
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -62,7 +70,7 @@ spec:
               containerPort: 28660
               protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: 120
             timeoutSeconds: 10
             exec:
               command:
