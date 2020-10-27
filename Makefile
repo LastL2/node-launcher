@@ -8,7 +8,7 @@ helm: ## Install Helm 3 dependency
 
 repos: ## Add Helm repositories for dependencies
 	@echo Installing Helm repos
-	@helm repo add stable https://kubernetes-charts.storage.googleapis.com
+	@helm repo add stable https://charts.helm.sh/stable
 	@helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard
 
 tools: install-logs install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
