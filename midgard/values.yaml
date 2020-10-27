@@ -13,6 +13,7 @@ postgres:
   username: midgard
   password: password
 
+net: mainnet
 
 replicaCount: 1
 

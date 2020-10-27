@@ -63,13 +63,19 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
+Net
+*/}}
+{{- define "midgard.net" -}}
+{{- default .Values.net .Values.global.net -}}
+{{- end -}}
+
+{{/*
 Thor daemon
 */}}
 {{- define "midgard.thorDaemon" -}}
-{{- if eq .Values.image.tag "mainnet" -}}
+{{- if eq (include "midgard.net" .) "mainnet" -}}
     {{ .Values.thorDaemon.mainnet }}
 {{- else -}}
     {{ .Values.thorDaemon.testnet }}
 {{- end -}}
 {{- end -}}
-
