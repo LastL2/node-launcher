@@ -1,14 +1,10 @@
 # Build stage for BerkeleyDB
 FROM alpine as berkeleydb
 
-RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
-RUN apk --no-cache add autoconf
-RUN apk --no-cache add automake
-RUN apk --no-cache add build-base
-RUN apk --no-cache add libressl
-
 ENV BERKELEYDB_VERSION=db-4.8.30.NC
 ENV BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
+
+RUN apk --no-cache add autoconf automake build-base libressl
 
 RUN wget https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
 RUN tar -xzf *.tar.gz
@@ -25,21 +21,12 @@ RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 # Build stage for Bitcoin Core
 FROM alpine as bitcoin-core
 
+ENV BITCOIN_VERSION=0.20.1
+ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
+
 COPY --from=berkeleydb /opt /opt
 
-RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
-RUN apk --no-cache add autoconf
-RUN apk --no-cache add automake
-RUN apk --no-cache add boost-dev
-RUN apk --no-cache add build-base
-RUN apk --no-cache add chrpath
-RUN apk --no-cache add file
-RUN apk --no-cache add gnupg
-RUN apk --no-cache add libevent-dev
-RUN apk --no-cache add libressl
-RUN apk --no-cache add libtool
-RUN apk --no-cache add linux-headers
-RUN apk --no-cache add zeromq-dev
+RUN apk --no-cache add autoconf automake boost-dev build-base chrpath file gnupg libevent-dev libressl libtool linux-headers zeromq-dev
 RUN set -ex \
   && for key in \
     90C8019E36C2E964 \
@@ -50,9 +37,6 @@ RUN set -ex \
     gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
-
-ENV BITCOIN_VERSION=0.20.1
-ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 
 RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
