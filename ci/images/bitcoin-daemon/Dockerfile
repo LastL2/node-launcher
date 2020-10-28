@@ -1,100 +1,42 @@
-# Build stage for BerkeleyDB
-FROM alpine as berkeleydb
-
-ENV BERKELEYDB_VERSION=db-4.8.30.NC
-ENV BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
-
-RUN apk --no-cache add autoconf automake build-base libressl
-
-RUN wget https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
-RUN tar -xzf *.tar.gz
-RUN sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i ${BERKELEYDB_VERSION}/dbinc/atomic.h
-RUN mkdir -p ${BERKELEYDB_PREFIX}
-
-WORKDIR /${BERKELEYDB_VERSION}/build_unix
-
-RUN ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX}
-RUN make -j4
-RUN make install
-RUN rm -rf ${BERKELEYDB_PREFIX}/docs
-
-# Build stage for Bitcoin Core
-FROM alpine as bitcoin-core
+FROM alpine:3.12.1
 
 ENV BITCOIN_VERSION=0.20.1
-ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
+ENV BITCOIN_PGP_KEY=01EA5486DE18A882D4C2684590C8019E36C2E964
+ENV GLIBC_VERSION=2.28-r0
+ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 
-COPY --from=berkeleydb /opt /opt
+WORKDIR /opt/bitcoin
 
-RUN apk --no-cache add autoconf automake boost-dev build-base chrpath file gnupg libevent-dev libressl libtool linux-headers zeromq-dev
-RUN set -ex \
-  && for key in \
-    90C8019E36C2E964 \
-  ; do \
-    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
-    gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-  done
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+ && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
+ && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk
 
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN gpg --verify SHA256SUMS.asc
-RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c -
-RUN tar -xzf *.tar.gz
+RUN apk update \
+	&& apk --no-cache add ca-certificates gnupg bash su-exec \
+ 	&& apk --no-cache add glibc-${GLIBC_VERSION}.apk \
+	&& apk --no-cache add glibc-bin-${GLIBC_VERSION}.apk
 
-WORKDIR /bitcoin-${BITCOIN_VERSION}
+RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz \
+  && wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 
-RUN sed -i '/AC_PREREQ/a\AR_FLAGS=cr' src/univalue/configure.ac
-RUN sed -i '/AX_PROG_CC_FOR_BUILD/a\AR_FLAGS=cr' src/secp256k1/configure.ac
-RUN sed -i s:sys/fcntl.h:fcntl.h: src/compat.h
-RUN ./autogen.sh
-RUN ./configure LDFLAGS=-L`ls -d /opt/db*`/lib/ CPPFLAGS=-I`ls -d /opt/db*`/include/ \
-    --prefix=${BITCOIN_PREFIX} \
-    --mandir=/usr/share/man \
-    --disable-tests \
-    --disable-bench \
-    --disable-ccache \
-    --with-gui=no \
-    --with-utils \
-    --with-libs \
-    --with-daemon
-RUN make -j4
-RUN make install
-RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-cli
-RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-tx
-RUN strip ${BITCOIN_PREFIX}/bin/bitcoind
-RUN strip ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a
-RUN strip ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0
-
-# Build stage for compiled artifacts
-FROM alpine
+RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${BITCOIN_PGP_KEY} \
+  && gpg --verify SHA256SUMS.asc \
+  && grep bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz SHA256SUMS.asc | sha256sum -c \
+  && mkdir bitcoin \
+	&& tar xzvf bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz --strip-components=1 -C bitcoin \
+	&& mkdir /root/.bitcoin \
+	&& mv bitcoin/bin/* /usr/local/bin/ \
+  && mv bitcoin/lib/* /usr/local/lib/ \
+  && mv bitcoin/share/* /usr/local/share/ \
+  && apk del wget ca-certificates \
+	&& rm -rf bitcoin* \
+	&& rm -rf glibc-*
 
 RUN adduser -S bitcoin
-RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
-RUN apk --no-cache add \
-  boost-filesystem \
-  boost-system \
-  boost-thread \
-  libevent \
-  libzmq \
-  su-exec
-
-ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=0.20.1
-ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
-ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
-
-COPY --from=bitcoin-core /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
 
+EXPOSE 8332 8333 18332 18333 18443 18444
 VOLUME ["/home/bitcoin/.bitcoin"]
 
-EXPOSE 8332 8333 18332 18333 18444
-
 ENTRYPOINT ["/entrypoint.sh"]
-
-RUN bitcoind -version | grep "Bitcoin Core version v${BITCOIN_VERSION}"
-
 CMD ["bitcoind"]
