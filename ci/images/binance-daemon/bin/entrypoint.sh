@@ -7,7 +7,7 @@ NODE_TYPE=${NODE_TYPE:-fullnode}
 PEER_NODE=${PEER_NODE:-dataseed1.binance.org:80}
 CHAIN="Binance-Chain-Tigris"
 PORT=27147
-EXE="/usr/local/bin/bnbchaind start --home ${BNCHOME}"
+EXE="ulimit -n 65535 && /usr/local/bin/bnbchaind start --home ${BNCHOME}"
 
 if [ ! -d "${BNCHOME}/config/" ]; then
 set -ex
