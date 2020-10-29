@@ -8,9 +8,9 @@ net: mainnet
 
 image:
   bitcoin:
-    repository: ruimarinho/bitcoin-core
+    repository: registry.gitlab.com/thorchain/devops/bitcoin-core
     pullPolicy: IfNotPresent
-    tag: 0.20.1-alpine
+    tag: 0.20.1
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
