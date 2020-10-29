@@ -30,11 +30,6 @@ spec:
       {{- end }}
 
       initContainers:
-      - name: init-ulimitn
-        image: busybox
-        command: ["sh", "-c", "ulimit -n 65536"]
-        securityContext:
-          privileged: true
       - name: recover
         image: {{ include "binance-daemon.image" . }}
         command: ["/scripts/recover.sh"]
