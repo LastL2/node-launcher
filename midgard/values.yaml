@@ -25,7 +25,7 @@ image:
 timescaleDbImage:
   repository: timescale/timescaledb
   pullPolicy: IfNotPresent
-  tag: 1.7.1-pg12
+  tag: 1.7.4-pg12
 
 service:
   type: ClusterIP
