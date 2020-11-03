@@ -10,6 +10,8 @@ repos: ## Add Helm repositories for dependencies
 	@echo Installing Helm repos
 	@helm repo add stable https://charts.helm.sh/stable
 	@helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard
+	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+	@helm repo update
 
 tools: install-logs install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
 
@@ -32,12 +34,20 @@ destroy-logs: ## Uninstall logs management stack
 install-metrics: repos ## Install/Update metrics management stack
 	@echo Installing Metrics
 	@helm upgrade --install metrics-server stable/metrics-server -n prometheus-system --create-namespace --wait -f ./metrics-server/values.yaml
-	@helm upgrade --install prometheus stable/prometheus-operator -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
+	@helm upgrade --install prometheus prometheus-community/kube-prometheus-stack -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
 
 destroy-metrics: ## Uninstall metrics management stack
 	@echo Deleting Metrics
 	@helm delete metrics-server -n prometheus-system
 	@helm delete prometheus -n prometheus-system
+	@kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
+	@kubectl delete crd alertmanagers.monitoring.coreos.com
+	@kubectl delete crd podmonitors.monitoring.coreos.com
+	@kubectl delete crd probes.monitoring.coreos.com
+	@kubectl delete crd prometheuses.monitoring.coreos.com
+	@kubectl delete crd prometheusrules.monitoring.coreos.com
+	@kubectl delete crd servicemonitors.monitoring.coreos.com
+	@kubectl delete crd thanosrulers.monitoring.coreos.com
 	@kubectl delete namespace prometheus-system
 
 install-dashboard: repos ## Install/Update Kubernetes dashboard
