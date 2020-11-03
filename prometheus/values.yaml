@@ -14,9 +14,6 @@ additionalPrometheusRulesMap:
             annotations:
               message: "Container {{ $labels.container }} in Pod {{$labels.namespace}}/{{$labels.pod}} restarted more than once in the last hour"
 
-prometheusOperator:
-  createCustomResource: false
-
 # See documentation here https://prometheus.io/docs/alerting/latest/configuration/
 # for other configurations other than slack example below
 # For slack webhook url follow documentation here https://prometheus.io/docs/alerting/latest/configuration/#slack_config
@@ -93,7 +90,7 @@ prometheusOperator:
 #        pagerduty_configs:
 #        - service_key: "XXX Insert PagerDuty Integration Key here XXX"
 #          send_resolved: true
- 
+
 
 # PagerDuty, Dead Man's Snitch, and Slack configuration. See README.Alerting.md
 
@@ -140,9 +137,9 @@ prometheusOperator:
 #          text: >-
 #            {{ range .Alerts -}}
 #            *Alert:* {{ .Labels.alertname }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
-#  
+#
 #            *Description:* {{ .Annotations.message }}
-#  
+#
 #            *Details:*
 #             {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
 #             {{ end }}
