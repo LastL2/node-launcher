@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "telegram-bot.fullname" . }}
+  labels:
+    {{- include "telegram-bot.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "telegram-bot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "telegram-bot.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "telegram-bot.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: data
+              mountPath: /storage
+          env:
+            - name: TELEGRAM_BOT_TOKEN
+              value: "{{ .Values.telegramToken }}"
+            - name: NETWORK_TYPE
+              value: "{{ .Values.net }}"
+            - name: ALLOWED_USER_IDS
+              value: "{{ .Values.allowedUserIds }}"
+            - name: BINANCE_NODE_IPS
+              value: "{{ .Values.binanceDaemon }}"
+            - name: ETHEREUM_NODE_IPS
+              value: "{{ .Values.ethereumDaemon }}"
+            - name: BITCOIN_NODE_IPS
+              value: "{{ .Values.bitcoinDaemon }}"
+            - name: BITCOIN_NODE_USERNAMES
+              value: ""
+            - name: BITCOIN_NODE_PASSWORDS
+              value: ""
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "telegram-bot.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
