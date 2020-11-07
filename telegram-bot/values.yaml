@@ -7,8 +7,8 @@ net: mainnet
 telegramToken: ""
 
 binanceDaemon: binance-daemon
-ethereumDaemon: ethereum-daemon
-bitcoinDaemon: bitcoin-daemon
+ethereumDaemon: ""
+bitcoinDaemon: ""
 
 allowedUserIds: ALL
 

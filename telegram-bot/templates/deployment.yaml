@@ -28,7 +28,11 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - command:
+            - sh
+            - -c
+            - "sed -i -e '27,29d;30s/        /    /' /bot/constants.py && python3.7 /bot/thornode_bot.py"
+          name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -40,7 +44,7 @@ spec:
             - name: TELEGRAM_BOT_TOKEN
               value: "{{ .Values.telegramToken }}"
             - name: NETWORK_TYPE
-              value: "{{ .Values.net }}"
+              value: {{ include "telegram-bot.net" . | quote }}
             - name: ALLOWED_USER_IDS
               value: "{{ .Values.allowedUserIds }}"
             - name: BINANCE_NODE_IPS
@@ -53,18 +57,6 @@ spec:
               value: ""
             - name: BITCOIN_NODE_PASSWORDS
               value: ""
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:

@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Net
+*/}}
+{{- define "telegram-bot.net" -}}
+{{- if or (eq .Values.net "mainnet") (eq .Values.net "chaosnet") -}}
+CHAOSNET
+{{- else -}}
+TESTNET
+{{- end }}
+{{- end }}

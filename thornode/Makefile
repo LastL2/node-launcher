@@ -171,6 +171,18 @@ midgard: ## Access Midgard API through port-forward locally
 shell: ## Open a shell into thor-daemon deployment
 	@exec ${THORD_CMD} sh
 
+shell-binance: ## Open a shell into binance deployment
+	@kubectl exec -it --namespace ${NAME} deploy/binance -- sh
+
+shell-bifrost: ## Open a shell into bifrost deployment
+	@kubectl exec -it --namespace ${NAME} deploy/bifrost -- sh
+
+shell-midgard: ## Open a shell into midgard deployment
+	@kubectl exec -it --namespace ${NAME} deploy/midgard -- sh
+
+shell-midgard-timescaledb: ## Open a shell into midgard-timescaledb deployment
+	@kubectl exec -it --namespace ${NAME} deploy/midgard-timescaledb -- sh
+
 logs: ## Display logs for thor-daemon deployment
 	@kubectl logs -f -n ${NAME} deploy/thor-daemon
 
@@ -182,6 +194,12 @@ logs-bifrost: ## Display logs for bifrost deployment
 
 logs-midgard: ## Display logs for midgard deployment
 	@kubectl logs -f -n ${NAME} deploy/midgard
+
+logs-midgard-timescaledb: ## Display logs for midgard-timescaledb deployment
+	@kubectl logs -f -n ${NAME} deploy/midgard-timescaledb
+
+logs-telegram-bot: ## Display logs for telegram-bot deployment
+	@kubectl logs -f -n ${NAME} deploy/telegram-bot
 
 set-node-keys: ## Send a set-node-keys transaction to your THORNode
 	@exec ${THORD_CMD} /kube-scripts/set-node-keys.sh > /dev/null
@@ -195,4 +213,15 @@ set-ip-address: ## Send a set-ip-address transaction to your THORNode
 	@exec ${THORD_CMD} /kube-scripts/set-ip-address.sh $(shell kubectl -n ${NAME} get configmap thor-gateway-external-ip -o jsonpath={.data.externalIP}) > /dev/null
 	@sleep 5 && echo THORNode IP address updated
 
-.PHONY: help mnemonic create-mnemonic create-password create-namespace update-dependencies pods mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode testnet-update chaosnet-genesis chaosnet-validator chaosnet-fullnode chaosnet-update mainnet-genesis mainnet-validator mainnet-fullnode mainnet-update destroy midgard status shell set-node-keys set-ip-address set-version
+telegram-bot: ## Deploy Telegram bot to monitor THORNode
+	@echo "Start a Telegram chat with BotFather, click start, then send /newbot command."
+	@echo -n "Enter Telegram bot token: " && read TOKEN; \
+	echo -n "Select NET [testnet/chaosnet/mainnet]: " && read NET; \
+	helm upgrade -n ${NAME} --install telegram-bot ./telegram-bot \
+		--set telegramToken=$$TOKEN \
+		--set net=$$NET
+
+destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
+	@helm delete telegram-bot -n ${NAME}
+
+.PHONY: help mnemonic create-mnemonic create-password create-namespace update-dependencies pods mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode testnet-update chaosnet-genesis chaosnet-validator chaosnet-fullnode chaosnet-update mainnet-genesis mainnet-validator mainnet-fullnode mainnet-update destroy midgard status shell set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
