@@ -39,6 +39,9 @@ spec:
             - name: files
               mountPath: /bot/constants.py
               subPath: constants.py
+            - name: files
+              mountPath: /bot/service/thorchain_network_service.py
+              subPath: thorchain_network_service.py
           env:
             - name: TELEGRAM_BOT_TOKEN
               value: "{{ .Values.telegramToken }}"
