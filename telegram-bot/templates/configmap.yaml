@@ -30,7 +30,7 @@ data:
                             os.environ['BINANCE_NODE_IPS'].split(",")] \
             if 'BINANCE_NODE_IPS' in os.environ and os.environ['BINANCE_NODE_IPS'] != "" \
             else []
-        BINANCE_DEX_ENDPOINT = "http://a401e8579773744339e00b3920f5be9d-250969141.ap-southeast-1.elb.amazonaws.com:8080" if NETWORK_TYPE == 'CHAOSNET' \
+        BINANCE_DEX_ENDPOINT = "https://dex.binance.org" if NETWORK_TYPE == 'CHAOSNET' \
                 else "https://testnet-dex-atlantic.binance.org"
 
     ETHEREUM_NODE_IPS = list(filter(None, os.environ.get('ETHEREUM_NODE_IPS', '').split(",")))
