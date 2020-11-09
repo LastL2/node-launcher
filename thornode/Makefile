@@ -184,8 +184,7 @@ shell-midgard-timescaledb: ## Open a shell into midgard-timescaledb deployment
 	@kubectl exec -it --namespace ${NAME} deploy/midgard-timescaledb -- sh
 
 watch: ## Watch the thornode pods in real time
-	@clear
-	scripts/watch ${NAME}
+	@watch -n 1 kubectl -n ${NAME} get pods
 
 logs: ## Display logs for thor-daemon deployment
 	@kubectl logs -f -n ${NAME} deploy/thor-daemon

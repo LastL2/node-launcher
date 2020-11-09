@@ -1,9 +1,0 @@
-#!/bin/bash
-
-while :
-do
-  UNBLINK_BUFFER=$(kubectl -n "$1" get pods)
-  printf '\e[H\e[2K'  # Because clear() may not work
-  echo "$UNBLINK_BUFFER"
-  sleep 1
-done
