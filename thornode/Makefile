@@ -172,7 +172,7 @@ shell: ## Open a shell into thor-daemon deployment
 	@exec ${THORD_CMD} sh
 
 shell-binance: ## Open a shell into binance deployment
-	@kubectl exec -it --namespace ${NAME} deploy/binance -- sh
+	@kubectl exec -it --namespace ${NAME} deploy/binance-daemon -- sh
 
 shell-bifrost: ## Open a shell into bifrost deployment
 	@kubectl exec -it --namespace ${NAME} deploy/bifrost -- sh
