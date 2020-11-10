@@ -183,6 +183,9 @@ shell-midgard: ## Open a shell into midgard deployment
 shell-midgard-timescaledb: ## Open a shell into midgard-timescaledb deployment
 	@kubectl exec -it --namespace ${NAME} deploy/midgard-timescaledb -- sh
 
+watch: ## Watch the thornode pods in real time
+	@watch -n 1 kubectl -n ${NAME} get pods
+
 logs: ## Display logs for thor-daemon deployment
 	@kubectl logs -f -n ${NAME} deploy/thor-daemon
 
@@ -224,4 +227,4 @@ telegram-bot: ## Deploy Telegram bot to monitor THORNode
 destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
 	@helm delete telegram-bot -n ${NAME}
 
-.PHONY: help mnemonic create-mnemonic create-password create-namespace update-dependencies pods mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode testnet-update chaosnet-genesis chaosnet-validator chaosnet-fullnode chaosnet-update mainnet-genesis mainnet-validator mainnet-fullnode mainnet-update destroy midgard status shell set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
+.PHONY: help mnemonic create-mnemonic create-password create-namespace update-dependencies pods mocknet-genesis mocknet-validator testnet-genesis testnet-validator testnet-fullnode testnet-update chaosnet-genesis chaosnet-validator chaosnet-fullnode chaosnet-update mainnet-genesis mainnet-validator mainnet-fullnode mainnet-update destroy midgard status shell watch set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
