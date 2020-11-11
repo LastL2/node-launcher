@@ -44,11 +44,6 @@ spec:
         volumeMounts:
         - name: scripts
           mountPath: /scripts
-      - name: init-ulimitn
-        image: busybox
-        command: ['sh', '-c', 'ulimit -n 65536']
-        securityContext:
-          privileged: true
       {{- if default .Values.peer .Values.global.peer }}
       - name: init-peer
         image: busybox:1.28

@@ -71,7 +71,7 @@ testnet-validator: create-mnemonic update-dependencies ## Install/Update a TESTN
 
 testnet-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNET Fullnode THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=${VERSION_MIDGARD_TESTNET},bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}},global.gateway.enabled=true,midgard.image.tag=${VERSION_MIDGARD_TESTNET},bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_TESTNET}',thor-daemon.validator=false,thor-gateway.validator=false,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP
 
 testnet-update: pull testnet-validator set-version status ## Update a TESTNET Validator THORNode and set version
 
@@ -95,7 +95,7 @@ mainnet-validator: create-mnemonic cerate-password update-dependencies ## Instal
 
 mainnet-fullnode: create-mnemonic update-dependencies ## Install/Update a MAINNET Fullnode THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED}',thor-daemon.validator=false,thor-gateway.validator=false
+	@helm upgrade --install ${ARGS} --set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED}',thor-daemon.validator=false,thor-gateway.validator=false,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP
 
 mainnet-update: pull mainnet-validator set-version status ## Update a MAINNET Validator THORNode and set version
 
@@ -109,7 +109,7 @@ chaosnet-validator: create-mnemonic create-password update-dependencies ## Inst
 
 chaosnet-fullnode: create-mnemonic update-dependencies ## Install/Update a CHAOSNET Fullnode THORNode
 	@echo Installing THORNode
-	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false,midgard.image.tag=${VERSION_MIDGARD_CHAOSNET}
+	@helm upgrade --install ${ARGS} --set global.tag=$${TAG:-${VERSION_CHAOSNET}},global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false,thor-daemon.seeds='${SEED_CHAOSNET}',thor-daemon.validator=false,thor-gateway.validator=false,midgard.image.tag=${VERSION_MIDGARD_CHAOSNET},bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP
 
 chaosnet-update: pull chaosnet-validator set-version status ## Update a CHAOSNET Validator THORNode and set version
 
