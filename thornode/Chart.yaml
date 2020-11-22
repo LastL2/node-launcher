@@ -32,6 +32,12 @@ dependencies:
     version: 0.1.0
     condition: midgard.enabled
 
+  - name: midgard
+    repository: file://../midgard
+    version: 0.1.0
+    condition: midgard-v2.enabled
+    alias: midgard-v2
+
   - name: binance-daemon
     repository: file://../binance-daemon
     version: 0.1.0

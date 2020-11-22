@@ -1,14 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "midgard.fullname" . }}
   labels:
     {{- include "midgard.labels" . | nindent 4 }}
     app.kubernetes.io/component: midgard
 spec:
+  serviceName: {{ include "midgard.fullname" . }}-headless
+  podManagementPolicy: "Parallel"
   replicas: {{ .Values.replicaCount }}
-  strategy:
-    type: Recreate
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       {{- include "midgard.selectorLabels" . | nindent 6 }}
@@ -29,7 +31,7 @@ spec:
       initContainers:
         - name: init-database
           image: busybox:1.28
-          command: ['sh', '-c', "until nc -zv {{ include "midgard.fullname" . }}-timescaledb:{{ .Values.postgres.port }}; do echo waiting for timescale database; sleep 2; done"]
+          command: ['sh', '-c', "export INDEX=${HOSTNAME##*-}; until nc -zv {{ include "midgard.fullname" . }}-timescaledb-$INDEX.{{ include "midgard.fullname" . }}-timescaledb:{{ .Values.postgres.port }}; do echo waiting for timescale database; sleep 2; done"]
         - name: init-thor
           image: busybox:1.28
           command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done"]
@@ -39,48 +41,56 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/go/scripts/midgard.sh"]
-          args: ["midgard", "-c", "/etc/midgard/config.json"]
-          env:
-            - name: TIMESCALE_MAX_CONNECTIONS
-              value: "200"
-            - name: CHAIN_API
-              value: {{ .Values.thorApi }}
-            - name: CHAIN_RPC
-              value: {{ include "midgard.thorDaemon" . }}
-            - name: PG_HOST
-              value: {{ include "midgard.fullname" . }}-timescaledb
-            - name: PG_PORT
-              value: {{ .Values.postgres.port | quote }}
-            - name: PG_DB
-              value: {{ .Values.postgres.database }}
-            - name: PG_USERNAME
-              value: {{ .Values.postgres.username }}
-            - name: PG_PASSWORD
-              value: {{ .Values.postgres.password }}
+          command: ['/entrypoint.sh']
+          volumeMounts:
+          - name: config
+            mountPath: /config.json.tpl
+            {{- if eq .Values.image.tag "2.0.0" }}
+            subPath: config-v2.json
+            {{- else }}
+            subPath: config-v1.json
+            {{- end }}
+          - name: config
+            mountPath: /entrypoint.sh
+            subPath: entrypoint.sh
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           startupProbe:
-            failureThreshold: 30
-            httpGet:
-              path: /v1/health
+            failureThreshold: 60
+            timeoutSeconds: 5
+            periodSeconds: 10
+            tcpSocket:
               port: http
           livenessProbe:
             initialDelaySeconds: 300
-            httpGet:
-              path: /v1/health
+            timeoutSeconds: 20
+            periodSeconds: 30
+            tcpSocket:
               port: http
           readinessProbe:
-            httpGet:
-              path: /v1/health
-              port: http
+            timeoutSeconds: 20
+            periodSeconds: 30
+            failureThreshold: 5
+            exec:
+              command:
+              {{- if eq .Values.image.tag "2.0.0" }}
+              - /bin/sh
+              - -c
+              - "wget -q -O - -T 20 localhost:8080/v2/health | grep '\"inSync\": true'"
+              {{- else }}
+              - /bin/sh
+              - -c
+              - "curl -sL --fail -m 20 localhost:8080/v1/health | grep '\"catching_up\":true'"
+              {{- end }}
           resources:
             {{- toYaml .Values.resources.midgard | nindent 12 }}
       volumes:
-        - name: scripts
-          emptyDir: {}
+        - name: config
+          configMap:
+            name: {{ include "midgard.fullname" . }}-config
+            defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -95,16 +105,18 @@ spec:
     {{- end }}
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "midgard.fullname" . }}-timescaledb
   labels:
     {{- include "midgard.labels" . | nindent 4 }}
     app.kubernetes.io/component: timescaledb
 spec:
+  serviceName: {{ include "midgard.fullname" . }}-timescaledb
+  podManagementPolicy: "Parallel"
   replicas: {{ .Values.replicaCount }}
-  strategy:
-    type: Recreate
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       {{- include "midgard.selectorLabels" . | nindent 6 }}
@@ -122,6 +134,16 @@ spec:
       serviceAccountName: {{ include "midgard.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if eq .Values.image.tag "2.0.0" }}
+      initContainers:
+        - name: copy-migrations
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          command: ['cp', 'ddl.sql', '/migrations/']
+          volumeMounts:
+            - mountPath: /migrations
+              name: migrations
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-timescaledb
           securityContext:
@@ -133,15 +155,19 @@ spec:
               name: data
             - mountPath: /dev/shm
               name: dshm
+            {{- if eq .Values.image.tag "2.0.0" }}
+            - mountPath: /docker-entrypoint-initdb.d/
+              name: migrations
+            {{- end }}
           args:
           - -c
-          - max_connections=250
+          - max_connections=100
           - -c
-          - shared_buffers=1GB
+          - shared_buffers=128MB
           - -c
-          - wal_buffers=128MB
+          - wal_buffers=16MB
           - -c
-          - work_mem=64MB
+          - work_mem=8MB
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
@@ -174,21 +200,40 @@ spec:
           resources:
             {{- toYaml .Values.resources.timescaledb | nindent 12 }}
       volumes:
+      {{- if eq .Values.image.tag "2.0.0" }}
+      - name: migrations
+        emptyDir: {}
+      {{- end }}
       - name: dshm
         emptyDir:
           medium: Memory
           sizeLimit: 1Gi
-      - name: data
-      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
-        persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "midgard.fullname" . }}{{- end }}
-      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
-        hostPath:
-          path: {{ .Values.persistence.hostPath }}
-          type: DirectoryOrCreate
-      {{- else }}
-        emptyDir: {}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      annotations:
+      {{- range $key, $value := .Values.persistence.annotations }}
+        {{ $key }}: {{ $value }}
       {{- end }}
+    spec:
+      accessModes:
+      - {{ .Values.persistence.accessMode | quote }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- else }}
+      - name: data
+        emptyDir: {}
+  {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

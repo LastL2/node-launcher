@@ -17,6 +17,8 @@ net: mainnet
 
 replicaCount: 1
 
+logLevel: info
+
 image:
   repository: registry.gitlab.com/thorchain/midgard
   pullPolicy: IfNotPresent
@@ -39,11 +41,8 @@ persistence:
   enabled: true
   size: 50Gi
   accessMode: ReadWriteOnce
-  # existingClaim: your-pvc
   # storageClass: "-"
-  # hostPath: /host-path
-  # subPath: subpath
-  #
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -80,16 +79,16 @@ resources:
     requests:
       cpu: 0.5
       memory: 512Mi
-    limits:
-      cpu: 0.5
-      memory: 512Mi
+    # limits:
+      # cpu: 0.5
+      # memory: 512Mi
   timescaledb:
     requests:
       cpu: 2
       memory: 3Gi
-    limits:
+    # limits:
       # cpu: 2
-      memory: 3Gi
+      # memory: 3Gi
 
 nodeSelector: {}
 

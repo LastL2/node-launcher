@@ -28,7 +28,14 @@ bifrost:
 
 midgard:
   fullnameOverride: midgard
+  replicaCount: 1
+
+midgard-v2:
+  enabled: false
+  fullnameOverride: midgard-v2
+  replicaCount: 1
   image:
+    tag: 2.0.0
     pullPolicy: Always
 
 binance-daemon:
