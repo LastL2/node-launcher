@@ -6,6 +6,9 @@ net: mainnet
 
 validator: true
 
+midgardV2:
+  enabled: false
+
 replicaCount: 1
 
 image:

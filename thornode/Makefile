@@ -15,7 +15,7 @@ MNEMONIC_CMD=kubectl run -n ${NAME} -it --rm mnemonic --image=registry.gitlab.co
 MNEMONIC_SECRET=thornode-mnemonic
 PASSWORD_CMD=read -s -p "Enter Password: " pwd; echo >&2;read -s -p "Confirm Password: " pwdconf; [ "$$pwd" = "$$pwdconf" ] && (echo >&2; echo $$pwd) || (echo >&2; echo "Passwords mismatch" >&2 && exit 1)
 PASSWORD_SECRET=thornode-password
-ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET} --wait --timeout 10m
+ARGS=${NAME} ./thornode -n ${NAME} --create-namespace --set global.mnemonicSecret=${MNEMONIC_SECRET}
 THORD_CMD=kubectl exec -it --namespace ${NAME} deploy/thor-daemon --
 BNB_RECOVER_HEIGHT_CMD=kubectl logs -n ${NAME} deploy/binance-daemon | grep "Wrong Block.Header.AppHash" | awk -F"[()]" '{print $2}' |  cut -d ':' -f 1 | awk '{print $1-1}'
 
@@ -114,8 +114,12 @@ chaosnet-fullnode: create-mnemonic update-dependencies ## Install/Update a CHAO
 chaosnet-update: pull chaosnet-validator set-version status ## Update a CHAOSNET Validator THORNode and set version
 
 reset-midgard: ## Reset and resync current Midgard service from scratch on your THORNode. This command can take a while to sync back to 100%.
-	@kubectl exec -it -n ${NAME} deploy/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
+	@kubectl exec -it -n ${NAME} sts/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
 	@kubectl delete -n ${NAME} pod -l app.kubernetes.io/name=midgard
+
+reset-midgard-v2: ## Reset and resync current Midgard v2 service from scratch on your THORNode. This command can take a while to sync back to 100%.
+	@kubectl exec -it -n ${NAME} sts/midgard-v2-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
+	@kubectl delete -n ${NAME} pod -l app.kubernetes.io/name=midgard-v2
 
 reset-binance: ## Reset and resync current Binance Node service on your THORNode. This command can take a while to sync back to 100%.
 	@echo !!! Destructive command, be careful, your Binance node data will be wiped out and your Binance node will restart from scratch and sync again !!!
@@ -178,10 +182,10 @@ shell-bifrost: ## Open a shell into bifrost deployment
 	@kubectl exec -it --namespace ${NAME} deploy/bifrost -- sh
 
 shell-midgard: ## Open a shell into midgard deployment
-	@kubectl exec -it --namespace ${NAME} deploy/midgard -- sh
+	@kubectl exec -it --namespace ${NAME} sts/midgard -- sh
 
 shell-midgard-timescaledb: ## Open a shell into midgard-timescaledb deployment
-	@kubectl exec -it --namespace ${NAME} deploy/midgard-timescaledb -- sh
+	@kubectl exec -it --namespace ${NAME} sts/midgard-timescaledb -- sh
 
 watch: ## Watch the thornode pods in real time
 	@watch -n 1 kubectl -n ${NAME} get pods
@@ -196,10 +200,10 @@ logs-bifrost: ## Display logs for bifrost deployment
 	@kubectl logs -f -n ${NAME} deploy/bifrost
 
 logs-midgard: ## Display logs for midgard deployment
-	@kubectl logs -f -n ${NAME} deploy/midgard
+	@kubectl logs -f -n ${NAME} sts/midgard
 
 logs-midgard-timescaledb: ## Display logs for midgard-timescaledb deployment
-	@kubectl logs -f -n ${NAME} deploy/midgard-timescaledb
+	@kubectl logs -f -n ${NAME} sts/midgard-timescaledb
 
 logs-telegram-bot: ## Display logs for telegram-bot deployment
 	@kubectl logs -f -n ${NAME} deploy/telegram-bot

@@ -49,48 +49,6 @@ data:
 
     kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -
 
-  haproxy.cfg: |
-    global
-        maxconn 2000
-
-    defaults
-        mode tcp
-        timeout connect 5000ms
-        timeout client 50000ms
-        timeout server 50000ms
-
-    listen health-check
-      bind :80
-      mode http
-      monitor-uri /healthz
-      option      dontlognull
-
-    {{- if .Values.validator }}
-    listen bifrost-p2p
-        bind *:{{ .Values.service.port.bifrost.p2p }}
-        server bifrost_service bifrost:{{ .Values.service.port.bifrost.p2p }}
-
-    listen bifrost-api
-        bind *:{{ .Values.service.port.bifrost.api }}
-        server bifrost_service bifrost:{{ .Values.service.port.bifrost.api }}
-    {{- end }}
-
-    listen thor-daemon-rpc
-        bind *:{{ include "thor-gateway.rpc" . }}
-        server thor_daemon_service thor-daemon:{{ include "thor-gateway.rpc" . }}
-
-    listen thor-daemon-p2p
-        bind *:{{ include "thor-gateway.p2p" . }}
-        server thor_daemon_service thor-daemon:{{ include "thor-gateway.p2p" . }}
-
-    listen midgard
-        bind *:{{ .Values.service.port.midgard }}
-        server midgard_service midgard:{{ .Values.service.port.midgard }}
-
-    listen api
-        bind *:{{ .Values.service.port.api }}
-        server thor_api_service thor-api:{{ .Values.service.port.api }}
-
   nginx.conf: |
     user  nginx;
     worker_processes  auto;
@@ -147,22 +105,6 @@ data:
       server {
         listen {{ .Values.service.port.midgard }};
 
-        location /v1/health {
-          add_header Access-Control-Allow-Credentials true;
-          add_header Access-Control-Allow-Methods 'DELETE,GET,OPTIONS,POST,PUT';
-          add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With';
-
-          add_header Cache-Control "no-cache, must-revalidate, max-age=0";
-          add_header X-Cache-Status $upstream_cache_status;
-          proxy_cache thornode;
-          proxy_cache_use_stale updating;
-          proxy_cache_lock on;
-          proxy_cache_background_update on;
-          proxy_cache_valid any 5s;
-          proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
-          proxy_pass http://midgard:{{ .Values.service.port.midgard }};
-        }
-
         location / {
           add_header Access-Control-Allow-Credentials true;
           add_header Access-Control-Allow-Methods 'DELETE,GET,OPTIONS,POST,PUT';
@@ -171,12 +113,32 @@ data:
           add_header Cache-Control "no-cache, must-revalidate, max-age=0";
           add_header X-Cache-Status $upstream_cache_status;
           proxy_cache thornode;
-          proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
           proxy_cache_lock on;
           proxy_cache_background_update on;
           proxy_cache_valid any 5s;
           proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
-          proxy_pass http://midgard:{{ .Values.service.port.midgard }};
+
+          location = /v1/health {
+            proxy_cache_use_stale updating;
+            proxy_pass http://midgard:{{ .Values.service.port.midgard }};
+          }
+
+          location /v1 {
+            proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+            proxy_pass http://midgard:{{ .Values.service.port.midgard }};
+          }
+
+          {{- if .Values.midgardV2.enabled }}
+          location = /v2/health {
+            proxy_cache_use_stale updating;
+            proxy_pass http://midgard-v2:{{ .Values.service.port.midgard }};
+          }
+
+          location /v2 {
+            proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+            proxy_pass http://midgard-v2:{{ .Values.service.port.midgard }};
+          }
+          {{- end }}
         }
       }
 
