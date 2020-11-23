@@ -7,14 +7,9 @@ replicaCount: 1
 net: mainnet
 
 image:
-  bitcoin:
-    repository: registry.gitlab.com/thorchain/devops/bitcoin-core
-    pullPolicy: IfNotPresent
-    tag: 0.20.1
-  scripts:
-    repository: registry.gitlab.com/thorchain/thornode
-    pullPolicy: IfNotPresent
-    tag: mocknet
+  repository: registry.gitlab.com/thorchain/devops/bitcoin-core
+  pullPolicy: Always
+  tag: 0.20.1
 
 imagePullSecrets: []
 nameOverride: ""

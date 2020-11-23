@@ -23,24 +23,14 @@ spec:
       serviceAccountName: {{ include "bitcoin-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
-      initContainers:
-        - name: init-scripts
-          image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
-          imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
-          volumeMounts:
-            - name: scripts
-              mountPath: /tmp
-          command: [ "sh", "-c", "cp -r /scripts/* /tmp" ]
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.bitcoin.repository }}:{{ .Values.image.bitcoin.tag }}"
-          imagePullPolicy: {{ .Values.image.bitcoin.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
-          command: ["/scripts/bitcoin-mock.sh"]
+          command: ["/scripts/entrypoint-mock.sh"]
           {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
           args:
             - -testnet
@@ -56,8 +46,6 @@ spec:
             - -rpcauth=thorchain:d7e53bb9757b6d4fabf87775c7824b5c$7097e9cde30ef4319ed708fc559267679ae6cc0bf7e18fd49b283650c0c26a10
           {{- end }}
           volumeMounts:
-            - name: scripts
-              mountPath: /scripts
             - name: data
               mountPath: /home/bitcoin/.bitcoin
           ports:
@@ -94,8 +82,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-      - name: scripts
-        emptyDir: {}
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
