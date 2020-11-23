@@ -23,6 +23,7 @@ spec:
       serviceAccountName: {{ include "bitcoin-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
       initContainers:
         - name: init-scripts
           image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
@@ -30,7 +31,8 @@ spec:
           volumeMounts:
             - name: scripts
               mountPath: /tmp
-          command: [ "sh", "-c", "cp /scripts/* /tmp" ]
+          command: [ "sh", "-c", "cp -r /scripts/* /tmp" ]
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
