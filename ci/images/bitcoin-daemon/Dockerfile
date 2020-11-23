@@ -33,10 +33,10 @@ RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${BITCOIN_PGP_KEY} \
 	&& rm -rf glibc-*
 
 RUN adduser -S bitcoin
-COPY docker-entrypoint.sh /entrypoint.sh
+COPY ./scripts /scripts
 
 EXPOSE 8332 8333 18332 18333 18443 18444
 VOLUME ["/home/bitcoin/.bitcoin"]
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/scripts/entrypoint.sh"]
 CMD ["bitcoind"]
