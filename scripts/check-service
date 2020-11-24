@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if kubectl get svc -A | grep -q "$1"; then
-  echo "$1 is already present on the system"
-else
-  $2
-fi
