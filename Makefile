@@ -33,12 +33,12 @@ destroy-logs: ## Uninstall logs management stack
 
 install-metrics: repos ## Install/Update metrics management stack
 	@echo Installing Metrics
-	@helm upgrade --install metrics-server stable/metrics-server -n prometheus-system --create-namespace --wait -f ./metrics-server/values.yaml
+	@kubectl get svc -A | grep -q metrics-server || helm upgrade --install metrics-server stable/metrics-server -n prometheus-system --create-namespace --wait -f ./metrics-server/values.yaml
 	@helm upgrade --install prometheus prometheus-community/kube-prometheus-stack -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
 
 destroy-metrics: ## Uninstall metrics management stack
 	@echo Deleting Metrics
-	@helm delete metrics-server -n prometheus-system
+	@kubectl get svc -n prometheus-system metrics-server > /dev/null 2>&1 || helm delete metrics-server -n prometheus-system
 	@helm delete prometheus -n prometheus-system
 	@kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
 	@kubectl delete crd alertmanagers.monitoring.coreos.com
