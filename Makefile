@@ -14,12 +14,12 @@ repos: ## Add Helm repositories for dependencies
 	@helm repo add loki https://grafana.github.io/loki/charts
 	@helm repo update
 
-tools: install-logs install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
+tools: install-loki install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
 
 pull: ## Git pull node-launcher repository
 	@git pull origin master && sleep 3
 
-destroy-tools: destroy-logs destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
+destroy-tools: destroy-loki destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
 
 install-logs: repos ## Install/Update ELK logs management stack
 	@echo Installing ELK Logs Management
