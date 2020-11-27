@@ -34,7 +34,7 @@ destroy-logs: ## Uninstall ELK logs management stack
 
 install-loki: repos ## Install/Update Loki logs management stack
 	@echo Installing Loki Logs Management
-	@helm upgrade loki loki/loki-stack --install -n loki-system --create-namespace --wait
+	@helm upgrade loki loki/loki-stack --install -n loki-system --create-namespace --wait -f ./loki/values.yaml
 	@echo Waiting for services to be ready...
 	@kubectl wait --for=condition=Ready --all pods -n loki-system --timeout=5m
 
