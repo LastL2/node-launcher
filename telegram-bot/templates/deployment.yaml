@@ -8,6 +8,8 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "telegram-bot.selectorLabels" . | nindent 6 }}
@@ -36,12 +38,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /storage
-            - name: files
-              mountPath: /bot/constants.py
-              subPath: constants.py
-            - name: files
-              mountPath: /bot/service/thorchain_network_service.py
-              subPath: thorchain_network_service.py
           env:
             - name: TELEGRAM_BOT_TOKEN
               value: "{{ .Values.telegramToken }}"
@@ -73,10 +69,6 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: files
-        configMap:
-          name: {{ include "telegram-bot.fullname" . }}
-          defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
