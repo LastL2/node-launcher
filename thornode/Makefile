@@ -215,7 +215,7 @@ destroy: status ## Uninstall current THORNode
 	@kubectl delete namespace ${NAME}
 
 status: ## Display current status of your THORNode
-	@exec ${THORD_CMD} [ -f /scripts/node-status.sh ] && /scripts/node-status.sh || /kube-scripts/node-status.sh
+	@exec ${THORD_CMD} sh -c "[ -f /scripts/node-status.sh ] && /scripts/node-status.sh || /kube-scripts/node-status.sh"
 
 midgard: ## Access Midgard API through port-forward locally
 	@echo Open your browser at http://localhost:8080
