@@ -100,7 +100,7 @@ testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Upd
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}} \
 		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
 		--set bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}' \
-		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=${BTC_BLOCKHEIGHT_START_TESTNET}
+		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true
 
 testnet-multichain-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNET MULTICHAIN Fullnode THORNode
 	@echo Installing THORNode
@@ -111,7 +111,7 @@ testnet-multichain-fullnode: create-mnemonic update-dependencies ## Install/Upda
 		--set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
 		--set thor-daemon.validator=false,thor-gateway.validator=false \
 		--set bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
-		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=${BTC_BLOCKHEIGHT_START_TESTNET}
+		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true
 
 testnet-multichain-update: pull testnet-multichain-validator set-version status ## Update a TESTNET MULTICHAIN Validator THORNode and set version
 
