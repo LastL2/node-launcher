@@ -38,7 +38,7 @@ install-metrics: repos ## Install/Update metrics management stack
 
 destroy-metrics: ## Uninstall metrics management stack
 	@echo Deleting Metrics
-	@kubectl get svc -n prometheus-system metrics-server > /dev/null 2>&1 || helm delete metrics-server -n prometheus-system
+	@kubectl get svc -n prometheus-system metrics-server --ignore-not-found > /dev/null 2>&1 || helm delete metrics-server -n prometheus-system
 	@helm delete prometheus -n prometheus-system
 	@kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
 	@kubectl delete crd alertmanagers.monitoring.coreos.com
