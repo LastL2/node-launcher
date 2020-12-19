@@ -11,25 +11,37 @@ repos: ## Add Helm repositories for dependencies
 	@helm repo add stable https://charts.helm.sh/stable
 	@helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard
 	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+	@helm repo add loki https://grafana.github.io/loki/charts
 	@helm repo update
 
-tools: install-logs install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
+tools: install-loki install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
 
 pull: ## Git pull node-launcher repository
 	@git pull origin master && sleep 3
 
-destroy-tools: destroy-logs destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
+destroy-tools: destroy-loki destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
 
-install-logs: repos ## Install/Update logs management stack
-	@echo Installing Logs Management
+install-logs: repos ## Install/Update ELK logs management stack
+	@echo Installing ELK Logs Management
 	@helm upgrade elastic ./elastic-operator --install -n elastic-system --create-namespace --wait
 	@echo Waiting for services to be ready...
 	@kubectl wait --for=condition=Ready --all pods -n elastic-system --timeout=5m
 
-destroy-logs: ## Uninstall logs management stack
-	@echo Deleting Logs Management
+destroy-logs: ## Uninstall ELK logs management stack
+	@echo Deleting ELK Logs Management
 	@helm delete elastic -n elastic-system
 	@kubectl delete namespace elastic-system
+
+install-loki: repos ## Install/Update Loki logs management stack
+	@echo Installing Loki Logs Management
+	@helm upgrade loki loki/loki-stack --install -n loki-system --create-namespace --wait -f ./loki/values.yaml
+	@echo Waiting for services to be ready...
+	@kubectl wait --for=condition=Ready --all pods -n loki-system --timeout=5m
+
+destroy-loki: ## Uninstall Loki logs management stack
+	@echo Deleting Loki Logs Management
+	@helm delete loki -n loki-system
+	@kubectl delete namespace loki-system
 
 install-metrics: repos ## Install/Update metrics management stack
 	@echo Installing Metrics
