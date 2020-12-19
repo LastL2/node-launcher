@@ -176,6 +176,15 @@ grafana:
     size: 10Gi
 
   adminPassword: thorchain
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Loki
+        type: loki
+        url: http://loki.loki-system:3100
+
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
