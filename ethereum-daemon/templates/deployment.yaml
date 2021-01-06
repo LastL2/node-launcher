@@ -53,7 +53,7 @@ spec:
               mountPath: /root
           ports:
             - name: rpc
-              containerPort: 8545
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

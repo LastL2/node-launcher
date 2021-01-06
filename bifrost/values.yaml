@@ -33,6 +33,12 @@ bitcoinDaemon:
   testnet: bitcoin-daemon:18332
   mocknet: bitcoin-daemon:18443
 
+bitcoinCashDaemon:
+  enabled: false
+  mainnet: bitcoin-cash-daemon:8332
+  testnet: bitcoin-cash-daemon:18332
+  mocknet: bitcoin-cash-daemon:18443
+
 ethereumDaemon:
   enabled: false
   mainnet: http://ethereum-daemon:8545
