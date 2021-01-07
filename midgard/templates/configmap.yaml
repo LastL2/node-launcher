@@ -50,8 +50,8 @@ data:
     {
       "listen_port": {{ .Values.service.port }},
       "thorchain": {
-        "url": "http://{{ include "midgard.thorDaemon" . }}/websocket",
-        "node_url": "http://{{ .Values.thorApi }}/thorchain",
+        "tendermint_url": "http://{{ include "midgard.thorDaemon" . }}/websocket",
+        "thornode_url": "http://{{ .Values.thorApi }}/thorchain",
         "last_chain_backoff": "7s",
         "proxied_whitelisted_endpoints": [
           "pool_addresses",

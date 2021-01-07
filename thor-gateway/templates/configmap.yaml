@@ -110,6 +110,7 @@ data:
           proxy_cache_valid any 5s;
           proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
 
+          {{- if .Values.midgard.enabled }}
           location = /v1/health {
             proxy_cache_use_stale updating;
             proxy_pass http://midgard:{{ .Values.service.port.midgard }};
@@ -119,6 +120,7 @@ data:
             proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
             proxy_pass http://midgard:{{ .Values.service.port.midgard }};
           }
+          {{- end }}
 
           {{- if .Values.midgardV2.enabled }}
           location = /v2/health {

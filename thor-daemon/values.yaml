@@ -14,6 +14,7 @@ peer:
 seeds:
 peerApi:
 binanceDaemon:
+ethContract: "0xE65e9d372F8cAcc7b6dfcd4af6507851Ed31bb44"
 
 validator: true
 

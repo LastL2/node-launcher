@@ -93,7 +93,9 @@ testnet-multichain-genesis: create-mnemonic update-dependencies ## Install/Updat
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}} \
-		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
+		--set midgard-v2.enabled=true,midgard.enabled=false \
+		--set thor-gateway.midgardV2.enabled=true,thor-gateway.midgard.enabled=false \
+		--set global.gateway.enabled=true,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
 		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=${BTC_BLOCKHEIGHT_START_TESTNET} \
 		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true,bifrost.ethereumStartBlockHeight=${ETH_BLOCKHEIGHT_START_TESTNET} \
 		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true,bifrost.bitcoinCashStartBlockHeight=${BCH_BLOCKHEIGHT_START_TESTNET}
@@ -102,8 +104,10 @@ testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Upd
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}} \
-		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
+		--set midgard-v2.enabled=true,midgard.enabled=false \
+		--set thor-gateway.midgardV2.enabled=true,thor-gateway.midgard.enabled=false \
 		--set bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}' \
+		--set global.gateway.enabled=true,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
 		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true \
 		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true \
 		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true
@@ -112,7 +116,8 @@ testnet-multichain-fullnode: create-mnemonic update-dependencies ## Install/Upda
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}} \
-		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
+		--set midgard-v2.enabled=true,midgard.enabled=false \
+		--set thor-gateway.midgardV2.enabled=true,thor-gateway.midgard.enabled=false \
 		--set thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}' \
 		--set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
 		--set thor-daemon.validator=false,thor-gateway.validator=false \

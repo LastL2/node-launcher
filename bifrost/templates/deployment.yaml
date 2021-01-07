@@ -66,6 +66,11 @@ spec:
         image: appropriate/curl
         command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.bitcoinDaemon" . }} > /dev/null; do echo waiting for bitcoin; sleep 2; done']
       {{- end }}
+      {{- if .Values.bitcoinCashDaemon.enabled }}
+      - name: init-bitcoin-cash
+        image: appropriate/curl
+        command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.bitcoinCashDaemon" . }} > /dev/null; do echo waiting for bitcoin cash; sleep 2; done']
+      {{- end }}
       {{- if .Values.ethereumDaemon.enabled }}
       - name: init-ethereum
         image: appropriate/curl
@@ -114,7 +119,7 @@ spec:
             - name: BTC_START_BLOCK_HEIGHT
               value: "{{ .Values.bitcoinStartBlockHeight }}"
             - name: BCH_HOST
-              value: {{ include "bifrost.bitcoinDaemon" . }}
+              value: {{ include "bifrost.bitcoinCashDaemon" . }}
             - name: BCH_START_BLOCK_HEIGHT
               value: "{{ .Values.bitcoinCashStartBlockHeight }}"
             - name: ETH_HOST

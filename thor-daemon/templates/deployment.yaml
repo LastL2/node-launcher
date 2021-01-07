@@ -84,6 +84,8 @@ spec:
             value: {{ .Values.seeds }}
           - name: PEER_API
             value: {{ .Values.peerApi }}
+          - name: CONTRACT
+            value: {{ .Values.ethContract }}
           - name: BINANCE
             value: {{ default .Values.binanceDaemon .Values.global.binanceDaemon }}
           - name: SEED
@@ -140,6 +142,8 @@ spec:
               value: {{ .Values.seeds }}
             - name: PEER_API
               value: {{ .Values.peerApi }}
+            - name: CONTRACT
+              value: {{ .Values.ethContract }}
             - name: DEBUG
               value: "{{ .Values.debug }}"
             - name: NET
