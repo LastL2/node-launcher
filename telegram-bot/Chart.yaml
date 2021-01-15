@@ -3,4 +3,4 @@ name: telegram-bot
 description: A telegram bot to monitor the status of a THORNode
 type: application
 version: 0.1.0
-appVersion: release-1.11.4
+appVersion: release-1.12
