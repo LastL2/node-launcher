@@ -48,6 +48,11 @@ dependencies:
     version: 0.1.0
     condition: bitcoin-daemon.enabled
 
+  - name: litecoin-daemon
+    repository: file://../litecoin-daemon
+    version: 0.1.0
+    condition: litecoin-daemon.enabled
+
   - name: bitcoin-cash-daemon
     repository: file://../bitcoin-cash-daemon
     version: 0.1.0

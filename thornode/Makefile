@@ -8,6 +8,7 @@ VERSION_MIDGARD_TESTNET=0.8.0
 VERSION_MIDGARD_CHAOSNET=0.8.0
 BTC_BLOCKHEIGHT_START_TESTNET=1895640
 BCH_BLOCKHEIGHT_START_TESTNET=1429097
+LTC_BLOCKHEIGHT_START_TESTNET=1777204
 ETH_BLOCKHEIGHT_START_TESTNET=7847260
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
@@ -98,6 +99,7 @@ testnet-multichain-genesis: create-mnemonic update-dependencies ## Install/Updat
 		--set global.gateway.enabled=true,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
 		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=${BTC_BLOCKHEIGHT_START_TESTNET} \
 		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true,bifrost.ethereumStartBlockHeight=${ETH_BLOCKHEIGHT_START_TESTNET} \
+		--set litecoin-daemon.enabled=true,bifrost.litecoinDaemon.enabled=true,bifrost.litecoinStartBlockHeight=${LTC_BLOCKHEIGHT_START_TESTNET} \
 		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true,bifrost.bitcoinCashStartBlockHeight=${BCH_BLOCKHEIGHT_START_TESTNET}
 
 testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET MULTICHAIN Validator THORNode
@@ -110,6 +112,7 @@ testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Upd
 		--set global.gateway.enabled=true,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
 		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true \
 		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true \
+		--set litecoin-daemon.enabled=true,bifrost.litecoinDaemon.enabled=true \
 		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true
 
 testnet-multichain-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNET MULTICHAIN Fullnode THORNode
@@ -124,6 +127,7 @@ testnet-multichain-fullnode: create-mnemonic update-dependencies ## Install/Upda
 		--set bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
 		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true \
 		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true \
+		--set litecoin-daemon.enabled=true,bifrost.litecoinDaemon.enabled=true \
 		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true
 
 testnet-multichain-update: pull testnet-multichain-validator set-version status ## Update a TESTNET MULTICHAIN Validator THORNode and set version
