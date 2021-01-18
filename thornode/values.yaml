@@ -45,6 +45,10 @@ bitcoin-daemon:
   enabled: false
   fullnameOverride: bitcoin-daemon
 
+litecoin-daemon:
+  enabled: false
+  fullnameOverride: litecoin-daemon
+
 bitcoin-cash-daemon:
   enabled: false
   fullnameOverride: bitcoin-cash-daemon

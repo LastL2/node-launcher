@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "bitcoin-daemon.fullname" . }}
+  name: {{ include "litecoin-daemon.fullname" . }}
   labels:
-    {{- include "bitcoin-daemon.labels" . | nindent 4 }}
+    {{- include "litecoin-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "bitcoin-daemon.selectorLabels" . | nindent 6 }}
+      {{- include "litecoin-daemon.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "bitcoin-daemon.selectorLabels" . | nindent 8 }}
+        {{- include "litecoin-daemon.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "bitcoin-daemon.serviceAccountName" . }}
+      serviceAccountName: {{ include "litecoin-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -29,16 +29,16 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+          {{- if eq (include "litecoin-daemon.net" .) "mocknet" }}
           command: ["/scripts/entrypoint-mock.sh"]
-          {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+          {{- else if eq (include "litecoin-daemon.net" .) "testnet" }}
           args:
             - -testnet
             - -txindex
             - -rpcallowip=10.0.0.0/8
             - -rpcbind=0.0.0.0
             - -rpcauth=thorchain:d7e53bb9757b6d4fabf87775c7824b5c$7097e9cde30ef4319ed708fc559267679ae6cc0bf7e18fd49b283650c0c26a10
-          {{- else if eq (include "bitcoin-daemon.net" .) "mainnet" }}
+          {{- else if eq (include "litecoin-daemon.net" .) "mainnet" }}
           args:
             - -txindex
             - -rpcallowip=10.0.0.0/8
@@ -47,35 +47,35 @@ spec:
           {{- end }}
           volumeMounts:
             - name: data
-              mountPath: /home/bitcoin/.bitcoin
+              mountPath: /home/litecoin/.litecoin
           ports:
             - name: p2p
-              containerPort: {{ include "bitcoin-daemon.p2p" . }}
+              containerPort: {{ include "litecoin-daemon.p2p" . }}
               protocol: TCP
             - name: rpc
-              containerPort: {{ include "bitcoin-daemon.rpc" . }}
+              containerPort: {{ include "litecoin-daemon.rpc" . }}
               protocol: TCP
           livenessProbe:
             exec:
               command:
-                - bitcoin-cli
+                - litecoin-cli
                 - -rpcuser=thorchain
                 - -rpcpassword=password
-              {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+              {{- if eq (include "litecoin-daemon.net" .) "mocknet" }}
                 - -regtest
-              {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+              {{- else if eq (include "litecoin-daemon.net" .) "testnet" }}
                 - -testnet
               {{- end }}
                 - ping
           readinessProbe:
             exec:
               command:
-                - bitcoin-cli
+                - litecoin-cli
                 - -rpcuser=thorchain
                 - -rpcpassword=password
-              {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+              {{- if eq (include "litecoin-daemon.net" .) "mocknet" }}
                 - -regtest
-              {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+              {{- else if eq (include "litecoin-daemon.net" .) "testnet" }}
                 - -testnet
               {{- end }}
                 - ping
@@ -85,7 +85,7 @@ spec:
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "bitcoin-daemon.fullname" . }}{{- end }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "litecoin-daemon.fullname" . }}{{- end }}
       {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
         hostPath:
           path: {{ .Values.persistence.hostPath }}

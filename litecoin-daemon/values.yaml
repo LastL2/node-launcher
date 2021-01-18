@@ -1,4 +1,4 @@
-# Default values for bitcoin-daemon.
+# Default values for litecoin-daemon.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,7 +7,7 @@ replicaCount: 1
 net: mainnet
 
 image:
-  repository: registry.gitlab.com/thorchain/devops/bitcoin-core
+  repository: registry.gitlab.com/thorchain/devops/litecoin-core
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -18,7 +18,7 @@ fullnameOverride: ""
 
 persistence:
   enabled: true
-  size: 500Gi
+  size: 300Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
@@ -44,14 +44,14 @@ service:
   type: ClusterIP
   port:
     mainnet:
-      p2p: 8333
-      rpc: 8332
+      p2p: 9333
+      rpc: 9332
     testnet:
-      p2p: 18333
-      rpc: 18332
+      p2p: 19333
+      rpc: 19332
     regtest:
-      p2p: 18444
-      rpc: 18443
+      p2p: 19444
+      rpc: 19443
 
 resources:
   limits:

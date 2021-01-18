@@ -132,6 +132,19 @@ Bitcoin Cash
 {{- end -}}
 
 {{/*
+Litecoin
+*/}}
+{{- define "bifrost.litecoinDaemon" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.litecoinDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "testnet" -}}
+    {{ .Values.litecoinDaemon.testnet }}
+{{- else -}}
+    {{ .Values.litecoinDaemon.mocknet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Ethereum
 */}}
 {{- define "bifrost.ethereumDaemon" -}}
