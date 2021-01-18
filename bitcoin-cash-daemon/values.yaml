@@ -1,58 +1,26 @@
-# Default values for thor-daemon.
+# Default values for bitcoin-cash-daemon.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: mainnet
-
-signer:
-  name: thorchain
-  password: password
-  mnemonicSecret: ""
-  passwordSecret: ""
-
-peer:
-seeds:
-peerApi:
-binanceDaemon:
-ethContract: "0xE65e9d372F8cAcc7b6dfcd4af6507851Ed31bb44"
-
-validator: true
-
-debug: false
-
 replicaCount: 1
 
-hostNetwork: false
-
-strategyType: Recreate
+net: mainnet
 
 image:
-  repository: registry.gitlab.com/thorchain/thornode
+  repository: registry.gitlab.com/thorchain/devops/bitcoin-cash
   pullPolicy: IfNotPresent
-  tag: mainnet
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-service:
-  type: ClusterIP
-  port:
-    testnet:
-      p2p: 26656
-      rpc: 26657
-    mainnet:
-      p2p: 27146
-      rpc: 27147
-
 persistence:
   enabled: true
   size: 500Gi
   accessMode: ReadWriteOnce
-  # existingClaim: your-pvc
   # storageClass: "-"
-  # hostPath: /host-path
-  # subPath: subpath
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -60,8 +28,6 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
-
-priorityClassName: ""
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -74,13 +40,26 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+service:
+  type: ClusterIP
+  port:
+    mainnet:
+      p2p: 8333
+      rpc: 8332
+    testnet:
+      p2p: 18333
+      rpc: 18332
+    regtest:
+      p2p: 18444
+      rpc: 18443
+
 resources:
+  limits:
+    cpu: 1
+    memory: 10Gi
   requests:
     cpu: 1
-    memory: 2Gi
-  limits:
-    # cpu: 2
-    memory: 4Gi
+    memory: 10Gi
 
 nodeSelector: {}
 

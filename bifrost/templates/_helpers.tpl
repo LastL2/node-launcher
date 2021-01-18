@@ -119,6 +119,19 @@ Bitcoin
 {{- end -}}
 
 {{/*
+Bitcoin Cash
+*/}}
+{{- define "bifrost.bitcoinCashDaemon" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.bitcoinCashDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "testnet" -}}
+    {{ .Values.bitcoinCashDaemon.testnet }}
+{{- else -}}
+    {{ .Values.bitcoinCashDaemon.mocknet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Ethereum
 */}}
 {{- define "bifrost.ethereumDaemon" -}}

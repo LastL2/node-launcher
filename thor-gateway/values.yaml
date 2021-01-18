@@ -9,6 +9,9 @@ validator: true
 midgardV2:
   enabled: false
 
+midgard:
+  enabled: true
+
 replicaCount: 1
 
 image:

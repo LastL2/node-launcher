@@ -7,6 +7,8 @@ VERSION_TESTNET_MULTICHAIN=testnet-multichain-0.17.0
 VERSION_MIDGARD_TESTNET=0.8.0
 VERSION_MIDGARD_CHAOSNET=0.8.0
 BTC_BLOCKHEIGHT_START_TESTNET=1895640
+BCH_BLOCKHEIGHT_START_TESTNET=1429097
+ETH_BLOCKHEIGHT_START_TESTNET=7847260
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 SEED_TESTNET?=$(shell curl -s https://testnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
 SEED_CHAOSNET?=$(shell curl -s https://chaosnet-seed.thorchain.info/ | jq -r '. | join(",")'| sed "s/,/\\\,/g;s/|/,/g")
@@ -91,27 +93,38 @@ testnet-multichain-genesis: create-mnemonic update-dependencies ## Install/Updat
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}} \
-		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
-		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=${BTC_BLOCKHEIGHT_START_TESTNET}
+		--set midgard-v2.enabled=true,midgard.enabled=false \
+		--set thor-gateway.midgardV2.enabled=true,thor-gateway.midgard.enabled=false \
+		--set global.gateway.enabled=true,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
+		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true,bifrost.bitcoinStartBlockHeight=${BTC_BLOCKHEIGHT_START_TESTNET} \
+		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true,bifrost.ethereumStartBlockHeight=${ETH_BLOCKHEIGHT_START_TESTNET} \
+		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true,bifrost.bitcoinCashStartBlockHeight=${BCH_BLOCKHEIGHT_START_TESTNET}
 
 testnet-multichain-validator: create-mnemonic update-dependencies ## Install/Update a TESTNET MULTICHAIN Validator THORNode
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}} \
-		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
+		--set midgard-v2.enabled=true,midgard.enabled=false \
+		--set thor-gateway.midgardV2.enabled=true,thor-gateway.midgard.enabled=false \
 		--set bifrost.peer='${TESTNET_MULTICHAIN_SEED}',thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}' \
-		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true
+		--set global.gateway.enabled=true,bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
+		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true \
+		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true \
+		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true
 
 testnet-multichain-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNET MULTICHAIN Fullnode THORNode
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET_MULTICHAIN}} \
-		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
+		--set midgard-v2.enabled=true,midgard.enabled=false \
+		--set thor-gateway.midgardV2.enabled=true,thor-gateway.midgard.enabled=false \
 		--set thor-daemon.seeds='${TESTNET_MULTICHAIN_SEED}' \
 		--set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
 		--set thor-daemon.validator=false,thor-gateway.validator=false \
 		--set bifrost.service.type=ClusterIP,thor-daemon.service.type=ClusterIP \
-		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true
+		--set bitcoin-daemon.enabled=true,bifrost.bitcoinDaemon.enabled=true \
+		--set ethereum-daemon.enabled=true,bifrost.ethereumDaemon.enabled=true \
+		--set bitcoin-cash-daemon.enabled=true,bifrost.bitcoinCashDaemon.enabled=true
 
 testnet-multichain-update: pull testnet-multichain-validator set-version status ## Update a TESTNET MULTICHAIN Validator THORNode and set version
 

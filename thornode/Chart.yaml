@@ -48,6 +48,11 @@ dependencies:
     version: 0.1.0
     condition: bitcoin-daemon.enabled
 
+  - name: bitcoin-cash-daemon
+    repository: file://../bitcoin-cash-daemon
+    version: 0.1.0
+    condition: bitcoin-cash-daemon.enabled
+
   - name: ethereum-daemon
     repository: file://../ethereum-daemon
     version: 0.1.0

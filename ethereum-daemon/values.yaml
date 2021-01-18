@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   eth:
-    repository: registry.gitlab.com/thorchain/ethereum-mock
+    repository: ethereum/client-go
     pullPolicy: IfNotPresent
     tag: latest
   scripts:

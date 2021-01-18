@@ -6,6 +6,8 @@ metadata:
     {{- include "ethereum-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "ethereum-daemon.selectorLabels" . | nindent 6 }}
@@ -44,7 +46,7 @@ spec:
           {{- if eq .Values.net "mocknet" }}
           command: [ "sh", "-c", "apk add curl && /scripts/ethereum-mock.sh" ]
           {{- else }}
-          command: [ "sh", "-c", 'geth --rinkeby --syncmode fast -rpc --rpcaddr 0.0.0.0 --rpcport 8545 --rpcapi "eth,net,web3,miner,personal,txpool,debug" --rpccorsdomain "*" --rpcvhosts="*"' ]
+          command: [ "sh", "-c", 'geth --rinkeby --syncmode fast -http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
           {{- end }}
           volumeMounts:
             - name: scripts
@@ -53,7 +55,7 @@ spec:
               mountPath: /root
           ports:
             - name: rpc
-              containerPort: 8545
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
