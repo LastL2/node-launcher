@@ -113,8 +113,8 @@ make status
 
 # shell
 
-Opens a shell into your `thor-daemon` deployment:
-From within that shell you have access to the `thorcli` command.
+Opens a shell into your `thornode` deployment:
+From within that shell you have access to the `thornode` command.
 
 ```bash
 make shell
@@ -122,7 +122,7 @@ make shell
 
 # logs
 
-Display stream of logs of `thor-daemon` deployment:
+Display stream of logs of `thornode` deployment:
 
 ```bash
 make logs
@@ -131,7 +131,7 @@ make logs
 # set-node-keys
 
 Send a `set-node-keys` to your node, which will set your node keys automatically for you
-by retrieving them directly from the `thor-daemon` deployment.
+by retrieving them directly from the `thornode` deployment.
 
 ```bash
 make set-node-keys
@@ -335,9 +335,8 @@ you know what you are doing and want to run each chart separately (not recommend
 
 ### THORNode services:
 
-- thor-daemon: THORNode daemon
-- thor-api: THORNode API
-- thor-gateway: THORNode gateway proxy to get a single IP address for multiple deployments
+- thornode: THORNode daemon & API
+- gateway: Gateway proxy to get a single IP address for multiple deployments
 - bepswap: BEPSwap UI frontend
 - bifrost: Bifrost service
 - midgard: Midgard service
@@ -346,6 +345,8 @@ you know what you are doing and want to run each chart separately (not recommend
 
 - binance-daemon: Binance fullnode daemon
 - bitcoin-daemon: Bitcoin fullnode daemon
+- litecoin-daemon: Litecoin fullnode daemon
+- bitcoin-cash-daemon: Bitcoin Cash fullnode daemon
 - ethereum-daemon: Ethereum fullnode daemon
 
 ### Tools
@@ -353,4 +354,5 @@ you know what you are doing and want to run each chart separately (not recommend
 - elastic: ELK stack, deperecated. Use elastic-operator chart
 - elastic-operator: ELK stack using operator for logs management
 - prometheus: Prometheus stack for metrics
+- loki: Loki stack for logs
 - kubernetes-dashboard: Kubernetes dashboard

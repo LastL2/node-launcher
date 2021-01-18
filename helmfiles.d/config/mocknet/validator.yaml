@@ -11,14 +11,14 @@ bifrost:
   service:
     type: ClusterIP
 
-thor-daemon:
-  peer: thor-daemon.genesis
-  seeds: thor-daemon.genesis
-  peerApi: thor-api.genesis
+thornode:
+  peer: thornode.genesis
+  seeds: thornode.genesis
+  peerApi: thornode.genesis
   service:
     type: ClusterIP
 
-thor-gateway:
+gateway:
   enabled: false
 
 binance-daemon:

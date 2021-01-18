@@ -1,61 +1,36 @@
-# Default values for thornode.
+# Default values for gateway.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 net: mainnet
 
-signer:
-  name: thorchain
-  password: password
-  mnemonicSecret: ""
-  passwordSecret: ""
-
-peer:
-seeds:
-peerApi:
-binanceDaemon:
-ethContract: "0xE65e9d372F8cAcc7b6dfcd4af6507851Ed31bb44"
-
 validator: true
-
-enableApi: true
-
-debug: false
 
 replicaCount: 1
 
-hostNetwork: false
-
-strategyType: Recreate
-
 image:
-  repository: registry.gitlab.com/thorchain/thornode
+  repository: nginx
   pullPolicy: IfNotPresent
-  tag: mainnet
+  tag: 1.19.1-alpine
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port:
+    bifrost:
+      p2p: 5040
+      api: 6040
+    midgard: 8080
     api: 1317
-    testnet:
-      p2p: 26656
-      rpc: 26657
     mainnet:
       p2p: 27146
       rpc: 27147
-
-persistence:
-  enabled: true
-  size: 500Gi
-  accessMode: ReadWriteOnce
-  # existingClaim: your-pvc
-  # storageClass: "-"
-  # hostPath: /host-path
-  # subPath: subpath
+    testnet:
+      p2p: 26656
+      rpc: 26657
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -64,7 +39,22 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-priorityClassName: ""
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-production
+  hosts: []
+    # - host: midgard.example.com
+    #   paths:
+    #   - path: /
+    #     backend:
+    #       serviceName: gateway
+    #       servicePort: midgard
+  tls: []
+   # - secretName: midgard-tls
+   #   hosts:
+   #     - midgard.example.com
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -78,12 +68,12 @@ securityContext: {}
   # runAsUser: 1000
 
 resources:
-  requests:
-    cpu: 1
-    memory: 2Gi
   limits:
-    # cpu: 2
-    memory: 4Gi
+    cpu: 0.2
+    memory: 256Mi
+  requests:
+    cpu: 0.2
+    memory: 256Mi
 
 nodeSelector: {}
 

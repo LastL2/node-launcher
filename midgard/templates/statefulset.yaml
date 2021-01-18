@@ -34,7 +34,7 @@ spec:
           command: ['sh', '-c', "export INDEX=${HOSTNAME##*-}; until nc -zv {{ include "midgard.fullname" . }}-timescaledb-$INDEX.{{ include "midgard.fullname" . }}-timescaledb:{{ .Values.postgres.port }}; do echo waiting for timescale database; sleep 2; done"]
         - name: init-thor
           image: busybox:1.28
-          command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done"]
+          command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thornode; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

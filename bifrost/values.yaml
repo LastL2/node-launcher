@@ -17,36 +17,37 @@ hostNetwork: false
 
 debug: false
 
-thorApi: thor-api:1317
+thorApi: thornode:1317
 
 thorDaemon:
-  mainnet: thor-daemon:27147
-  testnet: thor-daemon:26657
+  mainnet: thornode:27147
+  testnet: thornode:26657
 
 binanceDaemon:
+  enabled: true
   mainnet: http://binance-daemon:27147
   testnet: http://binance-daemon:26657
 
 bitcoinDaemon:
-  enabled: false
+  enabled: true
   mainnet: bitcoin-daemon:8332
   testnet: bitcoin-daemon:18332
   mocknet: bitcoin-daemon:18443
 
 litecoinDaemon:
-  enabled: false
-  mainnet: bitcoin-daemon:9332
-  testnet: bitcoin-daemon:19332
-  mocknet: bitcoin-daemon:19443
+  enabled: true
+  mainnet: litecoin-daemon:9332
+  testnet: litecoin-daemon:19332
+  mocknet: litecoin-daemon:19443
 
 bitcoinCashDaemon:
-  enabled: false
+  enabled: true
   mainnet: bitcoin-cash-daemon:8332
   testnet: bitcoin-cash-daemon:18332
   mocknet: bitcoin-cash-daemon:18443
 
 ethereumDaemon:
-  enabled: false
+  enabled: true
   mainnet: http://ethereum-daemon:8545
 
 replicaCount: 1

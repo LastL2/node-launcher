@@ -1407,7 +1407,7 @@ grafana:
                   "lineColor": "#ef843c",
                   "show": false
                 },
-                "tableColumn": "tendermint_mempool_recheck_times{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.67:26660\", job=\"thor-daemon\", namespace=\"genesis\", pod=\"thor-daemon-55f544d977-wchd8\", service=\"thor-daemon\"}",
+                "tableColumn": "tendermint_mempool_recheck_times{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.2.67:26660\", job=\"thornode\", namespace=\"genesis\", pod=\"thornode-55f544d977-wchd8\", service=\"thornode\"}",
                 "targets": [
                   {
                     "expr": "tendermint_mempool_recheck_times{chain_id=\"$chain_id\", instance=~\"$instance\"}",
@@ -2561,7 +2561,7 @@ grafana:
                   "lineColor": "#ef843c",
                   "show": false
                 },
-                "tableColumn": "tendermint_mempool_failed_txs{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.61.212:26660\", job=\"thor-daemon\", namespace=\"thornode\", pod=\"thor-daemon-7f87778897-8kvtz\", service=\"thor-daemon\"}",
+                "tableColumn": "tendermint_mempool_failed_txs{chain_id=\"thorchain\", endpoint=\"prometheus\", instance=\"10.0.61.212:26660\", job=\"thornode\", namespace=\"thornode\", pod=\"thornode-7f87778897-8kvtz\", service=\"thornode\"}",
                 "targets": [
                   {
                     "expr": "tendermint_mempool_failed_txs{chain_id=\"$chain_id\", instance=~\"$instance\"}",

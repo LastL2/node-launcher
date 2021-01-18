@@ -1,0 +1,36 @@
+global:
+  net: mainnet
+  gateway:
+    enabled: true
+    name: gateway
+
+gateway:
+  fullnameOverride: gateway
+
+thornode:
+  fullnameOverride: thornode
+
+bifrost:
+  fullnameOverride: bifrost
+
+midgard:
+  fullnameOverride: midgard
+
+binance-daemon:
+  fullnameOverride: binance-daemon
+
+bitcoin-daemon:
+  fullnameOverride: bitcoin-daemon
+
+litecoin-daemon:
+  fullnameOverride: litecoin-daemon
+
+bitcoin-cash-daemon:
+  fullnameOverride: bitcoin-cash-daemon
+
+ethereum-daemon:
+  fullnameOverride: ethereum-daemon
+
+bepswap:
+  enabled: false
+  fullnameOverride: bepswap

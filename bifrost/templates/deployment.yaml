@@ -57,7 +57,7 @@ spec:
           privileged: true
       - name: init-thorchain
         image: busybox:1.28
-        command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thor-api; sleep 2; done']
+        command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thornode; sleep 2; done']
       - name: init-binance
         image: appropriate/curl
         command: ['sh', '-c', 'until curl -sL --fail {{ include "bifrost.binanceDaemon" . }}/abci_info > /dev/null; do echo waiting for binance; sleep 2; done']
@@ -97,9 +97,9 @@ spec:
             - mountPath: /var/data/bifrost
               name: data
               subPath: data
-            - mountPath: /root/.thorcli
+            - mountPath: /root/.thornode
               name: data
-              subPath: thorcli
+              subPath: thornode
             - mountPath: /etc/bifrost
               name: data
               subPath: etc

@@ -5,10 +5,10 @@ global:
   gateway:
     enabled: false
 
-thor-gateway:
+gateway:
   enabled: false
 
-thor-daemon:
+thornode:
   service:
     type: ClusterIP
 

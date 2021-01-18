@@ -1,69 +1,7 @@
 apiVersion: v2
 name: thornode
-description: Deploys a THORNode stack with options to enable or disable some services
+description: THORNode daemon application
 type: application
 version: 0.1.0
 
-appVersion: 0.1.0
-
-dependencies:
-  - name: thor-gateway
-    repository: file://../thor-gateway
-    version: 0.1.0
-    condition: thor-gateway.enabled
-
-  - name: thor-daemon
-    repository: file://../thor-daemon
-    version: 0.1.0
-    condition: thor-daemon.enabled
-
-  - name: thor-api
-    repository: file://../thor-api
-    version: 0.1.0
-    condition: thor-api.enabled
-
-  - name: bifrost
-    repository: file://../bifrost
-    version: 0.1.0
-    condition: bifrost.enabled
-
-  - name: midgard
-    repository: file://../midgard
-    version: 0.1.0
-    condition: midgard.enabled
-
-  - name: midgard
-    repository: file://../midgard
-    version: 0.1.0
-    condition: midgard-v2.enabled
-    alias: midgard-v2
-
-  - name: binance-daemon
-    repository: file://../binance-daemon
-    version: 0.1.0
-    condition: binance-daemon.enabled
-
-  - name: bitcoin-daemon
-    repository: file://../bitcoin-daemon
-    version: 0.1.0
-    condition: bitcoin-daemon.enabled
-
-  - name: litecoin-daemon
-    repository: file://../litecoin-daemon
-    version: 0.1.0
-    condition: litecoin-daemon.enabled
-
-  - name: bitcoin-cash-daemon
-    repository: file://../bitcoin-cash-daemon
-    version: 0.1.0
-    condition: bitcoin-cash-daemon.enabled
-
-  - name: ethereum-daemon
-    repository: file://../ethereum-daemon
-    version: 0.1.0
-    condition: ethereum-daemon.enabled
-
-  - name: bepswap
-    repository: file://../bepswap
-    version: 0.1.0
-    condition: bepswap.enabled
+appVersion: 0.17.0

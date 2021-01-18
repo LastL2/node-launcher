@@ -15,7 +15,7 @@ binance-daemon:
       cpu: 0.2
       memory: 256Mi
 
-thor-daemon:
+thornode:
   resources:
     requests:
       cpu: 1
@@ -24,7 +24,7 @@ thor-daemon:
       cpu: 2
       memory: 2Gi
 
-thor-api:
+thornode:
   resources:
     requests:
       cpu: 0.2
@@ -33,7 +33,7 @@ thor-api:
       cpu: 0.2
       memory: 128Mi
 
-thor-gateway:
+gateway:
   resources:
     requests:
       cpu: 0.2
