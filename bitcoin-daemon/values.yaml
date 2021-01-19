@@ -55,11 +55,11 @@ service:
 
 resources:
   limits:
-    cpu: 1
-    memory: 10Gi
+    cpu: 0.5
+    memory: 5Gi
   requests:
-    cpu: 1
-    memory: 10Gi
+    cpu: 0.5
+    memory: 5Gi
 
 nodeSelector: {}
 
