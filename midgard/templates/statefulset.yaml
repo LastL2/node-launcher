@@ -45,11 +45,7 @@ spec:
           volumeMounts:
           - name: config
             mountPath: /config.json.tpl
-            {{- if eq .Values.image.tag "2.0.0" }}
-            subPath: config-v2.json
-            {{- else }}
-            subPath: config-v1.json
-            {{- end }}
+            subPath: config.json
           - name: config
             mountPath: /entrypoint.sh
             subPath: entrypoint.sh
@@ -75,15 +71,9 @@ spec:
             failureThreshold: 5
             exec:
               command:
-              {{- if eq .Values.image.tag "2.0.0" }}
               - /bin/sh
               - -c
               - "wget -q -O - -T 20 localhost:8080/v2/health | grep '\"inSync\": true'"
-              {{- else }}
-              - /bin/sh
-              - -c
-              - "curl -sL --fail -m 20 localhost:8080/v1/health | grep '\"catching_up\":true'"
-              {{- end }}
           resources:
             {{- toYaml .Values.resources.midgard | nindent 12 }}
       volumes:
