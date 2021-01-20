@@ -18,7 +18,7 @@ fullnameOverride: ""
 
 persistence:
   enabled: true
-  size: 300Gi
+  size: 150Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
@@ -55,7 +55,7 @@ service:
 
 resources:
   limits:
-    cpu: 1
+    # cpu: 1
     memory: 5Gi
   requests:
     cpu: 1

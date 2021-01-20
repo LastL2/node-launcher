@@ -65,7 +65,7 @@ fullnameOverride: ""
 
 persistence:
   enabled: true
-  size: 100Gi
+  size: 10Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"

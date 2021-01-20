@@ -46,13 +46,13 @@ service:
 
 persistence:
   enabled: true
-  size: 100Gi
+  size: 300Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
   #
 resources:
   limits:
-    cpu: 1
+    # cpu: 1
     memory: 10Gi
   requests:
     cpu: 1

@@ -30,7 +30,7 @@ service:
 
 persistence:
   enabled: true
-  size: 500Gi
+  size: 100Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 

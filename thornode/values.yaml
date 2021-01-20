@@ -50,7 +50,7 @@ service:
 
 persistence:
   enabled: true
-  size: 500Gi
+  size: 300Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"
