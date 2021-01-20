@@ -74,9 +74,9 @@ Image
 */}}
 {{- define "binance-daemon.image" -}}
 {{- if eq (include "binance-daemon.net" .) "mocknet" -}}
-    "{{ .Values.image.mocknet }}:{{ .Values.image.tag }}"
+    "{{ .Values.image.mocknet }}:latest"
 {{- else -}}
-    "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
 {{- end -}}
 {{- end -}}
 
