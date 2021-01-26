@@ -19,7 +19,7 @@ data:
         "thornode_url": "http://{{ .Values.thorApi }}/thorchain",
         "last_chain_backoff": "7s",
         "proxied_whitelisted_endpoints": [
-          "pool_addresses",
+          "inbound_addresses",
           "constants",
           "lastblock",
           "mimir",
