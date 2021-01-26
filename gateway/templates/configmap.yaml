@@ -123,6 +123,21 @@ data:
       server {
         listen {{ .Values.service.port.api }};
         location / {
+          add_header Access-Control-Allow-Credentials true;
+          add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST';
+          add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With';
+
+          if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin '*';
+            add_header Access-Control-Allow-Credentials true;
+            add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST';
+            add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With';
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+          }
+
           add_header Cache-Control "no-cache, must-revalidate, max-age=0";
           proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
           proxy_pass http://thornode:{{ .Values.service.port.api }};
