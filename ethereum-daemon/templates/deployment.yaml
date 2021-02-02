@@ -46,7 +46,7 @@ spec:
           {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
           command: [ "sh", "-c", "apk add curl && /scripts/ethereum-mock.sh" ]
           {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
-          command: [ "sh", "-c", 'geth --rinkeby --syncmode fast -http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
+          command: [ "sh", "-c", 'geth --ropsten --syncmode fast -http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
           {{- else if eq (include "ethereum-daemon.net" .) "mainnet" }}
           command: [ "sh", "-c", 'geth --syncmode fast -http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
           {{- end }}
