@@ -3,7 +3,7 @@ SHELL:=/bin/bash
 NAME?=thornode
 
 VERSION=chaosnet-multichain-0.17.0
-VERSION_TESTNET=testnet-multichain-0.20.0
+VERSION_TESTNET=testnet-multichain-0.21.0
 
 VERSION_MIDGARD=2.0.0
 VERSION_MIDGARD_TESTNET=2.0.0-alpha3
