@@ -10,11 +10,10 @@ PORT=27147
 EXE="ulimit -n 65535 && /usr/local/bin/bnbchaind start --home ${BNCHOME}"
 
 if [ ! -d "${BNCHOME}/config/" ]; then
-set -ex
   mkdir -p ${BNCHOME}/config/
-  cp /node-binary/fullnode/${BNET}/config/* ${BNCHOME}/config/
-  chown -R bnbchaind:bnbchaind ${BNCHOME}/config/
 fi
+cp /node-binary/fullnode/${BNET}/config/* ${BNCHOME}/config/
+chown -R bnbchaind:bnbchaind ${BNCHOME}/config/
 
 if [ ! -d "${BNCHOME}/data/" ]; then
   mkdir -p ${BNCHOME}/data/
