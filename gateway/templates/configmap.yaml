@@ -87,6 +87,7 @@ data:
       server {
         listen {{ .Values.service.port.bifrost.api }};
         location / {
+          proxy_set_header Host $http_host;
           proxy_pass http://bifrost:{{ .Values.service.port.bifrost.api }};
         }
       }
@@ -106,6 +107,7 @@ data:
           proxy_cache_lock on;
           proxy_cache_background_update on;
           proxy_cache_valid any 5s;
+          proxy_set_header Host $http_host;
           proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
 
           location = /v2/health {
@@ -139,6 +141,7 @@ data:
           }
 
           add_header Cache-Control "no-cache, must-revalidate, max-age=0" always;
+          proxy_set_header Host $http_host;
           proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
           proxy_pass http://thornode:{{ .Values.service.port.api }};
         }
