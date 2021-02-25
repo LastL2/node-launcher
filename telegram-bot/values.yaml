@@ -6,7 +6,7 @@ net: mainnet
 
 telegramToken: ""
 
-binanceDaemon: binance-daemon
+binanceDaemon: binance-daemon:27147
 ethereumDaemon: ""
 bitcoinDaemon: ""
 
