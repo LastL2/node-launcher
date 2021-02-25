@@ -56,15 +56,15 @@ data:
     fi
 
     # calculate THOR chain sync progress
-    THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THORNODE_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+    THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
     if [ "$PEER" != "" ]; then
-      THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THORNODE_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
+      THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
     elif [ "$SEEDS" != "" ]; then
       OLD_IFS=$IFS
       IFS=","
       for PEER in $SEEDS
       do
-        THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THORNODE_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height") || continue
+        THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THOR_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height") || continue
         break
       done
       IFS=$OLD_IFS
