@@ -3,7 +3,7 @@ SHELL:=/bin/bash
 NAME?=thornode
 
 VERSION=chaosnet-multichain-0.17.0
-VERSION_TESTNET=testnet-multichain-0.26.0
+VERSION_TESTNET=testnet-multichain-0.26.1
 
 VERSION_MIDGARD=2.0.0
 VERSION_MIDGARD_TESTNET=2.0.0-alpha3
@@ -11,7 +11,7 @@ VERSION_MIDGARD_TESTNET=2.0.0-alpha3
 BTC_BLOCKHEIGHT_START_TESTNET=1906173
 BCH_BLOCKHEIGHT_START_TESTNET=1431999
 LTC_BLOCKHEIGHT_START_TESTNET=1794580
-ETH_BLOCKHEIGHT_START_TESTNET=9583352
+ETH_BLOCKHEIGHT_START_TESTNET=9744300 
 
 BINANCE_TESTNET?=http://testnet-binance.thorchain.info:26657
 
@@ -82,6 +82,7 @@ testnet-validator: create-mnemonic update-dependencies ## Install/Update a TESTN
 	@helm upgrade --install ${ARGS} \
 		--set global.net=testnet,global.tag=$${TAG:-${VERSION_TESTNET}} \
 		--set midgard.image.tag=${VERSION_MIDGARD_TESTNET} \
+		--set bifrost.ethereumStartBlockHeight=${ETH_BLOCKHEIGHT_START_TESTNET} \
 		--set bifrost.peer='${SEED_TESTNET}',thornode.seeds='${SEED_TESTNET}'
 
 testnet-fullnode: create-mnemonic update-dependencies ## Install/Update a TESTNET Fullnode THORNode
@@ -149,6 +150,13 @@ recover-thornode: ## Recover current Thor-daemon service on your THORNode and r
 	@kubectl run -n ${NAME} -it recover-thornode --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["sh", "-c", "cd /root/.thornode/data && rm -rf bak && mkdir -p bak && mv application.db blockstore.db cs.wal evidence.db state.db tx_index.db bak/"], "name": "recover-thornode", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/root", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "thornode"}}]}}'
 	@kubectl scale -n ${NAME} --replicas=1 deploy/thornode --timeout=5m
 
+rescan: ## Update bifrost to rescan a chain
+	@echo -n "Are you sure to rescan ${CHAIN}? Confirm [y/n] " && read ans && [ $${ans:-N} == y ]
+	@kubectl scale -n ${NAME} --replicas=0 deploy/bifrost --timeout=5m
+	@kubectl wait --for=delete pods -l app.kubernetes.io/name=bifrost -n ${NAME} --timeout=5m > /dev/null 2>&1 || true
+	@kubectl run -n ${NAME} -it rescan-bifrost --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["sh", "-c", "cd /data/data/observer && rm -rf ${CHAIN}"], "name": "rescan-bifrost", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/data", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "bifrost"}}]}}'
+	@kubectl scale -n ${NAME} --replicas=1 deploy/bifrost --timeout=5m
+	
 
 wait-ready: ## Wait for all pods to be in Ready state
 	@kubectl wait --for=condition=Ready --all pods -n ${NAME} --timeout=5m
