@@ -154,7 +154,7 @@ chaosnet-fullnode: create-mnemonic update-dependencies ## Install/Update a CHAO
 	@echo Installing THORNode
 	@helm upgrade --install ${ARGS} \
 		--set global.tag=$${TAG:-${VERSION_CHAOSNET}} \
-		--set midgard.image.tag=${VERSION_MIDGARD_CHAOSNET}
+		--set midgard.image.tag=${VERSION_MIDGARD_CHAOSNET} \
 		--set thor-daemon.seeds='${SEED_CHAOSNET}' \
 		--set global.gateway.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
 		--set thor-daemon.validator=false,thor-gateway.validator=false \
