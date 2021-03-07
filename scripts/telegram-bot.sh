@@ -4,8 +4,7 @@ set -e
 
 source ./scripts/core.sh
 
-get_node_net
-get_node_name
+get_node_info_short
 
 echo "=> Deploying Telegram bot in $boldgreen$NAME$reset"
 echo "Start a Telegram chat with BotFather, click start, then send /newbot command."

@@ -2,8 +2,7 @@
 
 source ./scripts/core.sh
 
-get_node_net
-get_node_name
+get_node_info_short
 
 echo !!! Destructive command, be careful, your Binance node data will be wiped out and your Binance node will restart from scratch and sync again !!!
 confirm

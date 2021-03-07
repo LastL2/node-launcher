@@ -2,11 +2,10 @@
 
 source ./scripts/core.sh
 
-get_node_net
-get_node_name
+get_node_info_short
 
 echo !!! Destructive command, only apply in case of consensus failure on thornode !!!
-echo Be careful, your THORNode data will be deleted, the service will restart and sync again
+echo Be careful, your thornode data will be deleted, the service will restart and sync again
 confirm
 
 echo "=> Resetting THORNode"
