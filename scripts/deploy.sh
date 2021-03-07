@@ -8,6 +8,14 @@ SEED_MAINNET=${SEED_MAINNET:=$(curl -s https://chaosnet-seed.thorchain.info/ | j
 get_node_info
 
 echo -e "=> Deploying a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+
+if node_exists; then
+  echo
+  warn "Found an existing THORNode, make sure this is the node you want to update:"
+  display_status
+  echo
+fi
+
 confirm
 
 case $NET in

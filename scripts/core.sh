@@ -10,6 +10,7 @@ green=$(tput setaf 2)                     # dim green text
 boldgreen="$bold$green"                   # bright green text
 fawn=$(tput setaf 3); beige="$fawn"       # dark yellow text
 yellow="$bold$fawn"                       # bright yellow text
+boldyellow="$bold$yellow"                 # bright yellow text
 darkblue=$(tput setaf 4)                  # dim blue text
 blue="$bold$darkblue"                     # bright blue text
 purple=$(tput setaf 5); magenta="$purple" # magenta text
@@ -21,16 +22,16 @@ darkgray="$bold"$(tput setaf 0)           # bold black = dark gray text
 white="$bold$gray"                        # bright white text
 
 warn() {
-  echo >&2 ":: $*"
+  echo >&2 "$boldyellow:: $*$reset"
 }
 
 die() {
-  echo >&2 ":: $*"
+  echo >&2 "$red:: $*$reset"
   exit 1
 }
 
 confirm() {
-  echo -n "Are you sure? Confirm [y/n]: " && read ans && [ ${ans:-N} != y ] && exit
+  echo -n "$boldyellow:: Are you sure? Confirm [y/n]: $reset" && read ans && [ ${ans:-N} != y ] && exit
   echo
 }
 
@@ -81,6 +82,10 @@ create_namespace() {
   fi
 }
 
+node_exists() {
+  kubectl get -n $NAME deploy/thor-daemon > /dev/null 2>&1 || kubectl get -n $NAME deploy/thornode > /dev/null 2>&1
+}
+
 create_mnemonic() {
   local mnemonic;
   kubectl get -n $NAME secrets/thornode-mnemonic > /dev/null 2>&1
@@ -122,7 +127,16 @@ display_password() {
 }
 
 display_status() {
-  kubectl exec -it --namespace $NAME deploy/thor-daemon -- sh -c "[ -f /scripts/node-status.sh ] && /scripts/node-status.sh || /kube-scripts/node-status.sh"
+  kubectl get -n $NAME deploy/thor-daemon > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    kubectl exec -it -n $NAME deploy/thor-daemon -- sh -c "[ -f /scripts/node-status.sh ] && /scripts/node-status.sh || /kube-scripts/node-status.sh"
+    return
+  fi
+  kubectl get -n $NAME deploy/thornode > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    kubectl exec -it -n $NAME deploy/thornode -- sh -c "[ -f /scripts/node-status.sh ] && /scripts/node-status.sh || /kube-scripts/node-status.sh"
+    return
+  fi
 }
 
 deploy_genesis() {
