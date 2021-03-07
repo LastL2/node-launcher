@@ -4,8 +4,7 @@ set -e
 
 source ./scripts/core.sh
 
-get_node_net
-get_node_name
+get_node_info_short
 
 echo "=> Setting THORNode keys"
 kubectl exec -it -n $NAME deploy/thor-daemon -- /kube-scripts/set-node-keys.sh

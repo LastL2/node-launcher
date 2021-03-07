@@ -2,9 +2,7 @@
 
 source ./scripts/core.sh
 
-get_node_net
-get_node_name
-get_node_service
+get_node_info_short
 
 case $SERVICE in
   midgard | midgard-timescaledb)

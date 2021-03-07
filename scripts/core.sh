@@ -65,6 +65,11 @@ get_node_info() {
   get_node_name
 }
 
+get_node_info_short() {
+[ "$NAME" = "" ] && get_node_net
+  get_node_name
+}
+
 get_node_service() {
   [ "$SERVICE" != "" ] && return
   echo "=> Select THORNode service"
