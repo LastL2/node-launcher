@@ -45,14 +45,17 @@ wait-ready: ## Wait for all pods to be in Ready state
 destroy: ## Uninstall current THORNode
 	@./scripts/destroy.sh
 
-shell: ## Open a shell into thor-daemon deployment
+shell: ## Open a shell for a selected THORNode service
 	@./scripts/shell.sh
 
-watch: ## Watch the thornode pods in real time
+watch: ## Watch the THORNode pods in real time
 	@./scripts/watch.sh
 
-logs: ## Display logs for thor-daemon deployment
+logs: ## Display logs for a selected THORNode service
 	@./scripts/logs.sh
+
+restart: ## Restart a selected THORNode service
+	@./scripts/restart.sh
 
 set-node-keys: ## Send a set-node-keys transaction to your THORNode
 	@./scripts/set-node-keys.sh

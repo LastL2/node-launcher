@@ -57,45 +57,13 @@ You can install those tools separately using the sections below.
 It is important to deploy the tools first before deploying the THORNode services as
 some services will have metrics configuration that would fail and stop the THORNode deployment.
 
-You have multiple commands available to deploy different configurations of THORNode.
-You can deploy mainnet / testnet / mocknet.
-The commands deploy the umbrella chart `thornode` in the background in the Kubernetes
-namespace `thornode` by default.
-Unless you specify the name of your deployment using the environment variable `NAME`,
-all the commands are run against the default Kubernetes namespace `thornode` set up in the Makefile.
-
-### Deploy Mainnet Genesis
+You have multiple choices available to deploy different configurations of THORNode.
+You can deploy a mainnet or testnet node.
+The commands deploy the umbrella chart `thornode-stack` in the background in the Kubernetes
+namespace `thornode` (or `thornode-testnet` for testnet) by default.
 
 ```bash
-make mainnet-genesis
-```
-
-### Deploy Mainnet Validator
-
-To automatically select the current mainnet chain, run that command:
-
-```bash
-make mainnet-validator
-```
-
-### Deploy Testnet Genesis
-
-```bash
-make testnet-genesis
-```
-
-### Deploy Testnet Validator
-
-To automatically select the current testnet chain, run that command:
-
-```bash
-make testnet-validator
-```
-
-Or to manually specify the seed genesis IP, run that command:
-
-```bash
-SEED_TESTNET=1.2.3.4 make testnet-validator
+make deploy
 ```
 
 ## THORNode commands
@@ -113,16 +81,23 @@ make status
 
 # shell
 
-Opens a shell into your `thor-daemon` deployment:
-From within that shell you have access to the `thorcli` command.
+Opens a shell into your `thornode` deployment service selected:
 
 ```bash
 make shell
 ```
 
+# restart
+
+Restart a THORNode deployment service selected:
+
+```bash
+make restart
+```
+
 # logs
 
-Display stream of logs of `thor-daemon` deployment:
+Display stream of logs of a THORNode deployment selected:
 
 ```bash
 make logs
@@ -345,12 +320,11 @@ you know what you are doing and want to run each chart separately (not recommend
 ### External services:
 
 - binance-daemon: Binance fullnode daemon
-- bitcoin-daemon: Bitcoin fullnode daemon
-- ethereum-daemon: Ethereum fullnode daemon
 
 ### Tools
 
 - elastic: ELK stack, deperecated. Use elastic-operator chart
 - elastic-operator: ELK stack using operator for logs management
 - prometheus: Prometheus stack for metrics
+- loki: Loki stack for logs
 - kubernetes-dashboard: Kubernetes dashboard
