@@ -15,5 +15,5 @@ echo
 warn "!!! Make sure your got your BOND back before destroying your THORNode !!!"
 confirm
 echo "=> Deleting THORNode"
-helm delete $NAME -n $NAME
-kubectl delete namespace $NAME
+helm delete "$NAME" -n "$NAME"
+kubectl delete namespace "$NAME"
