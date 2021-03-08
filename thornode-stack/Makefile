@@ -30,14 +30,8 @@ update: pull update-dependencies ## Update a THORNode to latest version
 status: ## Display current status of your THORNode
 	@./scripts/status.sh
 
-reset-midgard: ## Reset and resync current Midgard service from scratch on your THORNode. This command can take a while to sync back to 100%.
-	@./scripts/reset-midgard.sh
-
-reset-binance: ## Reset and resync current Binance Node service on your THORNode. This command can take a while to sync back to 100%.
-	@./scripts/reset-binance.sh
-
-reset-thornode: ## Reset current Thornode service on your THORNode and resync THORChain after a consensus failure
-	@./scripts/reset-thornode.sh
+reset: ## Reset and resync a service from scratch on your THORNode. This command can take a while to sync back to 100%.
+	@./scripts/reset.sh
 
 wait-ready: ## Wait for all pods to be in Ready state
 	@./scripts/wait-ready.sh
@@ -72,5 +66,5 @@ telegram-bot: ## Deploy Telegram bot to monitor THORNode
 destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
 	@./scripts/destroy-telegram-bot.sh
 
-.PHONY: help mnemonic update-dependencies pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
+.PHONY: help mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
 .EXPORT_ALL_VARIABLES:
