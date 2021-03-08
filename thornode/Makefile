@@ -30,14 +30,8 @@ update: pull update-dependencies ## Update a THORNode to latest version
 status: ## Display current status of your THORNode
 	@./scripts/status.sh
 
-reset-midgard: ## Reset and resync current Midgard service from scratch on your THORNode. This command can take a while to sync back to 100%.
-	@./scripts/reset-midgard.sh
-
-reset-binance: ## Reset and resync current Binance Node service on your THORNode. This command can take a while to sync back to 100%.
-	@./scripts/reset-binance.sh
-
-reset-thornode: ## Reset current Thor-daemon service on your THORNode and resync THORChain after a consensus failure
-	@./scripts/reset-thornode.sh
+reset: ## Reset and resync a service on your THORNode. This command can take a while to sync back to 100%.
+	@./scripts/reset.sh
 
 wait-ready: ## Wait for all pods to be in Ready state
 	@./scripts/wait-ready.sh
