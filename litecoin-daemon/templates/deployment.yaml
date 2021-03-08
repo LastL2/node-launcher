@@ -55,6 +55,21 @@ spec:
             - name: rpc
               containerPort: {{ include "litecoin-daemon.rpc" . }}
               protocol: TCP
+          startupProbe:
+            failureThreshold: 60
+            timeoutSeconds: 5
+            periodSeconds: 10
+            exec:
+              command:
+                - litecoin-cli
+                - -rpcuser=thorchain
+                - -rpcpassword=password
+              {{- if eq (include "litecoin-daemon.net" .) "mocknet" }}
+                - -regtest
+              {{- else if eq (include "litecoin-daemon.net" .) "testnet" }}
+                - -testnet
+              {{- end }}
+                - ping
           livenessProbe:
             exec:
               command:

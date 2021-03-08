@@ -55,6 +55,21 @@ spec:
             - name: rpc
               containerPort: {{ include "bitcoin-daemon.rpc" . }}
               protocol: TCP
+          startupProbe:
+            failureThreshold: 60
+            timeoutSeconds: 5
+            periodSeconds: 10
+            exec:
+              command:
+                - bitcoin-cli
+                - -rpcuser=thorchain
+                - -rpcpassword=password
+              {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+                - -regtest
+              {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+                - -testnet
+              {{- end }}
+                - ping
           livenessProbe:
             exec:
               command:
