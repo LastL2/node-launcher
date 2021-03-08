@@ -4,8 +4,8 @@ source ./scripts/core.sh
 
 get_node_info_short
 
-echo !!! Destructive command, only apply in case of consensus failure on thornode !!!
-echo Be careful, your thornode data will be deleted, the service will restart and sync again
+warn "!!! Destructive command, only apply in case of consensus failure on thornode !!!"
+warn "Be careful, your thornode data will be deleted, the service will restart and sync again"
 confirm
 
 echo "=> Resetting THORNode"
