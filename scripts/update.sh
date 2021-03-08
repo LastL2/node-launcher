@@ -11,10 +11,10 @@ if ! node_exists; then
 fi
 
 source ./scripts/deploy.sh
-sleep 5
 
 echo
 echo "=> Waiting thor THORNode daemon to be ready"
+sleep 20
 kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=thor-daemon -n $NAME --timeout=5m
 
 echo
