@@ -10,7 +10,8 @@ image:
   eth:
     repository: ethereum/client-go
     pullPolicy: IfNotPresent
-    tag: latest
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
