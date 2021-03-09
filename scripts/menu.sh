@@ -48,7 +48,7 @@ menu.select() {
   local index=$1
 
   ### Boundary checks
-  if [ $index -ge $MENU_COUNT ]
+  if [ "$index" -ge $MENU_COUNT ]
   then
     # echo "Max reached" >> $MENU_LOG
     index=$((MENU_COUNT - 1))
@@ -67,7 +67,7 @@ menu.select() {
 menu() {
   MENU_SELECTED=${1:-}
   MENU_COUNT=$(($# - 1))
-  MENU_OPTIONS=(${@:2})
+  MENU_OPTIONS=("${@:2}")
 
   ESCAPE_SEQ=$'\033'
   ARROW_UP=$'A'
@@ -79,21 +79,27 @@ menu() {
   do
     read -rsn 1 key1
     case "$key1" in
-      $ESCAPE_SEQ)
+      "$ESCAPE_SEQ")
         read -rsn 1 -t 1 key2
         if [[ "$key2" == "[" ]]
         then
           read -rsn 1 -t 1 key3
           case "$key3" in
-            $ARROW_UP)
-              [[ $MENU_INDEX -eq 0 ]] \
-                && menu.select $MENU_COUNT \
-                || menu.select $((MENU_INDEX - 1))
+            "$ARROW_UP")
+              if [[ $MENU_INDEX -eq 0 ]]
+              then
+                menu.select $MENU_COUNT
+              else
+                menu.select $((MENU_INDEX - 1))
+              fi
               ;;
-            $ARROW_DOWN)
-              [[ $MENU_INDEX -eq $(( $MENU_COUNT - 1 )) ]] \
-                && menu.select 0 \
-                || menu.select $((MENU_INDEX + 1))
+            "$ARROW_DOWN")
+              if [[ $MENU_INDEX -eq $((MENU_COUNT - 1)) ]]
+              then
+                menu.select 0
+              else
+                menu.select $((MENU_INDEX + 1))
+              fi
               ;;
           esac
         fi
