@@ -14,8 +14,7 @@ source ./scripts/deploy.sh
 
 echo
 echo "=> Waiting for THORNode daemon to be ready"
-sleep 20
-kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=thor-daemon -n "$NAME" --timeout=5m
+kubectl rollout status -w deployment/thor-daemon -n "$NAME" --timeout=5m
 
 echo
 source ./scripts/set-version.sh
