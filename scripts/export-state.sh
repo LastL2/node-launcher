@@ -37,6 +37,6 @@ SPEC="
 
 kubectl scale -n "$NAME" --replicas=0 deploy/thornode --timeout=5m
 kubectl wait --for=delete pods -l app.kubernetes.io/name=thornode -n "$NAME" --timeout=5m > /dev/null 2>&1 || true
-kubectl run -n "$NAME" -it export-state --restart=Never --image="$IMAGE" --overrides="$SPEC" > "genesis.$DATE.json"
+kubectl run -n "$NAME" -it --quiet export-state --restart=Never --image="$IMAGE" --overrides="$SPEC" > "genesis.$DATE.json"
 kubectl -n "$NAME" delete pod export-state --wait=false
 kubectl scale -n "$NAME" --replicas=1 deploy/thornode --timeout=5m
