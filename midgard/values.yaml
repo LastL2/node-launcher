@@ -21,7 +21,7 @@ logLevel: info
 
 image:
   repository: registry.gitlab.com/thorchain/midgard
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: latest
 
 timescaleDbImage:
