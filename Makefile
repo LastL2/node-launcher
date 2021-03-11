@@ -37,8 +37,8 @@ password: ## Retrieve and display current password for backup from your THORNode
 pods: ## Get THORNode Kubernetes pods
 	@./scripts/pods.sh
 
-deploy: update-dependencies ## Deploy a THORNode
-	@./scripts/deploy.sh
+install: update-dependencies ## Deploy a THORNode
+	@./scripts/install.sh
 
 update: pull update-dependencies ## Update a THORNode to latest version
 	@./scripts/update.sh

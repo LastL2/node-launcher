@@ -63,7 +63,7 @@ The commands deploy the umbrella chart `thornode-stack` in the background in the
 namespace `thornode` (or `thornode-testnet` for testnet) by default.
 
 ```bash
-make deploy
+make install
 ```
 
 ## THORNode commands
