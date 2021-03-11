@@ -55,6 +55,9 @@ wait-ready: ## Wait for all pods to be in Ready state
 destroy: ## Uninstall current THORNode
 	@./scripts/destroy.sh
 
+export-state: ## Export chain state
+	@./scripts/export-state.sh
+
 shell: ## Open a shell for a selected THORNode service
 	@./scripts/shell.sh
 
