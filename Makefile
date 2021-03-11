@@ -1,4 +1,8 @@
-include thornode/Makefile
+SHELL:=/bin/bash
+VERSION_MAINNET=chaosnet-0.19.1
+VERSION_TESTNET=testnet-0.19.1
+VERSION_MIDGARD_MAINNET=0.8.1
+VERSION_MIDGARD_TESTNET=0.10.0
 
 help: ## Help message
 	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -18,6 +22,65 @@ tools: install-loki install-metrics install-dashboard ## Intall/Update tools: lo
 
 pull: ## Git pull node-launcher repository
 	@git pull origin master && sleep 3
+
+update-dependencies:
+	@echo "=> Updating Helm chart dependencies"
+	@helm dependencies update ./thornode
+	@echo
+
+mnemonic: ## Retrieve and display current mnemonic for backup from your THORNode
+	@./scripts/mnemonic.sh
+
+password: ## Retrieve and display current password for backup from your THORNode
+	@./scripts/password.sh
+
+pods: ## Get THORNode Kubernetes pods
+	@./scripts/pods.sh
+
+install: update-dependencies ## Deploy a THORNode
+	@./scripts/install.sh
+
+update: pull update-dependencies ## Update a THORNode to latest version
+	@./scripts/update.sh
+
+status: ## Display current status of your THORNode
+	@./scripts/status.sh
+
+reset: ## Reset and resync a service on your THORNode. This command can take a while to sync back to 100%.
+	@./scripts/reset.sh
+
+wait-ready: ## Wait for all pods to be in Ready state
+	@./scripts/wait-ready.sh
+
+destroy: ## Uninstall current THORNode
+	@./scripts/destroy.sh
+
+shell: ## Open a shell for a selected THORNode service
+	@./scripts/shell.sh
+
+watch: ## Watch the THORNode pods in real time
+	@./scripts/watch.sh
+
+logs: ## Display logs for a selected THORNode service
+	@./scripts/logs.sh
+
+restart: ## Restart a selected THORNode service
+	@./scripts/restart.sh
+
+set-node-keys: ## Send a set-node-keys transaction to your THORNode
+	@./scripts/set-node-keys.sh
+
+set-version: ## Send a set-version transaction to your THORNode
+	@./scripts/set-version.sh
+
+set-ip-address: ## Send a set-ip-address transaction to your THORNode
+	@./scripts/set-node-keys.sh
+
+telegram-bot: ## Deploy Telegram bot to monitor THORNode
+	@./scripts/telegram-bot.sh
+
+destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
+	@./scripts/destroy-telegram-bot.sh
 
 destroy-tools: destroy-loki destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
 
@@ -95,34 +158,5 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 	@echo Open your browser at http://localhost:8000
 	@kubectl -n kube-system port-forward service/kubernetes-dashboard 8000:443
 
-mocknet-4: ## Install/Update a Mocknet development environment with 4 THORNodes
-	@helmfile -f helmfiles.d/mocknet-4.yaml sync
-
-destroy-mocknet-4: ## Uninstall a Mocknet development environment with 4 THORNodes
-	@helmfile -f helmfiles.d/mocknet-4.yaml destroy
-
-mocknet-6: ## Install/Update a Mocknet development environment with 6 THORNodes
-	@helmfile -f helmfiles.d/mocknet-6.yaml sync
-
-destroy-mocknet-6: ## Uninstall a Mocknet development environment with 6 THORNodes
-	@helmfile -f helmfiles.d/mocknet-6.yaml destroy
-
-mocknet-10: ## Install/Update a Mocknet development environment with 10 THORNodes
-	@helmfile -f helmfiles.d/mocknet-10.yaml sync
-
-destroy-mocknet-10: ## Uninstall a Mocknet development environment with 10 THORNodes
-	@helmfile -f helmfiles.d/mocknet-10.yaml destroy
-
-mocknet-20: ## Install/Update a Mocknet development environment with 20 THORNodes
-	@helmfile -f helmfiles.d/mocknet-20.yaml sync
-
-destroy-mocknet-20: ## Uninstall a Mocknet development environment with 20 THORNodes
-	@helmfile -f helmfiles.d/mocknet-20.yaml destroy
-
-mocknet-30: ## Install/Update a Mocknet development environment with 30 THORNodes
-	@helmfile -f helmfiles.d/mocknet-30.yaml sync
-
-destroy-mocknet-30: ## Uninstall a Mocknet development environment with 30 THORNodes
-	@helmfile -f helmfiles.d/mocknet-30.yaml destroy
-
-.PHONY: help helm repo pull tools install-logs install-metrics install-dashboard destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard alert-manager mocknet-4 destroy-mocknet-4 mocknet-6 destroy-mocknet-6 mocknet-10 destroy-mocknet-10 mocknet-20 destroy-mocknet-20 mocknet-30 destroy-mocknet-30
+.PHONY: help helm repo pull tools install-logs install-metrics install-dashboard destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
+.EXPORT_ALL_VARIABLES:
