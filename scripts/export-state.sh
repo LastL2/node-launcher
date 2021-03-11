@@ -12,7 +12,7 @@ echo "=> Exporting THORNode chain state from $boldgreen$NAME$reset"
 confirm
 
 DATE=$(date +%s)
-IMAGE=$(kubectl get deploy/thornode -o jsonpath='{$.spec.template.spec.containers[:1].image}')
+IMAGE=$(kubectl -n "$NAME" get deploy/thornode -o jsonpath='{$.spec.template.spec.containers[:1].image}')
 SPEC="
 {
   \"apiVersion\": \"v1\",
