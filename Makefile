@@ -77,7 +77,7 @@ set-version: ## Send a set-version transaction to your THORNode
 	@./scripts/set-version.sh
 
 set-ip-address: ## Send a set-ip-address transaction to your THORNode
-	@./scripts/set-node-keys.sh
+	@./scripts/set-ip-address.sh
 
 telegram-bot: ## Deploy Telegram bot to monitor THORNode
 	@./scripts/telegram-bot.sh
