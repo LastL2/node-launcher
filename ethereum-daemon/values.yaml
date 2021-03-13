@@ -64,7 +64,9 @@ ingress:
 
 persistence:
   enabled: true
-  size: 300Gi
+  size:
+    testnet: 300Gi
+    mainnet: 700Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
   #
