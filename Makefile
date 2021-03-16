@@ -58,6 +58,9 @@ destroy: ## Uninstall current THORNode
 export-state: ## Export chain state
 	@./scripts/export-state.sh
 
+hard-fork: ## Hard fork chain
+	@./scripts/hard-fork.sh
+
 shell: ## Open a shell for a selected THORNode service
 	@./scripts/shell.sh
 
@@ -161,5 +164,5 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 	@echo Open your browser at http://localhost:8000
 	@kubectl -n kube-system port-forward service/kubernetes-dashboard 8000:443
 
-.PHONY: help helm repo pull tools install-logs install-metrics install-dashboard destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
+.PHONY: help helm repo pull tools install-logs install-metrics install-dashboard export-state hard-fork destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
 .EXPORT_ALL_VARIABLES:
