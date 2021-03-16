@@ -33,5 +33,11 @@ data:
         "password": "{{ .Values.postgres.password }}",
         "database": "{{ .Values.postgres.database }}",
         "sslmode": "disable"
-      }
+      },
+      "usdpools": [
+        "BNB.BUSD-BAF",
+        "BNB.BUSD-74E",
+        "BNB.USDT-DC8",
+        "ETH.USDT-0X62E273709DA575835C7F6AEF4A31140CA5B1D190"
+      ]
     }
