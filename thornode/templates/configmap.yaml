@@ -127,6 +127,7 @@ data:
 
     ARGS="--log_format json --p2p.laddr tcp://0.0.0.0:{{ include "thornode.p2p" . }} --rpc.laddr tcp://0.0.0.0:{{ include "thornode.rpc" . }}"
     [ "$DEBUG" = "true" ] && ARGS="$ARGS --trace --log_level debug" || ARGS="$ARGS --log_level info"
+    [ "$HARDFORK_BLOCK_HEIGHT" != "" ] && ARGS="$ARGS --halt-height $HARDFORK_BLOCK_HEIGHT"
     printf "$SIGNER_NAME\n$SIGNER_PASSWD\n" | thornode start $ARGS
 
   external-ip.sh: |

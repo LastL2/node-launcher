@@ -44,28 +44,42 @@ spec:
         volumeMounts:
         - name: scripts
           mountPath: /scripts
+
+      {{- if .Values.haltHeight }}
+      - name: halt-height
+        image: {{ include "thornode.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ['sh', '-c', '[ $(cat /root/.thornode/data/priv_validator_state.json | jq -r .height) -lt {{ .Values.haltHeight}} ] || (echo halting thornode; while :; do sleep 2; done)']
+        volumeMounts:
+          - name: data
+            mountPath: /root/
+      {{- end }}
+
       {{- if default .Values.peer .Values.global.peer }}
       - name: init-peer
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -zv {{ default .Values.peer .Values.global.peer }}:{{ include "thornode.rpc" . }}; do echo waiting for peer thornode; sleep 2; done']
       {{- end }}
+
       {{- if .Values.peerApi }}
       - name: init-peer-api
         image: busybox:1.28
         command: ['sh', '-c', "until nc -zv {{ .Values.peerApi }}:1317; do echo waiting for peer thornode; sleep 2; done"]
       {{- end }}
+
       {{- if default .Values.binanceDaemon .Values.global.binanceDaemon }}
       - name: init-binance
         image: appropriate/curl
         command: ['sh', '-c', "until curl -s {{ default .Values.binanceDaemon .Values.global.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
       {{- end }}
+
       - name: init-thornode
         image: {{ include "thornode.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if or (default .Values.peer .Values.global.peer) .Values.seeds }}
-        command: ["/scripts/validator.sh"]
-        {{- else }}
+        {{- if eq .Values.type "genesis" }}
         command: ["/scripts/genesis.sh"]
+        {{- else }}
+        command: ["/scripts/validator.sh"]
         {{- end }}
         volumeMounts:
           - name: data
@@ -79,7 +93,11 @@ spec:
           - name: PEER
             value: {{ default .Values.peer .Values.global.peer }}
           - name: VALIDATOR
-            value: "{{ .Values.validator }}"
+            {{- if eq .Values.type "fullnode" }}
+            value: "false"
+            {{- else }}
+            value: "true"
+            {{- end }}
           - name: SEEDS
             value: {{ .Values.seeds }}
           - name: PEER_API
@@ -135,7 +153,11 @@ spec:
                   name: {{ include "thornode.fullname" . }}-external-ip
                   key: externalIP
             - name: VALIDATOR
-              value: "{{ .Values.validator }}"
+              {{- if eq .Values.type "fullnode" }}
+              value: "false"
+              {{- else }}
+              value: "true"
+              {{- end }}
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
             - name: SEEDS
@@ -146,6 +168,8 @@ spec:
               value: {{ .Values.ethContract }}
             - name: DEBUG
               value: "{{ .Values.debug }}"
+            - name: HARDFORK_BLOCK_HEIGHT
+              value: "{{ .Values.haltHeight }}"
             - name: THORNODE_API_ENABLE
               value: "{{ .Values.enableApi }}"
             - name: NET

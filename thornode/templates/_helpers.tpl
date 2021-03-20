@@ -41,6 +41,8 @@ helm.sh/chart: {{ include "thornode.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/net: {{ include "thornode.net" . }}
+app.kubernetes.io/type: {{ .Values.type }}
 {{- end -}}
 
 {{/*

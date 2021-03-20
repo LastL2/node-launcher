@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 net: mainnet
+type: validator
 
 signer:
   name: thorchain
@@ -16,11 +17,12 @@ peerApi:
 binanceDaemon:
 ethContract: "0x9d496De78837f5a2bA64Cb40E62c19FBcB67f55a"
 
-validator: true
 
 enableApi: true
 
 debug: false
+
+haltHeight:
 
 replicaCount: 1
 
