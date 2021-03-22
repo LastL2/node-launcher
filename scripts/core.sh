@@ -147,7 +147,7 @@ display_status() {
 deploy_genesis() {
   local args;
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
-  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace "$args" \
+  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace $args \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET",global.tag="$VERSION" \
     --set midgard.image.tag="$VERSION_MIDGARD"
@@ -156,7 +156,7 @@ deploy_genesis() {
 deploy_validator() {
   local args;
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
-  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace "$args" \
+  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace $args \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET",global.tag="$VERSION" \
     --set midgard.image.tag="$VERSION_MIDGARD" \
