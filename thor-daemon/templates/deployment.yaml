@@ -166,12 +166,14 @@ spec:
               containerPort: 26660
               protocol: TCP
           livenessProbe:
-            timeoutSeconds: 10
+            timeoutSeconds: 30
+            periodSeconds: 30
             httpGet:
               path: /status
               port: rpc
           readinessProbe:
-            timeoutSeconds: 10
+            timeoutSeconds: 30
+            periodSeconds: 30
             httpGet:
               path: /status
               port: rpc
