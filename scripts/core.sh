@@ -145,17 +145,19 @@ display_status() {
 }
 
 deploy_genesis() {
-  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace \
+  local args;
+  [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace "$args" \
     --set global.mnemonicSecret=thornode-mnemonic \
-    --set global.passwordSecret=thornode-password \
     --set global.net="$NET",global.tag="$VERSION" \
     --set midgard.image.tag="$VERSION_MIDGARD"
 }
 
 deploy_validator() {
-  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace \
+  local args;
+  [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  helm upgrade --install "$NAME" ./thornode -n "$NAME" --create-namespace "$args" \
     --set global.mnemonicSecret=thornode-mnemonic \
-    --set global.passwordSecret=thornode-password \
     --set global.net="$NET",global.tag="$VERSION" \
     --set midgard.image.tag="$VERSION_MIDGARD" \
     --set bifrost.peer="$SEED",thor-daemon.seeds="$SEED"
