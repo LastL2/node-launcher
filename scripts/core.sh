@@ -145,7 +145,9 @@ display_status() {
 }
 
 deploy_genesis() {
-  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace \
+  local args;
+  [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace $args \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET",global.tag="$VERSION" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
@@ -154,7 +156,9 @@ deploy_genesis() {
 }
 
 deploy_validator() {
-  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace \
+  local args;
+  [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace $args \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET",global.tag="$VERSION" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
