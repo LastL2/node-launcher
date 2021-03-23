@@ -19,6 +19,8 @@ SPEC="
     \"containers\": [
       {
         \"command\": [
+          \"sh\",
+          \"-C\",
           \"/scripts/hard-fork.sh\"
         ],
         \"env\": [
