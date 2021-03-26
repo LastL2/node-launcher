@@ -21,7 +21,7 @@ repos: ## Add Helm repositories for dependencies
 tools: install-loki install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
 
 pull: ## Git pull node-launcher repository
-	@git pull origin master && sleep 3
+	@git pull origin $(shell git rev-parse --abbrev-ref HEAD) && sleep 3
 
 update-dependencies:
 	@echo "=> Updating Helm chart dependencies"
