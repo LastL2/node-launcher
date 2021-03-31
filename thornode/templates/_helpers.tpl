@@ -106,3 +106,14 @@ P2P Port
     {{ .Values.service.port.testnet.p2p }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+ETH Router contract
+*/}}
+{{- define "thornode.ethRouterContract" -}}
+{{- if eq (include "thornode.net" .) "mainnet" -}}
+    {{ .Values.ethRouterContract.mainnet}}
+{{- else -}}
+    {{ .Values.ethRouterContract.testnet }}
+{{- end -}}
+{{- end -}}

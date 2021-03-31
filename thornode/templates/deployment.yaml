@@ -103,7 +103,7 @@ spec:
           - name: PEER_API
             value: {{ .Values.peerApi }}
           - name: CONTRACT
-            value: {{ .Values.ethContract }}
+            value: {{ include "thornode.ethRouterContract" . }}
           - name: BINANCE
             value: {{ default .Values.binanceDaemon .Values.global.binanceDaemon }}
           - name: SEED
@@ -165,7 +165,7 @@ spec:
             - name: PEER_API
               value: {{ .Values.peerApi }}
             - name: CONTRACT
-              value: {{ .Values.ethContract }}
+              value: {{ include "thornode.ethRouterContract" . }}
             - name: DEBUG
               value: "{{ .Values.debug }}"
             - name: HARDFORK_BLOCK_HEIGHT
