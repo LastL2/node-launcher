@@ -18,7 +18,9 @@ fullnameOverride: ""
 
 persistence:
   enabled: true
-  size: 300Gi
+  size:
+    testnet: 150Gi
+    mainnet: 400Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 

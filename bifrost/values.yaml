@@ -65,7 +65,9 @@ fullnameOverride: ""
 
 persistence:
   enabled: true
-  size: 10Gi
+  size:
+    testnet: 10Gi
+    mainnet: 10Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"
