@@ -88,7 +88,7 @@ data:
     STATUS=$(curl -sL --fail -m 10 $ENDPOINT) || exit 1
     if [ ! -f "$FILE" ];then
       echo $STATUS | jq -r ".result.sync_info.index_height" > $FILE
-      exit 0
+      exit 1
     fi
 
     OLD=$(cat $FILE)

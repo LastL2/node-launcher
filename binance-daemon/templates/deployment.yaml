@@ -64,9 +64,16 @@ spec:
             - name: prometheus
               containerPort: 28660
               protocol: TCP
-          livenessProbe:
-            initialDelaySeconds: 120
+          startupProbe:
+            failureThreshold: 60
+            periodSeconds: 10
             timeoutSeconds: 10
+            exec:
+              command:
+                - /scripts/probe.sh
+          livenessProbe:
+            timeoutSeconds: 10
+            periodSeconds: 10
             exec:
               command:
                 - /scripts/probe.sh
