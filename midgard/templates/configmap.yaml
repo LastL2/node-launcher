@@ -36,6 +36,7 @@ data:
         "sslmode": "disable"
       },
       "usdpools": [
+        "BNB.BUSD-BD1",
         "BNB.BUSD-BAF",
         "BNB.BUSD-74E",
         "BNB.USDT-DC8",
