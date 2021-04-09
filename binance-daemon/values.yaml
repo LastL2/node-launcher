@@ -10,7 +10,7 @@ image:
   repository: registry.gitlab.com/thorchain/devops/binance-node
   mocknet: registry.gitlab.com/thorchain/bepswap/mock-binance
   pullPolicy: Always
-  tag: latest
+  tag: 0.8.2
 
 imagePullSecrets: []
 nameOverride: ""

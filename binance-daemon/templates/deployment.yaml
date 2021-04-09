@@ -65,7 +65,7 @@ spec:
               containerPort: 28660
               protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 120
+            initialDelaySeconds: 600
             timeoutSeconds: 10
             exec:
               command:
