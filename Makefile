@@ -1,8 +1,8 @@
 SHELL:=/bin/bash
-VERSION_MAINNET=chaosnet-multichain-0.38.0
-VERSION_TESTNET=testnet-multichain-0.39.0
-VERSION_MIDGARD_MAINNET=2.0.0-alpha3
-VERSION_MIDGARD_TESTNET=2.0.0-alpha3
+VERSION_MAINNET=chaosnet-multichain-0.41.0
+VERSION_TESTNET=testnet-multichain-0.41.0
+VERSION_MIDGARD_MAINNET=2.0.1
+VERSION_MIDGARD_TESTNET=2.0.1
 
 help: ## Help message
 	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
