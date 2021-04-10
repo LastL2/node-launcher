@@ -16,8 +16,8 @@ seeds:
 peerApi:
 binanceDaemon:
 ethRouterContract:
-  testnet: "0xA9cAd31c6124E7843C501d2DDd2294220a490d27"
-  mainnet: "0xc284C7dd4dc9A981F4C0cd2C10DA5E91217C3126"
+  testnet: "0xe0a63488e677151844e70623533c22007dc57c9e"
+  mainnet: "0x42A5Ed456650a09Dc10EBc6361A7480fDd61f27B"
 
 enableApi: true
 
