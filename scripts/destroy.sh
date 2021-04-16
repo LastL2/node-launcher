@@ -10,6 +10,7 @@ fi
 
 display_status
 
+echo -e "=> Destroying a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
 echo
 echo
 warn "!!! Make sure your got your BOND back before destroying your THORNode !!!"
