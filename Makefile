@@ -11,14 +11,14 @@ helm: ## Install Helm 3 dependency
 	@curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 repos: ## Add Helm repositories for dependencies
-	@echo Installing Helm repos
-	@helm repo add stable https://charts.helm.sh/stable
+	@echo "=> Installing Helm repos"
+	@helm repo add grafana https://grafana.github.io/helm-charts
 	@helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard
 	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-	@helm repo add loki https://grafana.github.io/loki/charts
 	@helm repo update
+	@echo
 
-tools: install-loki install-metrics install-dashboard ## Intall/Update tools: logs, metrics, Kubernetes dashboard
+tools: install-prometheus install-loki install-metrics install-dashboard ## Intall/Update Prometheus/Grafana, Loki, Metrics Server, Kubernetes dashboard
 
 pull: ## Git pull node-launcher repository
 	@git pull origin $(shell git rev-parse --abbrev-ref HEAD) && sleep 3
@@ -91,38 +91,41 @@ telegram-bot: ## Deploy Telegram bot to monitor THORNode
 destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
 	@./scripts/destroy-telegram-bot.sh
 
-destroy-tools: destroy-loki destroy-metrics destroy-dashboard ## Uninstall tools: logs, metrics, Kubernetes dashboard
+destroy-tools: destroy-prometheus destroy-loki destroy-metrics destroy-dashboard ## Uninstall Prometheus/Grafana, Loki, Metrics Server, Kubernetes dashboard
 
-install-logs: repos ## Install/Update ELK logs management stack
-	@echo Installing ELK Logs Management
+install-elk: repos ## Install/Update ELK logs management stack
+	@echo "=> Installing ELK Logs Management"
 	@helm upgrade elastic ./elastic-operator --install -n elastic-system --create-namespace --wait
 	@echo Waiting for services to be ready...
 	@kubectl wait --for=condition=Ready --all pods -n elastic-system --timeout=5m
+	@echo
 
-destroy-logs: ## Uninstall ELK logs management stack
-	@echo Deleting ELK Logs Management
+destroy-elk: ## Uninstall ELK logs management stack
+	@echo "=> Deleting ELK Logs Management"
 	@helm delete elastic -n elastic-system
 	@kubectl delete namespace elastic-system
+	@echo
 
 install-loki: repos ## Install/Update Loki logs management stack
-	@echo Installing Loki Logs Management
-	@helm upgrade loki loki/loki-stack --install -n loki-system --create-namespace --wait -f ./loki/values.yaml
+	@echo "=> Installing Loki Logs Management"
+	@helm upgrade loki grafana/loki-stack --install -n loki-system --create-namespace --wait -f ./loki/values.yaml
 	@echo Waiting for services to be ready...
 	@kubectl wait --for=condition=Ready --all pods -n loki-system --timeout=5m
+	@echo
 
 destroy-loki: ## Uninstall Loki logs management stack
-	@echo Deleting Loki Logs Management
+	@echo "=> Deleting Loki Logs Management"
 	@helm delete loki -n loki-system
 	@kubectl delete namespace loki-system
+	@echo
 
-install-metrics: repos ## Install/Update metrics management stack
-	@echo Installing Metrics
-	@kubectl get svc -A | grep -q metrics-server || helm upgrade --install metrics-server stable/metrics-server -n prometheus-system --create-namespace --wait -f ./metrics-server/values.yaml
+install-prometheus: repos ## Install/Update Prometheus/Grafana stack
+	@echo "=> Installing Prometheus/Grafana Stack"
 	@helm upgrade --install prometheus prometheus-community/kube-prometheus-stack -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
+	@echo
 
-destroy-metrics: ## Uninstall metrics management stack
-	@echo Deleting Metrics
-	@kubectl get svc -n prometheus-system metrics-server --ignore-not-found > /dev/null 2>&1 || helm delete metrics-server -n prometheus-system
+destroy-prometheus: ## Uninstall Prometheus/Grafana stack
+	@echo "=> Deleting Prometheus/Grafana Stack"
 	@helm delete prometheus -n prometheus-system
 	@kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
 	@kubectl delete crd alertmanagers.monitoring.coreos.com
@@ -133,15 +136,28 @@ destroy-metrics: ## Uninstall metrics management stack
 	@kubectl delete crd servicemonitors.monitoring.coreos.com
 	@kubectl delete crd thanosrulers.monitoring.coreos.com
 	@kubectl delete namespace prometheus-system
+	@echo
+
+install-metrics: repos ## Install/Update Metrics Server
+	@echo "=> Installing Metrics"
+	@kubectl get svc -A | grep -q metrics-server || kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+	@echo
+
+destroy-metrics: ## Uninstall Metrics Server
+	@echo "=> Deleting Metrics"
+	@kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+	@echo
 
 install-dashboard: repos ## Install/Update Kubernetes dashboard
-	@echo Installing Kubernetes Dashboard
+	@echo "=> Installing Kubernetes Dashboard"
 	@helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard -n kube-system --wait -f ./kubernetes-dashboard/values.yaml
 	@kubectl apply -f ./kubernetes-dashboard/dashboard-admin.yaml
+	@echo
 
 destroy-dashboard: ## Uninstall Kubernetes dashboard
-	@echo Deleting Kubernetes Dashboard
+	@echo "=> Deleting Kubernetes Dashboard"
 	@helm delete kubernetes-dashboard -n kube-system
+	@echo
 
 kibana: ## Access Kibana UI through port-forward locally
 	@echo User: elastic
@@ -167,5 +183,5 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 	@echo Open your browser at http://localhost:8000
 	@kubectl -n kube-system port-forward service/kubernetes-dashboard 8000:443
 
-.PHONY: help helm repo pull tools install-logs install-metrics install-dashboard export-state hard-fork destroy-tools destroy-logs destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
+.PHONY: help helm repo pull tools install-elk install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-elk destroy-loki destroy-prometheus destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
 .EXPORT_ALL_VARIABLES:
