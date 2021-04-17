@@ -148,8 +148,8 @@ additionalPrometheusRulesMap:
 
 
 grafana:
-  image:
-    tag: 7.3.3
+  # image:
+  #   tag: 7.5.3
 
   ingress:
     enabled: false
