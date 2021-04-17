@@ -91,7 +91,7 @@ telegram-bot: ## Deploy Telegram bot to monitor THORNode
 destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
 	@./scripts/destroy-telegram-bot.sh
 
-destroy-tools: destroy-prometheus destroy-loki destroy-metrics destroy-dashboard ## Uninstall Prometheus/Grafana, Loki, Metrics Server, Kubernetes dashboard
+destroy-tools: destroy-prometheus destroy-loki destroy-dashboard ## Uninstall Prometheus/Grafana, Loki, Kubernetes dashboard
 
 install-elk: repos ## Install/Update ELK logs management stack
 	@echo "=> Installing ELK Logs Management"
