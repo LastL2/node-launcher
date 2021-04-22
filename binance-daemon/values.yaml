@@ -50,7 +50,7 @@ persistence:
   enabled: true
   size:
     testnet: 50Gi
-    mainnet: 100Gi
+    mainnet: 500Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
