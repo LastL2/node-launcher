@@ -6,9 +6,23 @@ net: mainnet
 
 telegramToken: ""
 
-binanceDaemon: binance-daemon
-ethereumDaemon: ""
-bitcoinDaemon: ""
+ethereumDaemon: ethereum-daemon:8545
+binanceDaemon:
+  testnet: binance-daemon:26657
+  mainnet: binance-daemon:27147
+bitcoinDaemon:
+  testnet: thorchain:password@bitcoin-daemon:18332
+  mainnet: thorchain:password@bitcoin-daemon:8332
+bitcoinCashDaemon:
+  testnet: thorchain:password@bitcoin-cash-daemon:18332
+  mainnet: thorchain:password@bitcoin-cash-daemon:8332
+litecoinDaemon:
+  testnet: thorchain:password@litecoin-daemon:19332
+  mainnet: thorchain:password@litecoin-daemon:9332
+
+seed:
+  testnet: https://testnet.seed.thorchain.info
+  mainnet: https://seed.thorchain.info
 
 allowedUserIds: ALL
 
