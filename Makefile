@@ -76,6 +76,9 @@ logs: ## Display logs for a selected THORNode service
 restart: ## Restart a selected THORNode service
 	@./scripts/restart.sh
 
+halt: ## Halt a selected THORNode service
+	@./scripts/halt.sh
+
 set-node-keys: ## Send a set-node-keys transaction to your THORNode
 	@./scripts/set-node-keys.sh
 
