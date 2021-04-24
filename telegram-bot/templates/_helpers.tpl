@@ -71,3 +71,58 @@ CHAOSNET
 TESTNET
 {{- end }}
 {{- end }}
+
+{{/*
+Binance-daemon
+*/}}
+{{- define "telegram-bot.binanceDaemon" -}}
+{{- if or (eq .Values.net "mainnet") (eq .Values.net "chaosnet") -}}
+{{ .Values.binanceDaemon.mainnet }}
+{{- else -}}
+{{ .Values.binanceDaemon.testnet }}
+{{- end }}
+{{- end }}
+
+{{/*
+Bitcoin-daemon
+*/}}
+{{- define "telegram-bot.bitcoinDaemon" -}}
+{{- if or (eq .Values.net "mainnet") (eq .Values.net "chaosnet") -}}
+{{ .Values.bitcoinDaemon.mainnet }}
+{{- else -}}
+{{ .Values.bitcoinDaemon.testnet }}
+{{- end }}
+{{- end }}
+
+{{/*
+Bitcoin-Cash-daemon
+*/}}
+{{- define "telegram-bot.bitcoinCashDaemon" -}}
+{{- if or (eq .Values.net "mainnet") (eq .Values.net "chaosnet") -}}
+{{ .Values.bitcoinCashDaemon.mainnet }}
+{{- else -}}
+{{ .Values.bitcoinCashDaemon.testnet }}
+{{- end }}
+{{- end }}
+
+{{/*
+Litecoin-daemon
+*/}}
+{{- define "telegram-bot.litecoinDaemon" -}}
+{{- if or (eq .Values.net "mainnet") (eq .Values.net "chaosnet") -}}
+{{ .Values.litecoinDaemon.mainnet }}
+{{- else -}}
+{{ .Values.litecoinDaemon.testnet }}
+{{- end }}
+{{- end }}
+
+{{/*
+Seed URL
+*/}}
+{{- define "telegram-bot.seed" -}}
+{{- if or (eq .Values.net "mainnet") (eq .Values.net "chaosnet") -}}
+{{ .Values.seed.mainnet }}
+{{- else -}}
+{{ .Values.seed.testnet }}
+{{- end }}
+{{- end }}

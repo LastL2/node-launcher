@@ -43,18 +43,20 @@ spec:
               value: "{{ .Values.telegramToken }}"
             - name: NETWORK_TYPE
               value: {{ include "telegram-bot.net" . | quote }}
+            - name: SEED_LIST_URL
+              value: '{{ include "telegram-bot.seed" . }}'
             - name: ALLOWED_USER_IDS
               value: "{{ .Values.allowedUserIds }}"
-            - name: BINANCE_NODE_IPS
-              value: "{{ .Values.binanceDaemon }}"
             - name: ETHEREUM_NODE_IPS
               value: "{{ .Values.ethereumDaemon }}"
+            - name: BINANCE_NODE_IPS
+              value: '{{ include "telegram-bot.binanceDaemon" . }}'
             - name: BITCOIN_NODE_IPS
-              value: "{{ .Values.bitcoinDaemon }}"
-            - name: BITCOIN_NODE_USERNAMES
-              value: ""
-            - name: BITCOIN_NODE_PASSWORDS
-              value: ""
+              value: '{{ include "telegram-bot.bitcoinDaemon" . }}'
+            - name: BITCOIN_CASH_NODE_IPS
+              value: '{{ include "telegram-bot.bitcoinCashDaemon" . }}'
+            - name: LITECOIN_NODE_IPS
+              value: '{{ include "telegram-bot.litecoinDaemon" . }}'
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
