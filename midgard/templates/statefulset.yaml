@@ -144,6 +144,8 @@ spec:
           - wal_buffers=16MB
           - -c
           - work_mem=8MB
+          - -c
+          - plan_cache_mode=force_custom_plan
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata

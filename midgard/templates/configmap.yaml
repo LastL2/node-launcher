@@ -33,7 +33,8 @@ data:
         "user_name": "{{ .Values.postgres.username }}",
         "password": "{{ .Values.postgres.password }}",
         "database": "{{ .Values.postgres.database }}",
-        "sslmode": "disable"
+        "sslmode": "disable",
+        "max_open_conns": 80
       },
       "usdpools": [
         "BNB.BUSD-BD1",
