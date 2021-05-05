@@ -49,6 +49,9 @@ status: ## Display current status of your THORNode
 reset: ## Reset and resync a service on your THORNode. This command can take a while to sync back to 100%.
 	@./scripts/reset.sh
 
+debug: ## Debug and open a shell into thor-daemon with volume mounted
+	@./scripts/debug.sh
+
 wait-ready: ## Wait for all pods to be in Ready state
 	@./scripts/wait-ready.sh
 
