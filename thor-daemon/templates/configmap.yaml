@@ -164,3 +164,20 @@ data:
     fi
 
     kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -
+
+  probe.sh: |
+    #!/bin/bash
+
+    FILE=/root/.thord/.probe_last_height
+    ENDPOINT=localhost:$THOR_DAEMON_SERVICE_PORT_RPC/status
+
+    STATUS=$(curl -sL --fail -m 10 $ENDPOINT) || exit 1
+    if [ ! -f "$FILE" ];then
+      echo $STATUS | jq -r ".result.sync_info.latest_block_height" > $FILE
+      exit 0
+    fi
+
+    OLD=$(cat $FILE)
+    echo $STATUS | jq -r ".result.sync_info.latest_block_height" > $FILE
+    CURRENT=$(cat $FILE)
+    [ "$OLD" == "$CURRENT" ] && exit 1 || exit 0

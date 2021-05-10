@@ -168,9 +168,9 @@ spec:
           livenessProbe:
             timeoutSeconds: 30
             periodSeconds: 30
-            httpGet:
-              path: /status
-              port: rpc
+            exec:
+              command:
+                - /kube-scripts/probe.sh
           readinessProbe:
             timeoutSeconds: 30
             periodSeconds: 30
