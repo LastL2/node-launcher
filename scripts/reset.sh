@@ -22,7 +22,10 @@ confirm
 
 case $SERVICE in
   midgard )
-    kubectl exec -it -n "$NAME" sts/midgard-timescaledb -- rm -rf /var/lib/postgresql/data/pgdata
+    kubectl scale -n "$NAME" --replicas=0 sts/midgard-timescaledb --timeout=5m
+    kubectl wait --for=delete pods midgard-timescaledb-0 -n "$NAME" --timeout=5m > /dev/null 2>&1 || true
+    kubectl run -n "$NAME" -it reset-midgard --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["rm", "-rf", "/var/lib/postgresql/data/pgdata"], "name": "reset-midgard", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/var/lib/postgresql/data", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "data-midgard-timescaledb-0"}}]}}'
+    kubectl scale -n "$NAME" --replicas=1 sts/midgard-timescaledb --timeout=5m
     kubectl delete -n "$NAME" pod -l app.kubernetes.io/name=midgard
     ;;
 

@@ -22,12 +22,13 @@ logLevel: info
 image:
   repository: registry.gitlab.com/thorchain/midgard
   pullPolicy: Always
-  tag: latest
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 
 timescaleDbImage:
   repository: timescale/timescaledb
   pullPolicy: IfNotPresent
-  tag: 1.7.4-pg12
+  tag: 2.2.0-pg13
 
 service:
   type: ClusterIP
