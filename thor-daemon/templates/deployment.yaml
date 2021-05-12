@@ -166,6 +166,8 @@ spec:
               containerPort: 26660
               protocol: TCP
           livenessProbe:
+            initialDelaySeconds: 300
+            failureThreshold: 6
             timeoutSeconds: 30
             periodSeconds: 30
             exec:
