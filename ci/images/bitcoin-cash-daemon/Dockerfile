@@ -1,8 +1,8 @@
 FROM alpine:3.12.1
 
-ENV BITCOIN_VERSION=22.2.0
-ENV BITCOIN_URL=https://github.com/bitcoin-cash-node/bitcoin-cash-node/releases/download/v22.2.0/bitcoin-cash-node-22.2.0-x86_64-linux-gnu.tar.gz
-ENV BITCOIN_SHA256=fdd9103698b87ab44b7e69e4033a0c9bc2afb2af10238f91dc5f42e4d6d26a72
+ENV BITCOIN_VERSION=23.0.0
+ENV BITCOIN_URL=https://github.com/bitcoin-cash-node/bitcoin-cash-node/releases/download/v23.0.0/bitcoin-cash-node-23.0.0-x86_64-linux-gnu.tar.gz
+ENV BITCOIN_SHA256=474d53ba3dc10cee20da4c1e8d77e31a6b3c54c805f72eab7d705c9211c879bd
 ENV GLIBC_VERSION=2.28-r0
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 
