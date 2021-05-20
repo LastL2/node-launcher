@@ -21,6 +21,7 @@ repos: ## Add Helm repositories for dependencies
 tools: install-prometheus install-loki install-metrics install-dashboard ## Intall/Update Prometheus/Grafana, Loki, Metrics Server, Kubernetes dashboard
 
 pull: ## Git pull node-launcher repository
+	@git clean -xdf
 	@git pull origin $(shell git rev-parse --abbrev-ref HEAD) && sleep 3
 
 update-dependencies:
