@@ -102,7 +102,7 @@ data:
           add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
 
           add_header Cache-Control "no-cache, must-revalidate, max-age=0" always;
-          add_header X-Cache-Status $upstream_cache_status;
+          add_header X-Cache-Status $upstream_cache_status always;
           proxy_cache thornode;
           proxy_cache_lock on;
           proxy_cache_lock_timeout 20s;
