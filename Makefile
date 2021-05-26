@@ -1,6 +1,6 @@
 SHELL:=/bin/bash
 VERSION_MAINNET=chaosnet-multichain-0.54.0
-VERSION_TESTNET=testnet-multichain-0.53.2
+VERSION_TESTNET=testnet-multichain-0.54.0
 VERSION_MIDGARD_MAINNET=2.1.0
 VERSION_MIDGARD_TESTNET=2.1.1
 
