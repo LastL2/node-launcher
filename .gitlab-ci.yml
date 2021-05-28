@@ -1,0 +1,18 @@
+stages:
+  - validate
+
+shellcheck:
+  image: koalaman/shellcheck-alpine:latest
+  stage: validate
+  before_script:
+    - shellcheck --version
+  script:
+    - find . -type f -name "*.*sh" | xargs shellcheck --exclude SC1091,SC2034
+
+shfmt:
+  image: mvdan/shfmt:v3.3.0-alpine
+  stage: validate
+  before_script:
+    - shfmt -version
+  script:
+    - find . -type f -name "*.*sh" | xargs shfmt -i 2 -ci -d

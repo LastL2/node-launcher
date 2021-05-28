@@ -41,6 +41,6 @@ SPEC="
 }"
 
 kubectl scale -n "$NAME" --replicas=0 deploy/thornode --timeout=5m
-kubectl wait --for=delete pods -l app.kubernetes.io/name=thornode -n "$NAME" --timeout=5m > /dev/null 2>&1 || true
+kubectl wait --for=delete pods -l app.kubernetes.io/name=thornode -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
 kubectl run -n "$NAME" -it --rm --quiet hard-fork --restart=Never --image="$IMAGE" --overrides="$SPEC"
 # don't scale it back up after hard fork , need to run make install instead

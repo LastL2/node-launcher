@@ -2,24 +2,26 @@
 
 source ./scripts/menu.sh
 
-#reset=$(tput sgr0)                      # normal text
-reset=$'\e[0m'                           # (works better sometimes)
-bold=$(tput bold)                         # make colors bold/bright
-red="$bold$(tput setaf 1)"                # bright red text
-green=$(tput setaf 2)                     # dim green text
-boldgreen="$bold$green"                   # bright green text
-fawn=$(tput setaf 3); beige="$fawn"       # dark yellow text
-yellow="$bold$fawn"                       # bright yellow text
-boldyellow="$bold$yellow"                 # bright yellow text
-darkblue=$(tput setaf 4)                  # dim blue text
-blue="$bold$darkblue"                     # bright blue text
-purple=$(tput setaf 5); magenta="$purple" # magenta text
-pink="$bold$purple"                       # bright magenta text
-darkcyan=$(tput setaf 6)                  # dim cyan text
-cyan="$bold$darkcyan"                     # bright cyan text
-gray=$(tput setaf 7)                      # dim white text
-darkgray="$bold"$(tput setaf 0)           # bold black = dark gray text
-white="$bold$gray"                        # bright white text
+# reset=$(tput sgr0)              # normal text
+reset=$'\e[0m'                  # (works better sometimes)
+bold=$(tput bold)               # make colors bold/bright
+red="$bold$(tput setaf 1)"      # bright red text
+green=$(tput setaf 2)           # dim green text
+boldgreen="$bold$green"         # bright green text
+fawn=$(tput setaf 3)            # dark yellow text
+beige="$fawn"                   # dark yellow text
+yellow="$bold$fawn"             # bright yellow text
+boldyellow="$bold$yellow"       # bright yellow text
+darkblue=$(tput setaf 4)        # dim blue text
+blue="$bold$darkblue"           # bright blue text
+purple=$(tput setaf 5)          # magenta text
+magenta="$purple"               # magenta text
+pink="$bold$purple"             # bright magenta text
+darkcyan=$(tput setaf 6)        # dim cyan text
+cyan="$bold$darkcyan"           # bright cyan text
+gray=$(tput setaf 7)            # dim white text
+darkgray="$bold"$(tput setaf 0) # bold black = dark gray text
+white="$bold$gray"              # bright white text
 
 warn() {
   echo >&2 "$boldyellow:: $*$reset"
@@ -79,8 +81,7 @@ get_node_service() {
 }
 
 create_namespace() {
-  if ! kubectl get ns "$NAME" > /dev/null 2>&1;
-  then
+  if ! kubectl get ns "$NAME" >/dev/null 2>&1; then
     echo "=> Creating THORNode Namespace"
     kubectl create ns "$NAME"
     echo
@@ -88,13 +89,12 @@ create_namespace() {
 }
 
 node_exists() {
-  kubectl get -n "$NAME" deploy/thornode > /dev/null 2>&1 || kubectl get -n "$NAME" deploy/thor-daemon > /dev/null 2>&1
+  kubectl get -n "$NAME" deploy/thornode >/dev/null 2>&1 || kubectl get -n "$NAME" deploy/thor-daemon >/dev/null 2>&1
 }
 
 create_mnemonic() {
-  local mnemonic;
-  if ! kubectl get -n "$NAME" secrets/thornode-mnemonic > /dev/null 2>&1;
-  then
+  local mnemonic
+  if ! kubectl get -n "$NAME" secrets/thornode-mnemonic >/dev/null 2>&1; then
     echo "=> Generating THORNode Mnemonic phrase"
     mnemonic=$(kubectl run -n "$NAME" -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC | cut -d '=' -f 2 | tr -d '\r')
     kubectl -n "$NAME" create secret generic thornode-mnemonic --from-literal=mnemonic="$mnemonic"
@@ -103,15 +103,14 @@ create_mnemonic() {
 }
 
 create_password() {
-  [ "$NET" = "testnet" ] && return;
-  local pwd;
-  local pwdconf;
-  if ! kubectl get -n "$NAME" secrets/thornode-password > /dev/null 2>&1;
-  then
+  [ "$NET" = "testnet" ] && return
+  local pwd
+  local pwdconf
+  if ! kubectl get -n "$NAME" secrets/thornode-password >/dev/null 2>&1; then
     echo "=> Creating THORNode Password"
-    read -r -s -p "Enter password: " pwd;
+    read -r -s -p "Enter password: " pwd
     echo
-    read -r -s -p "Confirm password: " pwdconf;
+    read -r -s -p "Confirm password: " pwdconf
     echo
     [ "$pwd" != "$pwdconf" ] && die "Passwords mismatch"
     kubectl -n "$NAME" create secret generic thornode-password --from-literal=password="$pwd"
@@ -132,8 +131,8 @@ display_password() {
 }
 
 display_status() {
-  local ready;
-  if kubectl get -n "$NAME" deploy/thornode > /dev/null 2>&1; then
+  local ready
+  if kubectl get -n "$NAME" deploy/thornode >/dev/null 2>&1; then
     ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
     if [ "$ready" = "True" ]; then
       kubectl exec -it -n "$NAME" deploy/thornode -- sh -c "[ -f /scripts/node-status.sh ] && /scripts/node-status.sh || /kube-scripts/node-status.sh"
@@ -142,8 +141,7 @@ display_status() {
     fi
     return
   fi
-  if kubectl get -n "$NAME" deploy/thor-daemon > /dev/null 2>&1;
-  then
+  if kubectl get -n "$NAME" deploy/thor-daemon >/dev/null 2>&1; then
     ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thor-daemon -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
     if [ "$ready" = "True" ]; then
       kubectl exec -it -n "$NAME" deploy/thor-daemon -- sh -c "[ -f /scripts/node-status.sh ] && /scripts/node-status.sh || /kube-scripts/node-status.sh"
@@ -155,9 +153,9 @@ display_status() {
 }
 
 deploy_genesis() {
-  local args;
+  local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
-  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace $args \
+  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace "$args" \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET",global.tag="$VERSION" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
@@ -166,9 +164,9 @@ deploy_genesis() {
 }
 
 deploy_validator() {
-  local args;
+  local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
-  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace $args \
+  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace "$args" \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET",global.tag="$VERSION" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \

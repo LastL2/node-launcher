@@ -9,7 +9,7 @@ case $SERVICE in
   midgard | midgard-timescaledb)
     kubectl exec -it -n "$NAME" sts/"$SERVICE" -- sh
     ;;
-  * )
+  *)
     kubectl exec -it -n "$NAME" deploy/"$SERVICE" -- sh
     ;;
 esac
