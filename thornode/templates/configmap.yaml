@@ -6,21 +6,21 @@ data:
   set-node-keys.sh: |
     #!/bin/sh
 
-    NODE_PUB_KEY=$(echo $SIGNER_PASSWD | thornode keys show thorchain --pubkey --keyring-backend file)
-    NODE_PUB_KEY_ED25519=$(echo $SIGNER_PASSWD | thornode ed25519)
+    NODE_PUB_KEY=$(echo "$SIGNER_PASSWD" | thornode keys show thorchain --pubkey --keyring-backend file)
+    NODE_PUB_KEY_ED25519=$(echo "$SIGNER_PASSWD" | thornode ed25519)
     VALIDATOR=$(thornode tendermint show-validator)
-    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thornode tx thorchain set-node-keys $NODE_PUB_KEY $NODE_PUB_KEY_ED25519 $VALIDATOR --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-node-keys $NODE_PUB_KEY $NODE_PUB_KEY_ED25519 $VALIDATOR --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
 
   set-ip-address.sh: |
     #!/bin/sh
 
     NODE_IP_ADDRESS=${1:-$(curl -s http://whatismyip.akamai.com)}
-    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thornode tx thorchain set-ip-address $NODE_IP_ADDRESS --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-ip-address $NODE_IP_ADDRESS --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
 
   set-version.sh: |
     #!/bin/sh
 
-    printf "$SIGNER_PASSWD\n$SIGNER_PASSWD\n" | thornode tx thorchain set-version --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-version --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
 
   node-status.sh: |
     #!/bin/sh
@@ -37,7 +37,7 @@ data:
 
     THOR_PROGRESS="100.000%"
     API=http://thornode:1317
-    NODE_ADDRESS=$(echo $SIGNER_PASSWD | thornode keys show $SIGNER_NAME -a)
+    NODE_ADDRESS=$(echo "$SIGNER_PASSWD" | thornode keys show "$SIGNER_NAME" -a)
     NODE_IP=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
     VERSION=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".version")
     BOND=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".bond")
