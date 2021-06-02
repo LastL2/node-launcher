@@ -134,7 +134,8 @@ data:
 
       ARGS="$ARGS --halt-height $HARDFORK_BLOCK_HEIGHT"
     fi
-    printf "%s\n%s\n" "$SIGNER_NAME" "$SIGNER_PASSWD" | thornode start "$ARGS"
+    # shellcheck disable=SC2086
+    printf "%s\n%s\n" "$SIGNER_NAME" "$SIGNER_PASSWD" | thornode start $ARGS
 
   external-ip.sh: |
     #!/bin/bash
