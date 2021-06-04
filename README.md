@@ -245,7 +245,15 @@ You can check the services being deployed in your kubernetes namespace `loki-sys
 
 ### Access Grafana
 
-See previous section.
+See previous section to access the Grafana admin interface through the command `make grafana`.
+
+### Browse Logs
+
+Within the Grafana admin interface, to access the logs, find the `Explore` view from the left menu sidebar.
+Once in the `Explore` view, select Loki as the source, then select the service you want to show the logs by creating a query.
+The easiest way is to open the "Log browser" menu, then select the "job" label and then as value, select the service you want.
+For example you can select `thornode/bifrost` to show the logs of the Bifrost service within the default `thornode` namespace
+when deploying a mainnet validator THORNode.
 
 ### Destroy Loki logs management stack
 
