@@ -10,15 +10,15 @@ echo
 confirm
 
 case $SERVICE in
-  midgard )
+  midgard)
     kubectl delete -n "$NAME" sts/midgard
     ;;
 
-  midgard-timescaledb )
+  midgard-timescaledb)
     kubectl delete -n "$NAME" sts/midgard-timescaledb
     ;;
 
-  * )
-    kubectl delete -n "$NAME" deploy/$SERVICE
+  *)
+    kubectl delete -n "$NAME" "deploy/$SERVICE"
     ;;
 esac

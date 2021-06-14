@@ -9,113 +9,18 @@ data:
     NODE_PUB_KEY=$(echo "$SIGNER_PASSWD" | thornode keys show thorchain --pubkey --keyring-backend file)
     NODE_PUB_KEY_ED25519=$(echo "$SIGNER_PASSWD" | thornode ed25519)
     VALIDATOR=$(thornode tendermint show-validator)
-    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-node-keys $NODE_PUB_KEY $NODE_PUB_KEY_ED25519 $VALIDATOR --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-node-keys "$NODE_PUB_KEY" "$NODE_PUB_KEY_ED25519" "$VALIDATOR" --from "$SIGNER_NAME" --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
   set-ip-address.sh: |
     #!/bin/sh
 
     NODE_IP_ADDRESS=${1:-$(curl -s http://whatismyip.akamai.com)}
-    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-ip-address $NODE_IP_ADDRESS --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-ip-address "$NODE_IP_ADDRESS" --from "$SIGNER_NAME" --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
   set-version.sh: |
     #!/bin/sh
 
-    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-version --from $SIGNER_NAME --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node tcp://localhost:$THORNODE_SERVICE_PORT_RPC
-
-  node-status.sh: |
-    #!/bin/sh
-
-    set -o pipefail
-
-    format_1e8 () {
-      printf "%.2f\n" $(jq -n $1/100000000 2> /dev/null) 2> /dev/null | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
-    }
-
-    format_int () {
-      printf "%.0f\n" $1 2> /dev/null | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'
-    }
-
-    THOR_PROGRESS="100.000%"
-    API=http://thornode:1317
-    NODE_ADDRESS=$(echo "$SIGNER_PASSWD" | thornode keys show "$SIGNER_NAME" -a)
-    NODE_IP=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".ip_address")
-    VERSION=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".version")
-    BOND=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".bond")
-    REWARDS=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".current_award")
-    SLASH=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".slash_points")
-    STATUS=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS | jq -r ".status")
-    PREFLIGHT=$(curl -sL --fail -m 10 $API/thorchain/nodeaccount/$NODE_ADDRESS/preflight)
-    VAULT=$(curl -sL --fail -m 10 $API/thorchain/pool_addresses | jq -r ".current[0].address")
-    [ "$VALIDATOR" == "false" ] && NODE_IP=$EXTERNAL_IP
-
-    # calculate BNB chain sync progress
-    if [ "$VALIDATOR" == "true" ]; then
-      [ "$NET" = "mainnet" ] && BNB_PEER=dataseed1.binance.org || BNB_PEER=data-seed-pre-0-s1.binance.org
-      BNB_HEIGHT=$(curl -sL --fail -m 10 $BNB_PEER/status | jq -r ".result.sync_info.latest_block_height")
-      BNB_SYNC_HEIGHT=$(curl -sL --fail -m 10 binance-daemon:$BINANCE_DAEMON_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.index_height")
-      BNB_PROGRESS=$(printf "%.3f%%" $(jq -n $BNB_SYNC_HEIGHT/$BNB_HEIGHT*100 2> /dev/null) 2> /dev/null) || BNB_PROGRESS=Error
-    fi
-
-    # calculate BTC chain sync progress
-    if [ "$VALIDATOR" == "true" ]; then
-      BTC_RESULT=$(curl -sL --fail -m 10 --data-binary '{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://thorchain:password@bitcoin-daemon:$BITCOIN_DAEMON_SERVICE_PORT_RPC)
-      BTC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.headers")
-      BTC_SYNC_HEIGHT=$(echo $BTC_RESULT | jq -r ".result.blocks")
-      BTC_PROGRESS=$(echo $BTC_RESULT | jq -r ".result.verificationprogress")
-      BTC_PROGRESS=$(printf "%.3f%%" $(jq -n $BTC_PROGRESS*100 2> /dev/null) 2> /dev/null) || BTC_PROGRESS=Error
-    fi
-
-    # calculate THOR chain sync progress
-    if [ "$PEER" != "" ]; then
-      THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THORNODE_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-      THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THORNODE_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-      THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error
-    elif [ "$SEEDS" != "" ]; then
-      OLD_IFS=$IFS
-      IFS=","
-      for PEER in $SEEDS
-      do
-        THOR_HEIGHT=$(curl -sL --fail -m 10 $PEER:$THORNODE_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height") || continue
-        THOR_SYNC_HEIGHT=$(curl -sL --fail -m 10 localhost:$THORNODE_SERVICE_PORT_RPC/status | jq -r ".result.sync_info.latest_block_height")
-        THOR_PROGRESS=$(printf "%.3f%%" $(jq -n $THOR_SYNC_HEIGHT/$THOR_HEIGHT*100 2> /dev/null) 2> /dev/null) || THOR_PROGRESS=Error
-        break
-      done
-      IFS=$OLD_IFS
-    fi
-
-    [ "$THOR_PROGRESS" != "100.000%" ] && VAULT="standby"
-
-    cat << "EOF"
-     ________ ______  ___  _  __        __
-    /_  __/ // / __ \/ _ \/ |/ /__  ___/ /__
-     / / / _  / /_/ / , _/    / _ \/ _  / -_)
-    /_/ /_//_/\____/_/|_/_/|_/\___/\_,_/\__/
-    EOF
-    echo
-
-    if [ "$VALIDATOR" == "true" ]; then
-      echo "ADDRESS     $NODE_ADDRESS"
-      echo "IP          $NODE_IP"
-      echo "VERSION     $VERSION"
-      echo "STATUS      $STATUS"
-      echo "BOND        $(format_1e8 $BOND)"
-      echo "REWARDS     $(format_1e8 $REWARDS)"
-      echo "SLASH       $(format_int $SLASH)"
-      echo "VAULT       $VAULT"
-      echo "PREFLIGHT   "$PREFLIGHT
-    fi
-
-    echo
-    echo "API         http://$NODE_IP:1317"
-    echo "RPC         http://$NODE_IP:$THORNODE_SERVICE_PORT_RPC"
-    echo "MIDGARD     http://$NODE_IP:8080"
-
-    echo
-    printf "%-11s %-10s %-10s\n" CHAIN SYNC BLOCKS
-    [ "$PEER" != "" ] && printf "%-11s %-10s %-10s\n" THORChain "$THOR_PROGRESS" "$(format_int $THOR_SYNC_HEIGHT)/$(format_int $THOR_HEIGHT)"
-    [ "$VALIDATOR" == "true" ] && printf "%-11s %-10s %-10s\n" Binance "$BNB_PROGRESS" "$(format_int $BNB_SYNC_HEIGHT)/$(format_int $BNB_HEIGHT)"
-    [ "$VALIDATOR" == "true" ] && printf "%-11s %-10s %-10s\n" Bitcoin "$BTC_PROGRESS" "$(format_int $BTC_SYNC_HEIGHT)/$(format_int $BTC_HEIGHT)"
-    exit 0
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-version --from "$SIGNER_NAME" --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
   entrypoint.sh: |
     #!/bin/sh
@@ -131,11 +36,12 @@ data:
 
     if [ "$HARDFORK_BLOCK_HEIGHT" != "" ]; then
       # don't even start if height is equal or higher than halt block height
-      [ $(cat /root/.thornode/data/priv_validator_state.json | jq -r .height) -lt $HARDFORK_BLOCK_HEIGHT ] || exit 1
+      [ "$(jq </root/.thornode/data/priv_validator_state.json -r .height)" -lt "$HARDFORK_BLOCK_HEIGHT" ] || exit 1
 
       ARGS="$ARGS --halt-height $HARDFORK_BLOCK_HEIGHT"
     fi
-    printf "$SIGNER_NAME\n$SIGNER_PASSWD\n" | thornode start $ARGS
+    # shellcheck disable=SC2086
+    printf "%s\n%s\n" "$SIGNER_NAME" "$SIGNER_PASSWD" | thornode start $ARGS
 
   external-ip.sh: |
     #!/bin/bash
@@ -156,29 +62,29 @@ data:
     if [ "$HOST_NETWORK" = "true" ]; then
       external_ip=$(curl -s http://whatismyip.akamai.com)
     else
-      type=$(kubectl get svc $SERVICE -o jsonpath='{.spec.type}')
+      type=$(kubectl get svc "$SERVICE" -o jsonpath='{.spec.type}')
       external_ip=""
 
       if [ "$type" = "ClusterIP" ]; then
-        external_ip=$(kubectl get svc $SERVICE -o jsonpath='{.spec.clusterIP}')
+        external_ip=$(kubectl get svc "$SERVICE" -o jsonpath='{.spec.clusterIP}')
       elif [ "$type" = "NodePort" ]; then
         external_ip=$(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}')
       elif [ "$type" = "LoadBalancer" ]; then
         # Hack TODO remove when this is fixed here https://github.com/kubernetes/kubernetes/issues/82595
-        kubectl annotate svc $SERVICE service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=false --overwrite
+        kubectl annotate svc "$SERVICE" service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=false --overwrite
         sleep 5
-        kubectl annotate svc $SERVICE service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=true --overwrite
+        kubectl annotate svc "$SERVICE" service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=true --overwrite
 
-        while [ -z $external_ip ]; do
+        while [ -z "$external_ip" ]; do
           echo "Waiting for load balancer external endpoint..."
-          external_ip=$(kubectl get svc $SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-          if [ -z $external_ip ]; then
-            hostname=$(kubectl get svc $SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-            [ ! -z $hostname ] && external_ip=$(dig +short $hostname | sort | head -1)
+          external_ip=$(kubectl get svc "$SERVICE" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          if [ -z "$external_ip" ]; then
+            hostname=$(kubectl get svc "$SERVICE" -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+            [ -n "$hostname" ] && external_ip=$(dig +short "$hostname" | sort | head -1)
           fi
-          [ -z $external_ip ] && sleep 10
+          [ -z "$external_ip" ] && sleep 10
         done
       fi
     fi
 
-    kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create configmap "$CONFIGMAP" --from-literal=externalIP="$external_ip" --dry-run=client -o yaml | kubectl apply -f -

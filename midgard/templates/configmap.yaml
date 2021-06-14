@@ -8,7 +8,7 @@ data:
 
     # get ordinal index of stateful set from hostname
     INDEX=${HOSTNAME##*-}
-    sed -e "s/HOST_TIMESCALEDB/{{ include "midgard.fullname" . }}-timescaledb-${INDEX}.{{ include "midgard.fullname" . }}-timescaledb/g" /config.json.tpl > /config.json
+    sed -e "s/HOST_TIMESCALEDB/{{ include "midgard.fullname" . }}-timescaledb-${INDEX}.{{ include "midgard.fullname" . }}-timescaledb/g" /config.json.tpl >/config.json
     /midgard /config.json
 
   config.json: |

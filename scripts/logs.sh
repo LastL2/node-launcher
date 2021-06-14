@@ -9,7 +9,7 @@ case $SERVICE in
   midgard | midgard-timescaledb)
     kubectl logs -f -n "$NAME" sts/"$SERVICE"
     ;;
-  * )
+  *)
     kubectl logs -f -n "$NAME" deploy/"$SERVICE"
     ;;
 esac
