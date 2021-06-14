@@ -355,7 +355,7 @@ make destroy-dashboard
 
 ### THORNode full stack umbrella chart
 
-- thornode: Umbrella chart packaging all services needed to run
+- thornode-stack: Umbrella chart packaging all services needed to run
 a fullnode or validator THORNode.
 
 This should be the only chart used to run THORNode stack unless
