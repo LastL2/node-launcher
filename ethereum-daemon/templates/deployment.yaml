@@ -55,6 +55,12 @@ spec:
             - name: rpc
               containerPort: 8545
               protocol: TCP
+          readinessProbe:
+            timeoutSeconds: 10
+            exec:
+              command:
+                - test
+                - $(geth attach --exec eth.syncing) == "false"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
