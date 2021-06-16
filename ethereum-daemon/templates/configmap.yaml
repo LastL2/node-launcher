@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ethereum-daemon.fullname" . }}-scripts
+data:
+  probe.sh: |
+    #!/bin/sh
+
+    FILE=/root/.probe_last_height
+
+    if [ "$NET" = "testnet" ]; then
+      HEIGHT=$(geth --ropsten attach --exec eth.blockNumber)
+    else
+      HEIGHT=$(geth attach --exec eth.blockNumber)
+    fi
+
+    if [ ! -f "$FILE" ]; then
+      echo "$HEIGHT" >$FILE
+      echo "Not getting new blocks"
+      exit 1
+    fi
+
+    OLD=$(cat $FILE)
+    echo "$HEIGHT" >$FILE
+    if [ "$OLD" = "$HEIGHT" ]; then
+      echo "Not getting new blocks"
+      exit 1
+    fi
+    exit 0

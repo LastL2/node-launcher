@@ -36,7 +36,7 @@ spec:
           image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
           imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
           volumeMounts:
-            - name: scripts
+            - name: entrypoint
               mountPath: /tmp
           command: [ "sh", "-c", "cp /scripts/* /tmp" ]
       {{- end }}
@@ -47,21 +47,52 @@ spec:
           image: "{{ .Values.image.eth.repository }}:{{ .Values.image.eth.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.eth.pullPolicy }}
           {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
-          command: [ "sh", "-c", "apk add curl && /scripts/ethereum-mock.sh" ]
+          command: [ "sh", "-c", "apk add curl && /entrypoint/ethereum-mock.sh" ]
           {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
           command: [ "sh", "-c", 'geth --ropsten --syncmode fast --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
           {{- else if eq (include "ethereum-daemon.net" .) "mainnet" }}
           command: [ "sh", "-c", 'geth --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
           {{- end }}
           volumeMounts:
+            - name: entrypoint
+              mountPath: /entrypoint
             - name: scripts
               mountPath: /scripts
             - name: data
               mountPath: /root
+          env:
+            - name: NET
+              value: {{ include "ethereum-daemon.net" . }}
           ports:
             - name: rpc
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          startupProbe:
+            failureThreshold: 600
+            periodSeconds: 10
+            timeoutSeconds: 10
+            exec:
+              command:
+                - /scripts/probe.sh
+          livenessProbe:
+            failureThreshold: 10
+            timeoutSeconds: 10
+            periodSeconds: 10
+            exec:
+              command:
+                - /scripts/probe.sh
+          readinessProbe:
+            timeoutSeconds: 10
+            exec:
+              command:
+                - test
+                {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
+                - $(geth --dev attach --exec eth.syncing) == "false"
+                {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
+                - $(geth --ropsten attach --exec eth.syncing) == "false"
+                {{- else if eq (include "ethereum-daemon.net" .) "mainnet" }}
+                - $(geth attach --exec eth.syncing) == "false"
+                {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -76,8 +107,12 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        - name: scripts
+        - name: entrypoint
           emptyDir: {}
+        - name: scripts
+          configMap:
+            name: {{ include "ethereum-daemon.fullname" . }}-scripts
+            defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
