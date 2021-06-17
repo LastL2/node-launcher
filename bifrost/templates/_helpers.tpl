@@ -143,6 +143,19 @@ Litecoin
 {{- end -}}
 
 {{/*
+Dogecoin
+*/}}
+{{- define "bifrost.dogecoinDaemon" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.dogecoinDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "testnet" -}}
+    {{ .Values.dogecoinDaemon.testnet }}
+{{- else -}}
+    {{ .Values.dogecoinDaemon.mocknet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Ethereum
 */}}
 {{- define "bifrost.ethereumDaemon" -}}

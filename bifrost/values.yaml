@@ -46,6 +46,12 @@ bitcoinCashDaemon:
   testnet: bitcoin-cash-daemon:18332
   mocknet: bitcoin-cash-daemon:18443
 
+dogecoinDaemon:
+  enabled: true
+  mainnet: dogecoin-daemon:22555
+  testnet: dogecoin-daemon:44555
+  mocknet: dogecoin-daemon:18443
+
 ethereumDaemon:
   enabled: true
   mainnet: http://ethereum-daemon:8545
