@@ -22,7 +22,7 @@ tools: install-prometheus install-loki install-metrics install-dashboard ## Inta
 
 pull: ## Git pull node-launcher repository
 	@git clean -xdf
-	@git pull origin $(shell git rev-parse --abbrev-ref HEAD) && sleep 3
+	@git pull origin $(shell git rev-parse --abbrev-ref HEAD)
 
 update-dependencies:
 	@echo "=> Updating Helm chart dependencies"
@@ -38,7 +38,7 @@ password: ## Retrieve and display current password for backup from your THORNode
 pods: ## Get THORNode Kubernetes pods
 	@./scripts/pods.sh
 
-install: update-dependencies ## Deploy a THORNode
+install: pull update-dependencies ## Deploy a THORNode
 	@./scripts/install.sh
 
 update: pull update-dependencies ## Update a THORNode to latest version
