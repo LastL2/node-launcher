@@ -87,11 +87,11 @@ spec:
               command:
                 - test
                 {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
-                - $(geth --dev attach --exec eth.syncing) == "false"
+                - $(geth --dev attach --exec net.listening) == "true"
                 {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
-                - $(geth --ropsten attach --exec eth.syncing) == "false"
+                - $(geth --ropsten attach --exec net.listening) == "true"
                 {{- else if eq (include "ethereum-daemon.net" .) "mainnet" }}
-                - $(geth attach --exec eth.syncing) == "false"
+                - $(geth attach --exec net.listening) == "true"
                 {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
