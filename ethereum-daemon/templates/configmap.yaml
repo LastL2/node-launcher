@@ -9,9 +9,16 @@ data:
     FILE=/root/.probe_last_height
 
     if [ "$NET" = "testnet" ]; then
+      SYNCING=$(geth --ropsten attach --exec eth.syncing)
       HEIGHT=$(geth --ropsten attach --exec eth.blockNumber)
     else
+      SYNCING=$(geth attach --exec eth.syncing)
       HEIGHT=$(geth attach --exec eth.blockNumber)
+    fi
+
+    # first time we are syncing from scratch
+    if [ "$SYNCING" != "false" ] && [ "$HEIGHT" = "0" ]; then
+      exit 0
     fi
 
     if [ ! -f "$FILE" ]; then
