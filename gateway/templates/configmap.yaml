@@ -165,6 +165,9 @@ data:
           add_header Cache-Control "no-cache, must-revalidate, max-age=0" always;
           proxy_set_header Host $http_host;
           proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
           proxy_pass http://thornode:{{ include "gateway.rpc" . }};
         }
       }
