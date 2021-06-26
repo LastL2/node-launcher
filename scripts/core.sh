@@ -156,33 +156,34 @@ deploy_genesis() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
-  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace $args \
+  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
+    --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
-    --set global.net="$NET",global.tag="$VERSION" \
+    --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
-    --set thornode.type="genesis" \
-    --set midgard.image.tag="$VERSION_MIDGARD"
+    --set thornode.type="genesis"
 }
 
 deploy_validator() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
-  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace $args \
+  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
+    --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
-    --set global.net="$NET",global.tag="$VERSION" \
+    --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
-    --set midgard.image.tag="$VERSION_MIDGARD" \
     --set thornode.type="validator" \
     --set bifrost.peer="$SEED",thornode.seeds="$SEED"
 }
 
 deploy_fullnode() {
-  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" --create-namespace \
+  # shellcheck disable=SC2086
+  helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
+    --create-namespace $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
-    --set global.net="$NET",global.tag="$VERSION" \
+    --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
-    --set midgard.image.tag="$VERSION_MIDGARD" \
     --set thornode.seeds="$SEED" \
     --set bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \

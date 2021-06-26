@@ -37,9 +37,7 @@ Common labels
 {{- define "midgard.labels" -}}
 helm.sh/chart: {{ include "midgard.chart" . }}
 {{ include "midgard.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 

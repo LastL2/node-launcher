@@ -1,0 +1,11 @@
+global:
+  tag: testnet-multichain-0.57.1
+
+midgard:
+  image:
+    tag: 2.1.4
+
+ethereum-daemon:
+  image:
+    eth:
+      tag: v1.10.4

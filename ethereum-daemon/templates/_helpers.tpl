@@ -37,9 +37,7 @@ Common labels
 {{- define "ethereum-daemon.labels" -}}
 helm.sh/chart: {{ include "ethereum-daemon.chart" . }}
 {{ include "ethereum-daemon.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Values.image.eth.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
