@@ -3,7 +3,7 @@ global:
 
 midgard:
   image:
-    tag: 2.1.4
+    tag: 2.2.3
 
 ethereum-daemon:
   image:
