@@ -18,14 +18,12 @@ confirm
 
 case $NET in
   mainnet)
-    VERSION=$VERSION_MAINNET
-    VERSION_MIDGARD=$VERSION_MIDGARD_MAINNET
     SEED=$SEED_MAINNET
+    EXTRA_ARGS="-f ./thornode-stack/chaosnet.yaml"
     ;;
   testnet)
-    VERSION=$VERSION_TESTNET
-    VERSION_MIDGARD=$VERSION_MIDGARD_TESTNET
     SEED=$SEED_TESTNET
+    EXTRA_ARGS="-f ./thornode-stack/testnet.yaml"
     ;;
 esac
 

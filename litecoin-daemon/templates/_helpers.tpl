@@ -37,9 +37,7 @@ Common labels
 {{- define "litecoin-daemon.labels" -}}
 helm.sh/chart: {{ include "litecoin-daemon.chart" . }}
 {{ include "litecoin-daemon.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 

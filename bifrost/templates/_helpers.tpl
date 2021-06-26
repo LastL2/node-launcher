@@ -37,9 +37,7 @@ Common labels
 {{- define "bifrost.labels" -}}
 helm.sh/chart: {{ include "bifrost.chart" . }}
 {{ include "bifrost.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ include "bifrost.tag" . | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 

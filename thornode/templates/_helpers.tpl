@@ -37,9 +37,7 @@ Common labels
 {{- define "thornode.labels" -}}
 helm.sh/chart: {{ include "thornode.chart" . }}
 {{ include "thornode.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ include "thornode.tag" . | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/net: {{ include "thornode.net" . }}
 app.kubernetes.io/type: {{ .Values.type }}
