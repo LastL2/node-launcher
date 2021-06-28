@@ -1,5 +1,5 @@
 global:
-  tag: chaosnet-multichain-0.56.3
+  tag: chaosnet-multichain-0.57.2
 
 midgard:
   image:
