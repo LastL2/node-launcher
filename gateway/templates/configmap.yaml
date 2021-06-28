@@ -98,9 +98,21 @@ data:
         listen {{ .Values.service.port.midgard }};
 
         location / {
+          proxy_hide_header Access-Control-Allow-Origin;
+          proxy_hide_header Access-Control-Allow-Methods;
+          proxy_hide_header Access-Control-Allow-Headers;
+          proxy_hide_header Access-Control-Allow-Credentials;
+          add_header Access-Control-Allow-Origin '*' always;
           add_header Access-Control-Allow-Credentials true always;
-          add_header Access-Control-Allow-Methods 'DELETE,GET,OPTIONS,POST,PUT' always;
+          add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
           add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
+
+          if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Max-Age' 1728000 always;
+            add_header 'Content-Type' 'text/plain; charset=utf-8' always;
+            add_header 'Content-Length' 0 always;
+            return 204;
+          }
 
           add_header Cache-Control "no-cache, must-revalidate, max-age=0" always;
           add_header X-Cache-Status $upstream_cache_status always;
@@ -121,15 +133,16 @@ data:
       server {
         listen {{ .Values.service.port.api }};
         location / {
+          proxy_hide_header Access-Control-Allow-Origin;
+          proxy_hide_header Access-Control-Allow-Methods;
+          proxy_hide_header Access-Control-Allow-Headers;
+          proxy_hide_header Access-Control-Allow-Credentials;
+          add_header Access-Control-Allow-Origin '*' always;
           add_header Access-Control-Allow-Credentials true always;
           add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
           add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
 
           if ($request_method = 'OPTIONS') {
-            add_header Access-Control-Allow-Origin '*' always;
-            add_header Access-Control-Allow-Credentials true always;
-            add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
-            add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
             add_header 'Access-Control-Max-Age' 1728000 always;
             add_header 'Content-Type' 'text/plain; charset=utf-8' always;
             add_header 'Content-Length' 0 always;
@@ -146,16 +159,16 @@ data:
       server {
         listen {{ include "gateway.rpc" . }};
         location / {
+          proxy_hide_header Access-Control-Allow-Origin;
+          proxy_hide_header Access-Control-Allow-Methods;
+          proxy_hide_header Access-Control-Allow-Headers;
+          proxy_hide_header Access-Control-Allow-Credentials;
           add_header Access-Control-Allow-Origin '*' always;
           add_header Access-Control-Allow-Credentials true always;
           add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
           add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
 
           if ($request_method = 'OPTIONS') {
-            add_header Access-Control-Allow-Origin '*' always;
-            add_header Access-Control-Allow-Credentials true always;
-            add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
-            add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
             add_header 'Access-Control-Max-Age' 1728000 always;
             add_header 'Content-Type' 'text/plain; charset=utf-8' always;
             add_header 'Content-Length' 0 always;
