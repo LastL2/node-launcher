@@ -108,6 +108,10 @@ data:
           add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
 
           if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin '*' always;
+            add_header Access-Control-Allow-Credentials true always;
+            add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
+            add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
             add_header 'Access-Control-Max-Age' 1728000 always;
             add_header 'Content-Type' 'text/plain; charset=utf-8' always;
             add_header 'Content-Length' 0 always;
@@ -143,6 +147,10 @@ data:
           add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
 
           if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin '*' always;
+            add_header Access-Control-Allow-Credentials true always;
+            add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
+            add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
             add_header 'Access-Control-Max-Age' 1728000 always;
             add_header 'Content-Type' 'text/plain; charset=utf-8' always;
             add_header 'Content-Length' 0 always;
@@ -169,6 +177,10 @@ data:
           add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
 
           if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin '*' always;
+            add_header Access-Control-Allow-Credentials true always;
+            add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
+            add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
             add_header 'Access-Control-Max-Age' 1728000 always;
             add_header 'Content-Type' 'text/plain; charset=utf-8' always;
             add_header 'Content-Length' 0 always;
