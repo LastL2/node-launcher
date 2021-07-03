@@ -127,10 +127,7 @@ data:
           proxy_cache_valid any 5s;
           proxy_set_header Host $http_host;
           proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
-
-          location /v2 {
-            proxy_pass http://midgard:{{ .Values.service.port.midgard }};
-          }
+          proxy_pass http://midgard:{{ .Values.service.port.midgard }};
         }
       }
 
