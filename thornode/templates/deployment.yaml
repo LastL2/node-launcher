@@ -203,6 +203,12 @@ spec:
             httpGet:
               path: /status
               port: rpc
+          startupProbe:
+            failureThreshold: 30
+            timeoutSeconds: 10
+            httpGet:
+              path: /status
+              port: rpc
           readinessProbe:
             timeoutSeconds: 10
             httpGet:
