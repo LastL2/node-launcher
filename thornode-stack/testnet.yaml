@@ -1,5 +1,5 @@
 global:
-  tag: testnet-multichain-0.58.0
+  tag: testnet-0.59.1
 
 midgard:
   image:
