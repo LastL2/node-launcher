@@ -4,4 +4,4 @@ description: THORNode daemon application
 type: application
 version: 0.1.0
 
-appVersion: 0.56.2
+appVersion: 0.59.1
