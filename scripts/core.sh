@@ -111,7 +111,7 @@ make_snapshot() {
   fi
   kubectl -n "$NAME" delete volumesnapshot "$service" >/dev/null 2>&1 || true
   cat <<EOF | kubectl -n "$NAME" apply -f -
-    apiVersion: snapshot.storage.k8s.io/v1
+    apiVersion: snapshot.storage.k8s.io/v1beta1
     kind: VolumeSnapshot
     metadata:
       name: $service
