@@ -1,5 +1,5 @@
 global:
-  tag: testnet-0.60.1
+  tag: testnet-0.61.0
 
 midgard:
   image:
