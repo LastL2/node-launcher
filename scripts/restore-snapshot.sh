@@ -35,10 +35,10 @@ else
   kubectl wait --for=delete pods -l app.kubernetes.io/name="$SERVICE" -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
 fi
 
-kubectl -n "$NAME" get pvc "$PVC" -o json \
-  | jq 'del(.spec.volumeName,.metadata.annotations,.metadata.managedFields,.metadata.uid,.metadata.resourceVersion,.metadata.creationTimestamp)' \
-  | jq ".spec += {dataSource: {name: \"$SERVICE\" ,kind: \"VolumeSnapshot\", apiGroup: \"snapshot.storage.k8s.io\"}}" \
-  | kubectl -n "$NAME" replace --force -f -
+kubectl -n "$NAME" get pvc "$PVC" -o json |
+  jq 'del(.spec.volumeName,.metadata.annotations,.metadata.managedFields,.metadata.uid,.metadata.resourceVersion,.metadata.creationTimestamp)' |
+  jq ".spec += {dataSource: {name: \"$SERVICE\" ,kind: \"VolumeSnapshot\", apiGroup: \"snapshot.storage.k8s.io\"}}" |
+  kubectl -n "$NAME" replace --force -f -
 
 if [ "$SERVICE" == "midgard" ]; then
   kubectl scale -n "$NAME" --replicas=1 sts/midgard-timescaledb --timeout=5m
