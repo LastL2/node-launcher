@@ -49,6 +49,9 @@ reset: ## Reset and resync a service from scratch on your THORNode. This comman
 snapshot: ## Snapshot a volume for a specific THORNode service.
 	@./scripts/snapshot.sh
 
+restore-snapshot: ## Restore a volume for a specific THORNode service from a snapshot.
+	@./scripts/restore-snapshot.sh
+
 wait-ready: ## Wait for all pods to be in Ready state
 	@./scripts/wait-ready.sh
 
