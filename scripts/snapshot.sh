@@ -9,8 +9,10 @@ if ! snapshot_available; then
 fi
 
 get_node_info_short
-echo "=> Select a THORNode service to snapshot"
-menu thornode thornode bifrost midgard binance-daemon bitcoin-daemon bitcoin-cash-daemon ethereum-daemon litecoin-daemon
-SERVICE=$MENU_SELECTED
+if  [ "$SERVICE" == "" ]; then
+  echo "=> Select a THORNode service to snapshot"
+  menu thornode thornode bifrost midgard binance-daemon bitcoin-daemon bitcoin-cash-daemon ethereum-daemon litecoin-daemon
+  SERVICE=$MENU_SELECTED
+fi
 
 make_snapshot "$SERVICE"

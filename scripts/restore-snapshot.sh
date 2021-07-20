@@ -9,10 +9,12 @@ if ! snapshot_available; then
 fi
 
 get_node_info_short
-echo "=> Select a THORNode service to restore a snapshot"
-menu thornode thornode bifrost midgard binance-daemon bitcoin-daemon bitcoin-cash-daemon ethereum-daemon litecoin-daemon
-SERVICE=$MENU_SELECTED
-echo
+if  [ "$SERVICE" == "" ]; then
+  echo "=> Select a THORNode service to restore a snapshot"
+  menu thornode thornode bifrost midgard binance-daemon bitcoin-daemon bitcoin-cash-daemon ethereum-daemon litecoin-daemon
+  SERVICE=$MENU_SELECTED
+  echo
+fi
 
 if ! kubectl -n "$NAME" get volumesnapshot "$SERVICE" >/dev/null 2>&1; then
   warn "No snapshot found for that service $boldyellow$SERVICE$reset"
