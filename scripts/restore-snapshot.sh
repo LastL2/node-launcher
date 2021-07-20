@@ -9,7 +9,7 @@ if ! snapshot_available; then
 fi
 
 get_node_info_short
-if  [ "$SERVICE" == "" ]; then
+if [ "$SERVICE" == "" ]; then
   echo "=> Select a THORNode service to restore a snapshot"
   menu thornode thornode bifrost midgard binance-daemon bitcoin-daemon bitcoin-cash-daemon ethereum-daemon litecoin-daemon
   SERVICE=$MENU_SELECTED
