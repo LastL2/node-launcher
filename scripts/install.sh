@@ -16,6 +16,11 @@ fi
 echo -e "=> Deploying a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
 confirm
 
+if [ "$0" == "./scripts/update.sh" ] && snapshot_available; then
+  make_snapshot "thornode"
+  make_snapshot "bifrost"
+fi
+
 case $NET in
   mainnet)
     SEED=$SEED_MAINNET
