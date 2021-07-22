@@ -100,15 +100,22 @@ make_snapshot() {
   local pvc
   local service
   service=$1
-  echo
-  echo "=> Snapshotting service $boldgreen$service$reset of a THORNode named $boldgreen$NAME$reset"
-  echo -n "$boldyellow:: Are you sure? Confirm or skip [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
-  echo
+
   if [ "$service" == "midgard" ]; then
     pvc="data-midgard-timescaledb-0"
   else
     pvc=$service
   fi
+  if ! kubectl -n "$NAME" get pvc "$pvc" >/dev/null 2>&1; then
+    warn "Volume $pvc not found"
+    echo
+    exit 0
+  fi
+
+  echo
+  echo "=> Snapshotting service $boldgreen$service$reset of a THORNode named $boldgreen$NAME$reset"
+  echo -n "$boldyellow:: Are you sure? Confirm or skip [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
+  echo
   kubectl -n "$NAME" delete volumesnapshot "$service" >/dev/null 2>&1 || true
   cat <<EOF | kubectl -n "$NAME" apply -f -
     apiVersion: snapshot.storage.k8s.io/v1beta1
@@ -119,6 +126,7 @@ make_snapshot() {
       source:
         persistentVolumeClaimName: $pvc
 EOF
+  echo
   echo "=> Waiting for $boldgreen$service$reset snapshot to be ready to use (can take up to an hour depending on service and provider)"
   until kubectl -n "$NAME" get volumesnapshot "$service" -o yaml | grep "readyToUse: true" >/dev/null 2>&1; do sleep 10; done
   echo "Snapshot for $boldgreen$service$reset created"

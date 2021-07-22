@@ -17,7 +17,19 @@ if [ "$SERVICE" == "" ]; then
 fi
 
 if ! kubectl -n "$NAME" get volumesnapshot "$SERVICE" >/dev/null 2>&1; then
-  warn "No snapshot found for that service $boldyellow$SERVICE$reset"
+  warn "No snapshot found for that service $SERVICE"
+  echo
+  exit 0
+fi
+
+if [ "$SERVICE" == "midgard" ]; then
+  PVC="data-midgard-timescaledb-0"
+else
+  PVC=$SERVICE
+fi
+
+if ! kubectl -n "$NAME" get pvc "$PVC" >/dev/null 2>&1; then
+  warn "Volume $PVC not found"
   echo
   exit 0
 fi
@@ -28,11 +40,9 @@ warn "Destructive command, be careful, your service data volume data will be wip
 confirm
 
 if [ "$SERVICE" == "midgard" ]; then
-  PVC="data-midgard-timescaledb-0"
   kubectl scale -n "$NAME" --replicas=0 sts/midgard-timescaledb --timeout=5m
   kubectl wait --for=delete pods midgard-timescaledb-0 -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
 else
-  PVC=$SERVICE
   kubectl scale -n "$NAME" --replicas=0 deploy/"$SERVICE" --timeout=5m
   kubectl wait --for=delete pods -l app.kubernetes.io/name="$SERVICE" -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
 fi
