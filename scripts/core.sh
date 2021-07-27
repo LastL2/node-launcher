@@ -92,6 +92,47 @@ node_exists() {
   kubectl get -n "$NAME" deploy/thornode >/dev/null 2>&1 || kubectl get -n "$NAME" deploy/thor-daemon >/dev/null 2>&1
 }
 
+snapshot_available() {
+  kubectl get crd volumesnapshots.snapshot.storage.k8s.io >/dev/null 2>&1
+}
+
+make_snapshot() {
+  local pvc
+  local service
+  service=$1
+
+  if [ "$service" == "midgard" ]; then
+    pvc="data-midgard-timescaledb-0"
+  else
+    pvc=$service
+  fi
+  if ! kubectl -n "$NAME" get pvc "$pvc" >/dev/null 2>&1; then
+    warn "Volume $pvc not found"
+    echo
+    exit 0
+  fi
+
+  echo
+  echo "=> Snapshotting service $boldgreen$service$reset of a THORNode named $boldgreen$NAME$reset"
+  echo -n "$boldyellow:: Are you sure? Confirm or skip [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
+  echo
+  kubectl -n "$NAME" delete volumesnapshot "$service" >/dev/null 2>&1 || true
+  cat <<EOF | kubectl -n "$NAME" apply -f -
+    apiVersion: snapshot.storage.k8s.io/v1beta1
+    kind: VolumeSnapshot
+    metadata:
+      name: $service
+    spec:
+      source:
+        persistentVolumeClaimName: $pvc
+EOF
+  echo
+  echo "=> Waiting for $boldgreen$service$reset snapshot to be ready to use (can take up to an hour depending on service and provider)"
+  until kubectl -n "$NAME" get volumesnapshot "$service" -o yaml | grep "readyToUse: true" >/dev/null 2>&1; do sleep 10; done
+  echo "Snapshot for $boldgreen$service$reset created"
+  echo
+}
+
 create_mnemonic() {
   local mnemonic
   if ! kubectl get -n "$NAME" secrets/thornode-mnemonic >/dev/null 2>&1; then

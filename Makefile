@@ -46,6 +46,12 @@ status: ## Display current status of your THORNode
 reset: ## Reset and resync a service from scratch on your THORNode. This command can take a while to sync back to 100%.
 	@./scripts/reset.sh
 
+snapshot: ## Snapshot a volume for a specific THORNode service.
+	@./scripts/snapshot.sh
+
+restore-snapshot: ## Restore a volume for a specific THORNode service from a snapshot.
+	@./scripts/restore-snapshot.sh
+
 wait-ready: ## Wait for all pods to be in Ready state
 	@./scripts/wait-ready.sh
 
