@@ -40,8 +40,7 @@ confirm() {
 get_node_net() {
   if [ "$NET" != "" ]; then
     if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ]; then
-      warn "Error NET variable=$NET. NET variable should be either 'mainnet' or 'testnet'."
-      exit
+      die "Error NET variable=$NET. NET variable should be either 'mainnet' or 'testnet'."
     else
       return
     fi
@@ -145,6 +144,7 @@ create_mnemonic() {
   if ! kubectl get -n "$NAME" secrets/thornode-mnemonic >/dev/null 2>&1; then
     echo "=> Generating THORNode Mnemonic phrase"
     mnemonic=$(kubectl run -n "$NAME" -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC | cut -d '=' -f 2 | tr -d '\r')
+    [ "$mnemonic" = "" ] && die "Mnemonic generation failed. Please try again."
     kubectl -n "$NAME" create secret generic thornode-mnemonic --from-literal=mnemonic="$mnemonic"
     echo
   fi
