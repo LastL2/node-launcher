@@ -7,3 +7,6 @@ midgard:
 
 bifrost:
   replicaCount: 0
+
+thornode:
+  replicaCount: 0
