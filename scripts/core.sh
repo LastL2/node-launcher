@@ -38,7 +38,14 @@ confirm() {
 }
 
 get_node_net() {
-  [ "$NET" != "" ] && return
+  if [ "$NET" != "" ]; then
+    if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ]; then
+      warn "Error NET variable=$NET. NET variable should be either 'mainnet' or 'testnet'."
+      exit
+    else
+      return
+    fi
+  fi
   echo "=> Select net"
   menu mainnet mainnet testnet
   NET=$MENU_SELECTED
