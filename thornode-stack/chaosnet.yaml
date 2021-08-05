@@ -1,5 +1,5 @@
 global:
-  tag: chaosnet-multichain-0.62.1
+  tag: chaosnet-multichain-0.63.2
 
 midgard:
   image:
@@ -8,5 +8,3 @@ midgard:
 bifrost:
   replicaCount: 0
 
-thornode:
-  replicaCount: 0
