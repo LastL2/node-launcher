@@ -26,4 +26,6 @@ sast:
 
 secret_detection:
   stage: validate
- 
+
+variables:
+  - SCAN_KUBERNETES_MANIFESTS: true 
