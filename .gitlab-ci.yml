@@ -16,3 +16,7 @@ shfmt:
     - shfmt -version
   script:
     - find . -type f -name "*.*sh" | xargs shfmt -i 2 -ci -d
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
