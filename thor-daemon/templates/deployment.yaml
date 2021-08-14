@@ -167,7 +167,7 @@ spec:
               protocol: TCP
           livenessProbe:
             initialDelaySeconds: 300
-            failureThreshold: 6
+            failureThreshold: 60
             timeoutSeconds: 30
             periodSeconds: 30
             exec:
