@@ -29,3 +29,4 @@ secret_detection:
 
 variables:
   SCAN_KUBERNETES_MANIFESTS: "true"
+  KUBESEC_HELM_CHARTS_PATH: ./thornode-stack
