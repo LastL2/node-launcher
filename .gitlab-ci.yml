@@ -23,8 +23,6 @@ include:
 
 sast:
   stage: validate
-  before_script:
-    - helm dependencies update ./thornode-stack
 
 secret_detection:
   stage: validate
@@ -32,3 +30,4 @@ secret_detection:
 variables:
   SCAN_KUBERNETES_MANIFESTS: "true"
   KUBESEC_HELM_CHARTS_PATH: ./thornode-stack
+  KUBESEC_HELM_OPTIONS: --dependency-update
