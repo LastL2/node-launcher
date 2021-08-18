@@ -24,7 +24,7 @@ include:
 sast:
   stage: validate
   before_script:
-    - make update-dependencies
+    - helm dependencies update ./thornode-stack
 
 secret_detection:
   stage: validate
