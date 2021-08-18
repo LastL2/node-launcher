@@ -23,6 +23,8 @@ include:
 
 sast:
   stage: validate
+  before_script:
+    - make update-dependencies
 
 secret_detection:
   stage: validate
