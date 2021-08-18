@@ -26,6 +26,8 @@ if [ "$SERVICE" = "bifrost" ]; then
       \"containers\": [
         {
           \"command\": [
+            \"sh\",
+            \"-c\",
             \"sleep 300\"
           ],
           \"name\": \"backup-$SERVICE\",
@@ -47,6 +49,8 @@ else
       \"containers\": [
         {
           \"command\": [
+            \"sh\",
+            \"-c\",
             \"sleep 300\"
           ],
           \"name\": \"backup-$SERVICE\",
@@ -65,9 +69,9 @@ echo "=> Backing up service $boldgreen$SERVICE$reset from THORNode in $boldgreen
 confirm
 
 POD="deploy/$SERVICE"
-if ! kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$SERVICE" >/dev/null 2>&1; then
-  kubectl run -n "$NAME" --rm "backup-$SERVICE" --restart=Never --image="busybox:1.33" --overrides="$SPEC"
-  kubectl wait --for=condition=ready pods -l "app.kubernetes.io/name=$SERVICE" -n "$NAME" --timeout=5m >/dev/null 2>&1
+if (kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$SERVICE" 2>&1 | grep "No resources found") >/dev/null 2>&1; then
+  kubectl run -n "$NAME" "backup-$SERVICE" --restart=Never --image="busybox:1.33" --overrides="$SPEC"
+  kubectl wait --for=condition=ready pods "backup-$SERVICE" -n "$NAME" --timeout=5m >/dev/null 2>&1
   POD="pod/backup-$SERVICE"
 fi
 
@@ -79,5 +83,9 @@ else
   kubectl exec -it -n "$NAME" "$POD" -- sh -c "cd /root/.thornode && tar cf \"$SERVICE-$DATE.tar\" config"
 fi
 kubectl exec -n "$NAME" "$POD" -- sh -c "cd /root/.thornode && tar cf - \"$SERVICE-$DATE.tar\"" | tar xf - -C "$PWD/backups/$SERVICE"
+
+if (kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$SERVICE" 2>&1 | grep "No resources found") >/dev/null 2>&1; then
+  kubectl delete pod --now=true -n "$NAME" "backup-$SERVICE"
+fi
 
 echo "Backup available in path ./backups/$SERVICE"
