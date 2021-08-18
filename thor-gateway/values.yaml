@@ -28,7 +28,7 @@ service:
       p2p: 5040
       api: 6040
     midgard: 8080
-    api: 1318
+    api: 1317
     mainnet:
       p2p: 27146
       rpc: 27147
