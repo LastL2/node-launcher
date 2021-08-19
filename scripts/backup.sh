@@ -80,7 +80,7 @@ mkdir -p "backups/$SERVICE"
 if [ "$SERVICE" = "bifrost" ]; then
   kubectl exec -it -n "$NAME" "$POD" -- sh -c "cd /root/.thornode && tar cf \"$SERVICE-$DATE.tar\" localstate-*.json"
 else
-  kubectl exec -it -n "$NAME" "$POD" -- sh -c "cd /root/.thornode && tar cf \"$SERVICE-$DATE.tar\" config"
+  kubectl exec -it -n "$NAME" "$POD" -- sh -c "cd /root/.thornode && tar cf \"$SERVICE-$DATE.tar\" config/"
 fi
 kubectl exec -n "$NAME" "$POD" -- sh -c "cd /root/.thornode && tar cf - \"$SERVICE-$DATE.tar\"" | tar xf - -C "$PWD/backups/$SERVICE"
 
