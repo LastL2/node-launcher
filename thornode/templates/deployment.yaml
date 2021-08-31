@@ -84,6 +84,12 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /root/
+          - name: mnemonic
+            mountPath: /etc/thornode/mnemonic
+            subPath: mnemonic
+          - name: password
+            mountPath: /etc/thornode/password
+            subPath: password
         env:
           - name: EXTERNAL_IP
             valueFrom:
@@ -118,22 +124,6 @@ spec:
             value: {{ include "thornode.net" . }}
           - name: SIGNER_NAME
             value: {{ .Values.signer.name }}
-          - name: SIGNER_PASSWD
-            {{- if default .Values.signer.passwordSecret .Values.global.passwordSecret }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
-                key: password
-            {{- else}}
-            value: {{ .Values.signer.password }}
-            {{- end }}
-          {{- if default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
-          - name: SIGNER_SEED_PHRASE
-            valueFrom:
-              secretKeyRef:
-                name: {{ default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
-                key: mnemonic
-          {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -142,6 +132,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/kube-scripts/entrypoint.sh"]
           volumeMounts:
+            - name: password
+              mountPath: /etc/thornode/password
+              subPath: password
             - name: data
               mountPath: /root/
             - name: scripts
@@ -176,15 +169,6 @@ spec:
               value: {{ include "thornode.net" . }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
-            - name: SIGNER_PASSWD
-              {{- if default .Values.signer.passwordSecret .Values.global.passwordSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
-                  key: password
-              {{- else}}
-              value: {{ .Values.signer.password }}
-              {{- end }}
           ports:
             - name: api
               containerPort: {{ .Values.service.port.api }}
@@ -217,6 +201,20 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+      - name: mnemonic
+        secret:
+          secretName: {{ default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
+          defaultMode: 0400
+          items:
+          - key: mnemonic
+            path: mnemonic
+      - name: password
+        secret:
+          secretName: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+          defaultMode: 0400
+          items:
+          - key: password
+            path: password
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:

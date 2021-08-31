@@ -6,20 +6,36 @@ data:
   set-node-keys.sh: |
     #!/bin/sh
 
+    SIGNER_PASSWD="${SIGNER_PASSWD:=password}"
+    if [ -f /etc/thornode/password ]; then
+      SIGNER_PASSWD=$(cat /etc/thornode/password)
+    fi
     NODE_PUB_KEY=$(echo "$SIGNER_PASSWD" | thornode keys show thorchain --pubkey --keyring-backend file)
     NODE_PUB_KEY_ED25519=$(echo "$SIGNER_PASSWD" | thornode ed25519)
     VALIDATOR=$(thornode tendermint show-validator)
     printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-node-keys "$NODE_PUB_KEY" "$NODE_PUB_KEY_ED25519" "$VALIDATOR" --from "$SIGNER_NAME" --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
+    SIGNER_PASSWD="${SIGNER_PASSWD:=password}"
+    if [ -f /etc/thornode/password ]; then
+      SIGNER_PASSWD=$(cat /etc/thornode/password)
+    fi
 
   set-ip-address.sh: |
     #!/bin/sh
 
+    SIGNER_PASSWD="${SIGNER_PASSWD:=password}"
+    if [ -f /etc/thornode/password ]; then
+      SIGNER_PASSWD=$(cat /etc/thornode/password)
+    fi
     NODE_IP_ADDRESS=${1:-$(curl -s http://whatismyip.akamai.com)}
     printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-ip-address "$NODE_IP_ADDRESS" --from "$SIGNER_NAME" --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
   set-version.sh: |
     #!/bin/sh
 
+    SIGNER_PASSWD="${SIGNER_PASSWD:=password}"
+    if [ -f /etc/thornode/password ]; then
+      SIGNER_PASSWD=$(cat /etc/thornode/password)
+    fi
     printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain set-version --from "$SIGNER_NAME" --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
   entrypoint.sh: |
@@ -40,6 +56,12 @@ data:
 
       ARGS="$ARGS --halt-height $HARDFORK_BLOCK_HEIGHT"
     fi
+
+    SIGNER_PASSWD="${SIGNER_PASSWD:=password}"
+    if [ -f /etc/thornode/password ]; then
+      SIGNER_PASSWD=$(cat /etc/thornode/password)
+    fi
+
     # shellcheck disable=SC2086
     printf "%s\n%s\n" "$SIGNER_NAME" "$SIGNER_PASSWD" | thornode start $ARGS
 
