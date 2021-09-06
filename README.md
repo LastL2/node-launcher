@@ -141,7 +141,7 @@ make set-version
 
 # pause
 
-Send a `pause-chain` to your node, which will globally halt THORChain. This is only to be used by node operators in the event of an emergency, such as a suspected attack on the network. This can only be done once by each node operator per churn. Nodes found absuing this command may be banned by other node operators. Use extreme caution!
+Send a `pause-chain` to your node, which will globally halt THORChain. This is only to be used by node operators in the event of an emergency, such as a suspected attack on the network. This can only be done once by each node operator per churn. Nodes found abusing this command may be banned by other node operators. Use with extreme caution!
 
 ```bash
 make pause
