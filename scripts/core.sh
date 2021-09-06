@@ -150,17 +150,20 @@ create_mnemonic() {
 }
 
 create_password() {
-  [ "$NET" = "testnet" ] && return
   local pwd
   local pwdconf
   if ! kubectl get -n "$NAME" secrets/thornode-password >/dev/null 2>&1; then
     echo "=> Creating THORNode Password"
-    read -r -s -p "Enter password: " pwd
-    echo
-    read -r -s -p "Confirm password: " pwdconf
-    echo
-    [ "$pwd" != "$pwdconf" ] && die "Passwords mismatch"
-    kubectl -n "$NAME" create secret generic thornode-password --from-literal=password="$pwd"
+    if [ "$NET" = "testnet" ]; then
+      kubectl -n "$NAME" create secret generic thornode-password --from-literal=password="password"
+    else
+      read -r -s -p "Enter password: " pwd
+      echo
+      read -r -s -p "Confirm password: " pwdconf
+      echo
+      [ "$pwd" != "$pwdconf" ] && die "Passwords mismatch"
+      kubectl -n "$NAME" create secret generic thornode-password --from-literal=password="$pwd"
+    fi
     echo
   fi
 }
@@ -200,11 +203,10 @@ display_status() {
 }
 
 deploy_genesis() {
-  local args
-  [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
-    --create-namespace $args $EXTRA_ARGS \
+    --create-namespace $EXTRA_ARGS \
+    --set global.passwordSecret=thornode-password \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
@@ -212,11 +214,10 @@ deploy_genesis() {
 }
 
 deploy_validator() {
-  local args
-  [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
-    --create-namespace $args $EXTRA_ARGS \
+    --create-namespace $EXTRA_ARGS \
+    --set global.passwordSecret=thornode-password \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
@@ -228,6 +229,7 @@ deploy_fullnode() {
   # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $EXTRA_ARGS \
+    --set global.passwordSecret=thornode-password \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
