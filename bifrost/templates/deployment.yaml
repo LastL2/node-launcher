@@ -103,12 +103,6 @@ spec:
             - mountPath: /etc/bifrost
               name: data
               subPath: etc
-            - name: mnemonic
-              mountPath: /etc/bifrost/mnemonic
-              subPath: mnemonic
-            - name: password
-              mountPath: /etc/bifrost/password
-              subPath: password
           env:
             - name: EXTERNAL_IP
               valueFrom:
@@ -145,6 +139,22 @@ spec:
               value: {{ default .Values.peer .Values.global.peer }}
             - name: SIGNER_NAME
               value: {{ .Values.signer.name }}
+            - name: SIGNER_PASSWD
+              {{- if default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
+                  key: password
+              {{- else}}
+              value: {{ .Values.signer.password }}
+              {{- end }}
+            {{- if default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
+            - name: SIGNER_SEED_PHRASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
+                  key: mnemonic
+            {{- end }}
           ports:
             - name: p2p
               containerPort: {{ .Values.service.port.p2p }}
@@ -159,20 +169,6 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
 
       volumes:
-      - name: mnemonic
-        secret:
-          secretName: {{ default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
-          defaultMode: 0400
-          items:
-          - key: mnemonic
-            path: mnemonic
-      - name: password
-        secret:
-          secretName: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
-          defaultMode: 0400
-          items:
-          - key: password
-            path: password
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
