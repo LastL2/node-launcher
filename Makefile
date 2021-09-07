@@ -94,6 +94,12 @@ set-version: ## Send a set-version transaction to your THORNode
 set-ip-address: ## Send a set-ip-address transaction to your THORNode
 	@./scripts/set-ip-address.sh
 
+pause: ## Send a pause-chain transaction to your THORNode
+	@./scripts/pause.sh
+
+resume: ## Send a resume-chain transaction to your THORNode
+	@./scripts/resume.sh
+
 telegram-bot: ## Deploy Telegram bot to monitor THORNode
 	@./scripts/telegram-bot.sh
 
@@ -192,5 +198,5 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 	@echo Open your browser at http://localhost:8000
 	@kubectl -n kube-system port-forward service/kubernetes-dashboard 8000:443
 
-.PHONY: help helm repo pull tools install-elk install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-elk destroy-loki destroy-prometheus destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version telegram-bot destroy-telegram-bot
+.PHONY: help helm repo pull tools install-elk install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-elk destroy-loki destroy-prometheus destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot
 .EXPORT_ALL_VARIABLES:
