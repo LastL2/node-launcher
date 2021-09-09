@@ -1,10 +1,7 @@
 global:
-  tag: chaosnet-multichain-0.64.0
+  tag: chaosnet-multichain-0.67.0
 
 midgard:
   image:
     tag: 2.4.0
-
-bifrost:
-  replicaCount: 0
 
