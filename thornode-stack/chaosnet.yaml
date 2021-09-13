@@ -3,7 +3,7 @@ global:
 
 midgard:
   image:
-    tag: 2.4.0
+    tag: 2.4.1
 
 bifrost:
   replicaCount: 0
