@@ -182,7 +182,7 @@ display_status() {
   if kubectl get -n "$NAME" deploy/thornode >/dev/null 2>&1; then
     ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
     if [ "$ready" = "True" ]; then
-      kubectl exec -it -n "$NAME" deploy/thornode -- /scripts/node-status.sh
+      kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh
     else
       echo "THORNode pod is not currently running, status is unavailable"
     fi
