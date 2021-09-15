@@ -18,7 +18,9 @@ confirm
 
 if [ "$0" == "./scripts/update.sh" ] && snapshot_available; then
   make_snapshot "thornode"
-  make_snapshot "bifrost"
+  if [ "$TYPE" != "fullnode" ]; then
+    make_snapshot "bifrost"
+  fi
 fi
 
 case $NET in

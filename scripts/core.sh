@@ -179,24 +179,13 @@ display_password() {
 
 display_status() {
   local ready
-  if kubectl get -n "$NAME" deploy/thornode >/dev/null 2>&1; then
-    ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-    if [ "$ready" = "True" ]; then
-      kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh
-    else
-      echo "THORNode pod is not currently running, status is unavailable"
-    fi
-    return
+  ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+  if [ "$ready" = "True" ]; then
+    kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh
+  else
+    echo "THORNode pod is not currently running, status is unavailable"
   fi
-  if kubectl get -n "$NAME" deploy/thor-daemon >/dev/null 2>&1; then
-    ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thor-daemon -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-    if [ "$ready" = "True" ]; then
-      kubectl exec -it -n "$NAME" deploy/thor-daemon -- /scripts/node-status.sh
-    else
-      echo "THORNode pod is not currently running, status is unavailable"
-    fi
-    return
-  fi
+  return
 }
 
 deploy_genesis() {
