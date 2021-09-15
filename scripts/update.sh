@@ -16,7 +16,7 @@ echo
 echo "=> Waiting for THORNode daemon to be ready"
 kubectl rollout status -w deployment/thornode -n "$NAME" --timeout=5m
 
-if [ $TYPE != "fullnode" ]; then
+if [ "$TYPE" != "fullnode" ]; then
   echo
   source ./scripts/set-version.sh
 fi
