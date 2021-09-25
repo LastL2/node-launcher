@@ -18,7 +18,7 @@ if ! kubectl -n "$NAME" get pvc "$SERVICE" >/dev/null 2>&1; then
   exit 0
 fi
 
-FILE=$(ls -t "$PWD/backups/$SERVICE" | head -n1)
+FILE=$(find "$PWD/backups/$SERVICE" -maxdepth 1 -type f -exec basename {} \; | sort -r | head -1)
 if [ "$FILE" == "" ]; then
   warn "No backup file found for service $SERVICE"
   echo
