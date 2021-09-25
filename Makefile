@@ -49,6 +49,9 @@ reset: ## Reset and resync a service from scratch on your THORNode. This comman
 backup: ## Backup specific files from either thornode of bifrost service of a THORNode.
 	@./scripts/backup.sh
 
+restore-backup: ## Restore backup specific files from either thornode of bifrost service of a THORNode.
+	@./scripts/restore-backup.sh
+
 snapshot: ## Snapshot a volume for a specific THORNode service.
 	@./scripts/snapshot.sh
 
