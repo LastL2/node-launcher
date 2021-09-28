@@ -30,7 +30,7 @@ if [ "$SERVICE" = "bifrost" ]; then
             \"-c\",
             \"sleep 300\"
           ],
-          \"name\": \"backup-$SERVICE\",
+          \"name\": \"$SERVICE\",
           \"image\": \"busybox:1.33\",
           \"volumeMounts\": [
             {\"mountPath\": \"/root/.thornode\", \"name\": \"data\", \"subPath\": \"thornode\"},
@@ -53,7 +53,7 @@ else
             \"-c\",
             \"sleep 300\"
           ],
-          \"name\": \"backup-$SERVICE\",
+          \"name\": \"$SERVICE\",
           \"image\": \"busybox:1.33\",
           \"volumeMounts\": [{\"mountPath\": \"/root\", \"name\":\"data\"}]
         }
