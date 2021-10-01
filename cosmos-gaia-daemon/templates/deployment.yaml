@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cosmos-daemon.fullname" . }}
+  labels:
+    {{- include "cosmos-daemon.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "cosmos-daemon.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cosmos-daemon.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "cosmos-daemon.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+
+      initContainers:
+      - name: init-daemon
+        image: {{ include "cosmos-daemon.image" . }}
+        command: ["/scripts/init-daemon.sh"]
+        env:
+          - name: APP_NAME
+            value: {{ .Values.app }}
+        volumeMounts:
+          - name: data
+            mountPath: /opt/cosmos
+          - name: scripts
+            mountPath: /scripts
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ include "cosmos-daemon.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: data
+              mountPath: /opt/cosmos
+            - name: scripts
+              mountPath: /scripts
+          args:
+            - --home
+            - /opt/cosmos
+            {{- if (eq (include "cosmos-daemon.args" . ) "mainnet") }}
+              {{- toYaml .Values.args.mainnet | nindent 12 }}
+            {{- else if (eq (include "cosmos-daemon.args" . ) "testnet") }}
+              {{- toYaml .Values.args.testnet | nindent 12 }}
+            {{- end }}
+          env:
+            - name: COSMOS_HOME
+              value: /opt/cosmos
+          ports:
+            - name: rpc
+              containerPort: {{ include "cosmos-daemon.rpc" . }}
+              protocol: TCP
+            - name: p2p
+              containerPort: {{ include "cosmos-daemon.p2p" . }}
+              protocol: TCP
+            - name: prometheus
+              containerPort: 28660
+              protocol: TCP
+          # startupProbe:
+          #   failureThreshold: 120
+          #   periodSeconds: 10
+          #   timeoutSeconds: 10
+          #   exec:
+          #     command:
+          #       - /scripts/probe.sh
+          # livenessProbe:
+          #   timeoutSeconds: 10
+          #   periodSeconds: 10
+          #   exec:
+          #     command:
+          #       - /scripts/probe.sh
+          readinessProbe:
+            timeoutSeconds: 10
+            httpGet:
+              path: /status
+              port: rpc
+          resources:
+          {{- if not (eq (include "cosmos-daemon.net" . ) "mocknet") }}
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "cosmos-daemon.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ include "cosmos-daemon.fullname" . }}-scripts
+          defaultMode: 0777
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

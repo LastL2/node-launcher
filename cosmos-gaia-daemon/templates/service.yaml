@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cosmos-daemon.fullname" . }}
+  labels:
+    {{- include "cosmos-daemon.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: rpc
+      port: {{ include "cosmos-daemon.rpc" . }}
+      targetPort: rpc
+      protocol: TCP
+    - name: p2p
+      port: {{ include "cosmos-daemon.p2p" . }}
+      targetPort: p2p
+      protocol: TCP
+    - name: prometheus
+      port: 28660
+      targetPort: prometheus
+      protocol: TCP
+  selector:
+    {{- include "cosmos-daemon.selectorLabels" . | nindent 4 }}
