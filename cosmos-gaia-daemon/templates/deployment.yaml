@@ -55,9 +55,9 @@ spec:
           args:
             - --home
             - /opt/cosmos
-            {{- if (eq (include "cosmos-daemon.args" . ) "mainnet") }}
+            {{- if (eq (include "cosmos-daemon.net" . ) "mainnet") }}
               {{- toYaml .Values.args.mainnet | nindent 12 }}
-            {{- else if (eq (include "cosmos-daemon.args" . ) "testnet") }}
+            {{- else if (eq (include "cosmos-daemon.net" . ) "testnet") }}
               {{- toYaml .Values.args.testnet | nindent 12 }}
             {{- end }}
           env:
