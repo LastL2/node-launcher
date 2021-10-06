@@ -83,6 +83,17 @@ Cosmos Args
 {{- end -}}
 
 {{/*
+Cosmos Hardfork Height
+*/}}
+{{- define "cosmos-daemon.hardforkHeight" -}}
+{{- if eq (include "cosmos-daemon.net" .) "mainnet" -}}
+    {{ .Values.hardforkHeight.mainnet}}
+{{- else -}}
+    {{ .Values.hardforkHeight.testnet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Image
 */}}
 {{- define "cosmos-daemon.image" -}}

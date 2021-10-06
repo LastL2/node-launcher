@@ -32,7 +32,7 @@ spec:
       initContainers:
       - name: init-daemon
         image: {{ include "cosmos-daemon.image" . }}
-        command: ["/scripts/init-daemon.sh"]
+        command: ["./scripts/init-daemon.sh"]
         env:
           - name: APP_NAME
             value: {{ .Values.app }}
@@ -41,17 +41,26 @@ spec:
             mountPath: /opt/cosmos
           - name: scripts
             mountPath: /scripts
+      - name: check-hardfork
+        image: {{ include "cosmos-daemon.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["./scripts/check-hardfork.sh"]
+        # command: ["/bin/sh", "-c", "--"]
+        # args: [ "while true; do sleep 30; done;" ]
+        volumeMounts:
+          - name: data
+            mountPath: /opt/cosmos
+          - name: scripts
+            mountPath: /scripts
+        env:
+          - name: COSMOS_HOME
+            value: /opt/cosmos
       containers:
       - name: {{ .Chart.Name }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         image: {{ include "cosmos-daemon.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        volumeMounts:
-          - name: data
-            mountPath: /opt/cosmos
-          - name: scripts
-            mountPath: /scripts
         args:
           - --home
           - /opt/cosmos
@@ -60,6 +69,11 @@ spec:
           {{- else if (eq (include "cosmos-daemon.net" . ) "testnet") }}
             {{- toYaml .Values.args.testnet | nindent 12 }}
           {{- end }}
+        volumeMounts:
+          - name: data
+            mountPath: /opt/cosmos
+          - name: scripts
+            mountPath: /scripts
         env:
           - name: COSMOS_HOME
             value: /opt/cosmos
@@ -73,19 +87,19 @@ spec:
           - name: prometheus
             containerPort: 28660
             protocol: TCP
-        # startupProbe:
-        #   failureThreshold: 120
-        #   periodSeconds: 10
-        #   timeoutSeconds: 10
-        #   exec:
-        #     command:
-        #       - /scripts/probe.sh
-        # livenessProbe:
-        #   timeoutSeconds: 10
-        #   periodSeconds: 10
-        #   exec:
-        #     command:
-        #       - /scripts/probe.sh
+        startupProbe:
+          failureThreshold: 120
+          periodSeconds: 10
+          timeoutSeconds: 10
+          exec:
+            command:
+              - /scripts/probe.sh
+        livenessProbe:
+          timeoutSeconds: 10
+          periodSeconds: 10
+          exec:
+            command:
+              - /scripts/probe.sh
         readinessProbe:
           timeoutSeconds: 10
           httpGet:
@@ -94,6 +108,7 @@ spec:
         resources:
         {{- if not (eq (include "cosmos-daemon.net" . ) "mocknet") }}
           {{- toYaml .Values.resources | nindent 12 }}
+        {{- end }}
       volumes:
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
