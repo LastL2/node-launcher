@@ -42,59 +42,58 @@ spec:
           - name: scripts
             mountPath: /scripts
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ include "cosmos-daemon.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          volumeMounts:
-            - name: data
-              mountPath: /opt/cosmos
-            - name: scripts
-              mountPath: /scripts
-          args:
-            - --home
-            - /opt/cosmos
-            {{- if (eq (include "cosmos-daemon.net" . ) "mainnet") }}
-              {{- toYaml .Values.args.mainnet | nindent 12 }}
-            {{- else if (eq (include "cosmos-daemon.net" . ) "testnet") }}
-              {{- toYaml .Values.args.testnet | nindent 12 }}
-            {{- end }}
-          env:
-            - name: COSMOS_HOME
-              value: /opt/cosmos
-          ports:
-            - name: rpc
-              containerPort: {{ include "cosmos-daemon.rpc" . }}
-              protocol: TCP
-            - name: p2p
-              containerPort: {{ include "cosmos-daemon.p2p" . }}
-              protocol: TCP
-            - name: prometheus
-              containerPort: 28660
-              protocol: TCP
-          # startupProbe:
-          #   failureThreshold: 120
-          #   periodSeconds: 10
-          #   timeoutSeconds: 10
-          #   exec:
-          #     command:
-          #       - /scripts/probe.sh
-          # livenessProbe:
-          #   timeoutSeconds: 10
-          #   periodSeconds: 10
-          #   exec:
-          #     command:
-          #       - /scripts/probe.sh
-          readinessProbe:
-            timeoutSeconds: 10
-            httpGet:
-              path: /status
-              port: rpc
-          resources:
-          {{- if not (eq (include "cosmos-daemon.net" . ) "mocknet") }}
-            {{- toYaml .Values.resources | nindent 12 }}
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: {{ include "cosmos-daemon.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+          - name: data
+            mountPath: /opt/cosmos
+          - name: scripts
+            mountPath: /scripts
+        args:
+          - --home
+          - /opt/cosmos
+          {{- if (eq (include "cosmos-daemon.net" . ) "mainnet") }}
+            {{- toYaml .Values.args.mainnet | nindent 12 }}
+          {{- else if (eq (include "cosmos-daemon.net" . ) "testnet") }}
+            {{- toYaml .Values.args.testnet | nindent 12 }}
           {{- end }}
+        env:
+          - name: COSMOS_HOME
+            value: /opt/cosmos
+        ports:
+          - name: rpc
+            containerPort: {{ include "cosmos-daemon.rpc" . }}
+            protocol: TCP
+          - name: p2p
+            containerPort: {{ include "cosmos-daemon.p2p" . }}
+            protocol: TCP
+          - name: prometheus
+            containerPort: 28660
+            protocol: TCP
+        # startupProbe:
+        #   failureThreshold: 120
+        #   periodSeconds: 10
+        #   timeoutSeconds: 10
+        #   exec:
+        #     command:
+        #       - /scripts/probe.sh
+        # livenessProbe:
+        #   timeoutSeconds: 10
+        #   periodSeconds: 10
+        #   exec:
+        #     command:
+        #       - /scripts/probe.sh
+        readinessProbe:
+          timeoutSeconds: 10
+          httpGet:
+            path: /status
+            port: rpc
+        resources:
+        {{- if not (eq (include "cosmos-daemon.net" . ) "mocknet") }}
+          {{- toYaml .Values.resources | nindent 12 }}
       volumes:
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
