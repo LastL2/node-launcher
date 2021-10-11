@@ -26,7 +26,8 @@ data:
       echo "Hardfork upgrade block height met. Patching app version..."
       wget https://dl.k8s.io/release/v1.22.2/bin/linux/amd64/kubectl -P /usr/bin
       chmod +x /usr/bin/kubectl
-      kubectl set image deployment/$DEPLOYMENT_NAME {{ .Chart.Name }}=$IMAGE_NAME:v5.2.1
+      NEW_IMAGE=$(echo $IMAGE_NAME | sed "s/v4.2.1/v5.0.7/g")
+      kubectl set image deployment/$DEPLOYMENT_NAME {{ .Chart.Name }}=$NEW_IMAGE
     fi
 
     ps aux | grep "[f]$COSMOS_PID" && kill "$COSMOS_PID"
