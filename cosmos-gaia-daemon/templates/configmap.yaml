@@ -5,31 +5,28 @@ metadata:
 data:    
   check-hardfork.sh: |
     #!/bin/sh
-    apk add wget bash
-    ./scripts/hardfork-upgrade.sh
 
-  hardfork-upgrade.sh: |
-    #!/bin/bash
+    apk add wget jq
     HARDFORK_HEIGHT={{ include "cosmos-daemon.hardforkHeight" . }}
     DEPLOYMENT_NAME={{ include "cosmos-daemon.fullname" . }}
-    
-    wget https://dl.k8s.io/release/v1.22.2/bin/linux/amd64/kubectl -P /usr/bin
-    chmod +x /usr/bin/kubectl
+    IMAGE_NAME={{ include "cosmos-daemon.image" . }}
 
-    {{ .Values.app }} start --home /opt/cosmos > /opt/cosmos/hardfork.output 2>&1 &
+    {{ .Values.app }} start --home /opt/cosmos --log_format json > /opt/cosmos/hardfork.json 2>&1 &
     COSMOS_PID=$!
     echo "Checking for current blockheight with cosmos daemon PID ($COSMOS_PID)"
+    sleep 10
 
-    sleep 15
-    STORE_HEIGHT=$(grep "ABCI Replay Blocks" /opt/cosmos/hardfork.output | cut -d " " -f 9)
-    STORE_HEIGHT_INT=$(echo "$STORE_HEIGHT" | cut -d "=" -f 2)
-    echo "Found store height: $STORE_HEIGHT_INT, hardfork height: $HARDFORK_HEIGHT"
+    STORE_HEIGHT=$(grep "ABCI Replay Blocks" /opt/cosmos/hardfork.json | jq .storeHeight)
+    echo "Found store height: $STORE_HEIGHT, hardfork height: $HARDFORK_HEIGHT"
     
     IMAGE=$(kubectl get deployment $DEPLOYMENT_NAME -o jsonpath='{.spec.template.spec.containers[0].image}' | cut -d ":" -f 2)
     echo "Kubernetes image: $IMAGE"
 
-    if [ "$STORE_HEIGHT_INT" = "$HARDFORK_HEIGHT" ] && [ "$IMAGE" = "v4.2.1" ]; then
+    if [ "$STORE_HEIGHT" -eq "$HARDFORK_HEIGHT" ] && [ "$IMAGE"="v4.2.1" ]; then
       echo "Hardfork upgrade block height met. Patching app version..."
+      wget https://dl.k8s.io/release/v1.22.2/bin/linux/amd64/kubectl -P /usr/bin
+      chmod +x /usr/bin/kubectl
+      kubectl set image deployment/$DEPLOYMENT_NAME {{ .Chart.Name }}=$IMAGE_NAME:v5.2.1
     fi
 
     ps aux | grep "[f]$COSMOS_PID" && kill "$COSMOS_PID"
