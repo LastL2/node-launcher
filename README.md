@@ -36,6 +36,15 @@ Install Helm 3 if not already available on your current machine:
 make helm
 ```
 
+## Install Helm plugins
+
+Install Helm plugins needed to run all the next commands properly. This includes a "diff" plugin
+used to display changes between deployments.
+
+```bash
+make helm-plugins
+```
+
 ## Deploy tools
 
 To deploy all tools needed, metrics, logs management, Kubernetes Dashboard, run the command below.
