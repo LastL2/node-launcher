@@ -192,6 +192,15 @@ deploy_genesis() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
+  helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
+    $args $EXTRA_ARGS \
+    --set global.mnemonicSecret=thornode-mnemonic \
+    --set global.net="$NET" \
+    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
+    --set thornode.type="genesis"
+  echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
+  # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
@@ -204,6 +213,16 @@ deploy_validator() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
+  helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
+    $args $EXTRA_ARGS \
+    --set global.mnemonicSecret=thornode-mnemonic \
+    --set global.net="$NET" \
+    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
+    --set thornode.type="validator" \
+    --set bifrost.peer="$SEED",thornode.seeds="$SEED"
+  echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
+  # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
@@ -214,6 +233,19 @@ deploy_validator() {
 }
 
 deploy_fullnode() {
+  # shellcheck disable=SC2086
+  helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
+    $args $EXTRA_ARGS \
+    --set global.mnemonicSecret=thornode-mnemonic \
+    --set global.net="$NET" \
+    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
+    --set thornode.seeds="$SEED" \
+    --set bifrost.enabled=false,binance-daemon.enabled=false \
+    --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
+    --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
+    --set thornode.type="fullnode",gateway.validator=false
+  echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
   # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $EXTRA_ARGS \

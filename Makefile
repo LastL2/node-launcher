@@ -6,6 +6,9 @@ help: ## Help message
 helm: ## Install Helm 3 dependency
 	@curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
+helm-plugins: ## Install Helm plugins
+	@helm plugin install https://github.com/databus23/helm-diff
+
 repos: ## Add Helm repositories for dependencies
 	@echo "=> Installing Helm repos"
 	@helm repo add grafana https://grafana.github.io/helm-charts
