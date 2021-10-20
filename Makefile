@@ -100,6 +100,9 @@ set-version: ## Send a set-version transaction to your THORNode
 set-ip-address: ## Send a set-ip-address transaction to your THORNode
 	@./scripts/set-ip-address.sh
 
+relay: ## Send a message that is relayed to a public Discord channel
+	@./scripts/relay.sh
+
 pause: ## Send a pause-chain transaction to your THORNode
 	@./scripts/pause.sh
 

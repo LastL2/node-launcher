@@ -66,6 +66,21 @@ get_node_name() {
   echo
 }
 
+get_discord_channel() {
+  [ "$DISCORD_CHANNEL" != "" ] && unset DISCORD_CHANNEL
+  echo "=> Select THORNode relay channel: "
+  menu chaosnet chaosnet thornode thornode-chaosnet
+  DISCORD_CHANNEL=$MENU_SELECTED
+  echo
+}
+
+get_discord_message() {
+  [ "$DISCORD_MESSAGE" != "" ] && unset DISCORD_MESSAGE
+  read -r -p "=> Enter THORNode relay messge: " discord_message
+  DISCORD_MESSAGE=${discord_message:-$DISCORD_MESSAGE}
+  echo
+}
+
 get_node_info() {
   get_node_net
   get_node_type
