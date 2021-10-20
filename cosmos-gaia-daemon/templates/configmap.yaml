@@ -2,9 +2,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "cosmos-daemon.fullname" . }}-scripts
-data:    
+data:
   check-hardfork.sh: |
     #!/bin/sh
+    set -e
 
     apk add wget jq
     HARDFORK_HEIGHT={{ include "cosmos-daemon.hardforkHeight" . }}
@@ -19,25 +20,33 @@ data:
     STORE_HEIGHT=$(grep "ABCI Replay Blocks" /opt/cosmos/hardfork.json | jq .storeHeight)
     echo "Found store height: $STORE_HEIGHT, hardfork height: $HARDFORK_HEIGHT"
     
-    IMAGE=$(kubectl get deployment $DEPLOYMENT_NAME -o jsonpath='{.spec.template.spec.containers[0].image}' | cut -d ":" -f 2)
-    echo "Kubernetes image: $IMAGE"
+    if [ "$STORE_HEIGHT" -ge "$HARDFORK_HEIGHT" ]; then
+      echo "Hardfork upgrade block height met. Checking if we need to update app version..."
 
-    if [ "$STORE_HEIGHT" -eq "$HARDFORK_HEIGHT" ] && [ "$IMAGE"="v4.2.1" ]; then
-      echo "Hardfork upgrade block height met. Patching app version..."
-      wget https://dl.k8s.io/release/v1.22.2/bin/linux/amd64/kubectl -P /usr/bin
+      wget -q https://dl.k8s.io/release/v1.22.2/bin/linux/amd64/kubectl -P /usr/bin
       chmod +x /usr/bin/kubectl
-      NEW_IMAGE=$(echo $IMAGE_NAME | sed "s/v4.2.1/v5.0.7/g")
-      kubectl set image deployment/$DEPLOYMENT_NAME {{ .Chart.Name }}=$NEW_IMAGE
+      IMAGE=$(kubectl get deployment $DEPLOYMENT_NAME -o jsonpath='{.spec.template.spec.containers[0].image}' | cut -d ":" -f 2)
+      echo "Kubernetes image: $IMAGE"
+
+      if [ "$IMAGE" = "v4.2.1" ]; then
+        echo "Updating app version to v5.0.7!"
+        NEW_IMAGE=$(echo $IMAGE_NAME | sed "s/v4.2.1/v5.0.7/g")
+        kubectl set image deployment/$DEPLOYMENT_NAME {{ .Chart.Name }}=$NEW_IMAGE
+      fi
     fi
-
-    ps aux | grep "[f]$COSMOS_PID" && kill "$COSMOS_PID"
-
 
   init-daemon.sh: |
     #!/bin/sh
     set -ev
 
     if [ ! -f /opt/cosmos/config/genesis.json ]; then
-      /usr/bin/$APP_NAME init thorchain --home /opt/cosmos
-      cp /home/genesis.json /opt/cosmos/config/genesis.json
+      {{- if (eq (include "cosmos-daemon.net" . ) "mainnet") }}
+        /usr/bin/$APP_NAME init cosmos --home /opt/cosmos
+        cp /home/genesis.json /opt/cosmos/config/genesis.json
+      {{- else }}
+        /usr/bin/$APP_NAME init cosmos --home /opt/cosmos --chain-id=gaia-13007
+        wget https://raw.githubusercontent.com/cosmos/testnets/master/gaia-13k/13007/genesis.json -O /opt/cosmos/config/genesis.json
+      {{- end }}
     fi
+
+    
