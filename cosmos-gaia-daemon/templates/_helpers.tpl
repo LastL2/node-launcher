@@ -38,7 +38,7 @@ Common labels
 {{- define "cosmos-daemon.labels" -}}
 helm.sh/chart: {{ include "cosmos-daemon.chart" . }}
 {{ include "cosmos-daemon.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ include "cosmos-daemon.tag" . | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -94,22 +94,38 @@ Cosmos Hardfork Height
 {{- end -}}
 
 {{/*
+Tag
+*/}}
+{{- define "cosmos-daemon.tag" -}}
+{{- if eq (include "cosmos-daemon.net" .) "mocknet" -}}
+    "latest"
+{{- else if eq (include "cosmos-daemon.net" .) "testnet" -}}
+    {{ .Values.image.tag.testnet }}
+{{- else if eq (include "cosmos-daemon.net" .) "mainnet" -}}
+    {{ .Values.image.tag.mainnet }}
+{{- else -}}
+    {{ .Chart.AppVersion }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Image
 */}}
 {{- define "cosmos-daemon.image" -}}
 {{- if eq (include "cosmos-daemon.net" .) "mocknet" -}}
-    "{{ .Values.image.mocknet }}:latest"
+    "{{ .Values.image.mocknet }}:{{ include "cosmos-daemon.tag" . }}"
 {{- else -}}
-    "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+    "{{ .Values.image.repository }}:{{ include "cosmos-daemon.tag" . }}"
 {{- end -}}
 {{- end -}}
+
 
 {{/*
 RPC Port
 */}}
 {{- define "cosmos-daemon.rpc" -}}
 {{- if eq (include "cosmos-daemon.net" .) "mainnet" -}}
-    {{ .Values.service.port.mainnet.rpc}}
+    {{ .Values.service.port.mainnet.rpc }}
 {{- else -}}
     {{ .Values.service.port.testnet.rpc }}
 {{- end -}}
@@ -120,7 +136,7 @@ P2P Port
 */}}
 {{- define "cosmos-daemon.p2p" -}}
 {{- if eq (include "cosmos-daemon.net" .) "mainnet" -}}
-    {{ .Values.service.port.mainnet.p2p}}
+    {{ .Values.service.port.mainnet.p2p }}
 {{- else -}}
     {{ .Values.service.port.testnet.p2p }}
 {{- end -}}

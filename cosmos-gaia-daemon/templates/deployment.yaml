@@ -41,6 +41,7 @@ spec:
             mountPath: /opt/cosmos
           - name: scripts
             mountPath: /scripts
+      {{- if (eq (include "cosmos-daemon.net" . ) "mainnet") }}
       - name: check-hardfork
         image: {{ include "cosmos-daemon.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -55,6 +56,7 @@ spec:
         env:
           - name: COSMOS_HOME
             value: /opt/cosmos
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         securityContext:
