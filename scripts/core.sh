@@ -255,7 +255,7 @@ deploy_fullnode() {
     --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.seeds="$SEED" \
-    --set bifrost.enabled=false,binance-daemon.enabled=false \
+    --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc=true,gateway.api=true
