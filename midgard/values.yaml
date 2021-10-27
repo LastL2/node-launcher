@@ -15,7 +15,7 @@ postgres:
 
 net: mainnet
 
-replicaCount: 0
+replicaCount: 1
 
 logLevel: info
 
