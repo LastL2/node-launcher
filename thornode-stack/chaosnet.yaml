@@ -4,4 +4,3 @@ global:
 midgard:
   image:
     tag: 2.5.8
-

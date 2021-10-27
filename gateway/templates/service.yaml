@@ -23,6 +23,7 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    {{- if .Values.validator }}
     - port: {{ .Values.service.port.bifrost.api }}
       targetPort: bifrost-api
       protocol: TCP
@@ -31,18 +32,25 @@ spec:
       targetPort: bifrost-p2p
       protocol: TCP
       name: bifrost-p2p
+    {{- end }}
+    {{- if .Values.midgard }}
     - port: {{ .Values.service.port.midgard }}
       targetPort: midgard
       protocol: TCP
       name: midgard
+    {{- end }}
+    {{- if .Values.api }}
     - port: {{ .Values.service.port.api }}
       targetPort: api
       protocol: TCP
       name: api
+    {{- end }}
+    {{- if .Values.rpc }}
     - port: {{ include "gateway.rpc" . }}
       targetPort: rpc
       protocol: TCP
       name: rpc
+    {{- end }}
     - port: {{ include "gateway.p2p" . }}
       targetPort: p2p
       protocol: TCP
