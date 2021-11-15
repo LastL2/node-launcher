@@ -22,7 +22,7 @@ SPEC="
         \"command\": [
           \"sh\",
           \"-c\",
-          \"printf \\\"\\n\\n\\\" | thornode export\"
+          \"printf \\\"\\n\\n\\\" | thornode export --height 2943995\"
         ],
         \"name\": \"export-state\",
         \"stdin\": true,
