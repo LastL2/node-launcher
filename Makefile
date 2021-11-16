@@ -20,7 +20,7 @@ repos: ## Add Helm repositories for dependencies
 tools: install-prometheus install-loki install-metrics install-dashboard ## Intall/Update Prometheus/Grafana, Loki, Metrics Server, Kubernetes dashboard
 
 pull: ## Git pull node-launcher repository
-	@git clean -df
+	@git clean -idf
 	@git pull origin $(shell git rev-parse --abbrev-ref HEAD)
 
 update-dependencies:
@@ -48,6 +48,9 @@ status: ## Display current status of your THORNode
 
 reset: ## Reset and resync a service from scratch on your THORNode. This command can take a while to sync back to 100%.
 	@./scripts/reset.sh
+
+hard-reset-thornode: ## Hard reset and resync thornode service from scratch on your THORNode, leaving no bak/* files.
+	@./scripts/hard-reset-thornode.sh
 
 backup: ## Backup specific files from either thornode of bifrost service of a THORNode.
 	@./scripts/backup.sh
@@ -78,6 +81,9 @@ shell: ## Open a shell for a selected THORNode service
 
 debug: ## Open a shell for THORNode service mounting volume to debug
 	@./scripts/debug.sh
+
+recover-ninerealms-2934250:
+	@./scripts/recover-ninerealms-2934250.sh
 
 watch: ## Watch the THORNode pods in real time
 	@./scripts/watch.sh

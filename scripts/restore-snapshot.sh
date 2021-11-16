@@ -16,8 +16,13 @@ if [ "$SERVICE" == "" ]; then
   echo
 fi
 
-if ! kubectl -n "$NAME" get volumesnapshot "$SERVICE" >/dev/null 2>&1; then
-  warn "No snapshot found for that service $SERVICE"
+SNAPSHOT_NAME=$SERVICE
+if [[ -n $SNAPSHOT_SUFFIX ]]; then
+  SNAPSHOT_NAME=$SNAPSHOT_NAME-$SNAPSHOT_SUFFIX
+fi
+
+if ! kubectl -n "$NAME" get volumesnapshot "$SNAPSHOT_NAME" >/dev/null 2>&1; then
+  warn "No snapshot $SNAPSHOT_NAME found for that service $SERVICE"
   echo
   exit 0
 fi
@@ -39,6 +44,9 @@ echo
 warn "Destructive command, be careful, your service data volume data will be wiped out and restarted from a snapshot"
 confirm
 
+echo "=> Snapshot will be restored from snapshot named: $red$SNAPSHOT_NAME$reset"
+confirm
+
 if [ "$SERVICE" == "midgard" ]; then
   kubectl scale -n "$NAME" --replicas=0 sts/midgard-timescaledb --timeout=5m
   kubectl wait --for=delete pods midgard-timescaledb-0 -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
@@ -49,7 +57,7 @@ fi
 
 kubectl -n "$NAME" get pvc "$PVC" -o json |
   jq 'del(.spec.volumeName,.metadata.annotations,.metadata.managedFields,.metadata.uid,.metadata.resourceVersion,.metadata.creationTimestamp)' |
-  jq ".spec += {dataSource: {name: \"$SERVICE\" ,kind: \"VolumeSnapshot\", apiGroup: \"snapshot.storage.k8s.io\"}}" |
+  jq ".spec += {dataSource: {name: \"$SNAPSHOT_NAME\" ,kind: \"VolumeSnapshot\", apiGroup: \"snapshot.storage.k8s.io\"}}" |
   kubectl -n "$NAME" replace --force -f -
 
 if [ "$SERVICE" == "midgard" ]; then
