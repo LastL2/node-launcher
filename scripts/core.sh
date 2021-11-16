@@ -119,7 +119,13 @@ snapshot_available() {
 make_snapshot() {
   local pvc
   local service
+  local snapshot
   service=$1
+  snapshot=$1
+
+  if [[ -n $SNAPSHOT_SUFFIX ]]; then
+    snapshot=$snapshot-$SNAPSHOT_SUFFIX
+  fi
 
   if [ "$service" == "midgard" ]; then
     pvc="data-midgard-timescaledb-0"
@@ -136,20 +142,26 @@ make_snapshot() {
   echo "=> Snapshotting service $boldgreen$service$reset of a THORNode named $boldgreen$NAME$reset"
   echo -n "$boldyellow:: Are you sure? Confirm or skip [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
   echo
-  kubectl -n "$NAME" delete volumesnapshot "$service" >/dev/null 2>&1 || true
+
+  if kubectl -n "$NAME" get volumesnapshot "$snapshot" >/dev/null 2>&1;then
+    echo "Existing snapshot $boldgreen$snapshot$reset exists, ${boldyellow}continuing will overwrite${reset}"
+    confirm
+    kubectl -n "$NAME" delete volumesnapshot "$snapshot" >/dev/null 2>&1 || true
+  fi
+
   cat <<EOF | kubectl -n "$NAME" apply -f -
     apiVersion: snapshot.storage.k8s.io/v1beta1
     kind: VolumeSnapshot
     metadata:
-      name: $service
+      name: $snapshot
     spec:
       source:
         persistentVolumeClaimName: $pvc
 EOF
   echo
-  echo "=> Waiting for $boldgreen$service$reset snapshot to be ready to use (can take up to an hour depending on service and provider)"
-  until kubectl -n "$NAME" get volumesnapshot "$service" -o yaml | grep "readyToUse: true" >/dev/null 2>&1; do sleep 10; done
-  echo "Snapshot for $boldgreen$service$reset created"
+  echo "=> Waiting for $boldgreen$service$reset snapshot $boldyellow$snapshot$reset to be ready to use (can take up to an hour depending on service and provider)"
+  until kubectl -n "$NAME" get volumesnapshot "$snapshot" -o yaml | grep "readyToUse: true" >/dev/null 2>&1; do sleep 10; done
+  echo "Snapshot $boldyellow$snapshot$reset for $boldgreen$service$reset created"
   echo
 }
 
