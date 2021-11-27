@@ -143,7 +143,7 @@ make_snapshot() {
   echo -n "$boldyellow:: Are you sure? Confirm or skip [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
   echo
 
-  if kubectl -n "$NAME" get volumesnapshot "$snapshot" >/dev/null 2>&1;then
+  if kubectl -n "$NAME" get volumesnapshot "$snapshot" >/dev/null 2>&1; then
     echo "Existing snapshot $boldgreen$snapshot$reset exists, ${boldyellow}continuing will overwrite${reset}"
     confirm
     kubectl -n "$NAME" delete volumesnapshot "$snapshot" >/dev/null 2>&1 || true

@@ -55,7 +55,7 @@ persistence:
   enabled: true
   size:
     testnet: 300Gi
-    mainnet: 300Gi
+    mainnet: 1024Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"
