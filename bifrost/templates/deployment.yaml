@@ -156,7 +156,7 @@ spec:
                   key: mnemonic
             {{- end }}
             - name: CHAIN_ID
-              value: {{ include "bifrost.chain_id" . }}
+              value: {{ include "bifrost.chainID" . }}
           ports:
             - name: p2p
               containerPort: {{ .Values.service.port.p2p }}

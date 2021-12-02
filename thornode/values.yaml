@@ -22,7 +22,7 @@ ethRouterContract:
 enableApi: true
 
 debug: false
-chain_id: 
+chainID: 
   testnet: thorchain
   mainnet: thorchain
 
