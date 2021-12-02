@@ -155,6 +155,8 @@ spec:
                   name: {{ default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
                   key: mnemonic
             {{- end }}
+            - name: CHAIN_ID
+              value: {{.Values.chain_id}}
           ports:
             - name: p2p
               containerPort: {{ .Values.service.port.p2p }}

@@ -185,6 +185,8 @@ spec:
               {{- else}}
               value: {{ .Values.signer.password }}
               {{- end }}
+            - name: CHAIN_ID
+              value: {{.Values.chain_id}}
           ports:
             - name: api
               containerPort: {{ .Values.service.port.api }}
