@@ -186,7 +186,7 @@ spec:
               value: {{ .Values.signer.password }}
               {{- end }}
             - name: CHAIN_ID
-              value: {{ include "bifrost.chainID" . }}
+              value: {{ include "thornode.chainID" . }}
           ports:
             - name: api
               containerPort: {{ .Values.service.port.api }}
