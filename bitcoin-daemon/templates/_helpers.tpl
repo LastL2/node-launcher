@@ -73,6 +73,8 @@ RPC Port
 {{- define "bitcoin-daemon.rpc" -}}
 {{- if eq (include "bitcoin-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.rpc}}
+{{- else if eq (include "bitcoin-daemon.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.rpc}}
 {{- else -}}
     {{ .Values.service.port.testnet.rpc }}
 {{- end -}}
@@ -84,6 +86,8 @@ P2P Port
 {{- define "bitcoin-daemon.p2p" -}}
 {{- if eq (include "bitcoin-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.p2p}}
+{{- else if eq (include "bitcoin-daemon.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.p2p}}
 {{- else -}}
     {{ .Values.service.port.testnet.p2p }}
 {{- end -}}

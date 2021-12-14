@@ -20,6 +20,7 @@ persistence:
   enabled: true
   size:
     testnet: 150Gi
+    stagenet: 400Gi
     mainnet: 400Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
@@ -46,6 +47,9 @@ service:
   type: ClusterIP
   port:
     mainnet:
+      p2p: 8333
+      rpc: 8332
+    stagenet:
       p2p: 8333
       rpc: 8332
     testnet:

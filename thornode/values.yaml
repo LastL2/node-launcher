@@ -18,6 +18,7 @@ binanceDaemon:
 ethRouterContract:
   testnet: "0xefA28233838f46a80AaaC8c309077a9ba70D123A"
   mainnet: "0xC145990E84155416144C532E31f89B840Ca8c2cE"
+  stagenet: "0xC145990E84155416144C532E31f89B840Ca8c2cE"
 
 enableApi: true
 
@@ -32,7 +33,7 @@ hostNetwork: false
 strategyType: Recreate
 
 image:
-  repository: registry.gitlab.com/thorchain/thornode
+  repository: gcr.io/ninerealms-dev/stagenet
   pullPolicy: IfNotPresent
   tag: mainnet
 
@@ -47,6 +48,9 @@ service:
     testnet:
       p2p: 26656
       rpc: 26657
+    stagenet:
+      p2p: 27146
+      rpc: 27147 
     mainnet:
       p2p: 27146
       rpc: 27147
@@ -55,6 +59,7 @@ persistence:
   enabled: true
   size:
     testnet: 300Gi
+    stagenet: 1024Gi
     mainnet: 1024Gi
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc

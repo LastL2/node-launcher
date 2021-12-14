@@ -84,6 +84,8 @@ P2P Port
 {{- define "litecoin-daemon.p2p" -}}
 {{- if eq (include "litecoin-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.p2p}}
+{{- else if eq (include "litecoin-daemon.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.p2p}}
 {{- else -}}
     {{ .Values.service.port.testnet.p2p }}
 {{- end -}}

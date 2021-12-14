@@ -87,6 +87,8 @@ Thor daemon
 {{- define "bifrost.thorDaemon" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
     {{ .Values.thorDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "stagenet" -}}
+    {{ .Values.thorDaemon.stagenet }}
 {{- else -}}
     {{ .Values.thorDaemon.testnet }}
 {{- end -}}
@@ -98,6 +100,8 @@ Binance daemon
 {{- define "bifrost.binanceDaemon" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
     {{ .Values.binanceDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "stagenet" -}}
+    {{ .Values.binanceDaemon.stagenet }}
 {{- else -}}
     {{ default .Values.binanceDaemon.testnet .Values.global.binanceDaemon }}
 {{- end -}}
@@ -109,6 +113,8 @@ Bitcoin
 {{- define "bifrost.bitcoinDaemon" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
     {{ .Values.bitcoinDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "stagenet" -}}
+    {{ .Values.bitcoinDaemon.stagenet }}
 {{- else if eq (include "bifrost.net" .) "testnet" -}}
     {{ .Values.bitcoinDaemon.testnet }}
 {{- else -}}
@@ -122,6 +128,8 @@ Bitcoin Cash
 {{- define "bifrost.bitcoinCashDaemon" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
     {{ .Values.bitcoinCashDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "stagenet" -}}
+    {{ .Values.bitcoinCashDaemon.stagenet }}
 {{- else if eq (include "bifrost.net" .) "testnet" -}}
     {{ .Values.bitcoinCashDaemon.testnet }}
 {{- else -}}
@@ -135,6 +143,8 @@ Litecoin
 {{- define "bifrost.litecoinDaemon" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
     {{ .Values.litecoinDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "stagenet" -}}
+    {{ .Values.litecoinDaemon.stagenet }}
 {{- else if eq (include "bifrost.net" .) "testnet" -}}
     {{ .Values.litecoinDaemon.testnet }}
 {{- else -}}

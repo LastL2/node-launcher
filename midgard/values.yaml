@@ -6,6 +6,7 @@ thorApi: thornode:1317
 thorDaemon:
   mainnet: thornode:27147
   testnet: thornode:26657
+  stagenet: thornode:27147
 
 postgres:
   port: 5432
@@ -42,6 +43,7 @@ persistence:
   enabled: true
   size:
     testnet: 50Gi
+    stagenet: 100Gi
     mainnet: 100Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"

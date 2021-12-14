@@ -31,6 +31,9 @@ service:
     mainnet:
       p2p: 27146
       rpc: 27147
+    stagenet:
+      p2p: 27146
+      rpc: 27147
     testnet:
       p2p: 26656
       rpc: 26657

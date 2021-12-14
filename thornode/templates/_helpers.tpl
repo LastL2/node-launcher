@@ -89,6 +89,8 @@ RPC Port
 {{- define "thornode.rpc" -}}
 {{- if eq (include "thornode.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.rpc}}
+{{- else if eq (include "thornode.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.rpc}}
 {{- else -}}
     {{ .Values.service.port.testnet.rpc }}
 {{- end -}}
@@ -100,6 +102,8 @@ P2P Port
 {{- define "thornode.p2p" -}}
 {{- if eq (include "thornode.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.p2p}}
+{{- else if eq (include "thornode.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.p2p}}
 {{- else -}}
     {{ .Values.service.port.testnet.p2p }}
 {{- end -}}
@@ -111,6 +115,8 @@ ETH Router contract
 {{- define "thornode.ethRouterContract" -}}
 {{- if eq (include "thornode.net" .) "mainnet" -}}
     {{ .Values.ethRouterContract.mainnet}}
+{{- else if eq (include "thornode.net" .) "stagenet" -}}
+    {{ .Values.ethRouterContract.stagenet}}
 {{- else -}}
     {{ .Values.ethRouterContract.testnet }}
 {{- end -}}

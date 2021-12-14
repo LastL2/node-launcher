@@ -1,0 +1,6 @@
+global:
+  tag: stagenet-0.76.0
+
+midgard:
+  image:
+    tag: 2.5.11
