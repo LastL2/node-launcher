@@ -11,8 +11,8 @@ EXE="ulimit -n 65535 && /usr/local/bin/bnbchaind start --home ${BNCHOME}"
 
 if [ ! -d "${BNCHOME}/config/" ]; then
   mkdir -p ${BNCHOME}/config/
+  cp /node-binary/fullnode/${BNET}/config/* ${BNCHOME}/config/
 fi
-cp /node-binary/fullnode/${BNET}/config/* ${BNCHOME}/config/
 chown -R bnbchaind:bnbchaind ${BNCHOME}/config/
 
 if [ ! -d "${BNCHOME}/data/" ]; then
@@ -55,6 +55,14 @@ if [ ! -z $EXTERNAL_IP ]; then
   sed -i -e "s/external_address =.*/external_address = \"$ADDR\"/g" ${BNCHOME}/config/config.toml
 fi
 
+# reduce log noise
+sed -i "s/consensus:info/consensus:error/g" ${BNCHOME}/config/config.toml
+sed -i "s/dexkeeper:info/dexkeeper:error/g" ${BNCHOME}/config/config.toml
+sed -i "s/dex:info/dex:error/g" ${BNCHOME}/config/config.toml
+sed -i "s/state:info/state:error/g" ${BNCHOME}/config/config.toml
+
+# start background process to disable statesync reactor after initial sync
+statesync-cleanup.sh &
 
 echo "Running $0 in $PWD"
 su bnbchaind -c "$EXE"
