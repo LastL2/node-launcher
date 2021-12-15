@@ -158,3 +158,14 @@ Ethereum
 {{- define "bifrost.ethereumDaemon" -}}
 {{ .Values.ethereumDaemon.mainnet }}
 {{- end -}}
+
+{{/*
+chainID
+*/}}
+{{- define "bifrost.chainID" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.chainID.mainnet }}
+{{- else -}}
+    {{ .Values.chainID.testnet }}
+{{- end -}}
+{{- end -}}

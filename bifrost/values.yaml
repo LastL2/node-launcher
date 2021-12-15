@@ -18,6 +18,9 @@ hostNetwork: false
 debug: false
 
 thorApi: thornode:1317
+chainID: 
+  testnet: thorchain
+  mainnet: thorchain
 
 thorDaemon:
   mainnet: thornode:27147
