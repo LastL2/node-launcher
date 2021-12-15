@@ -60,7 +60,7 @@ get_node_type() {
 
 get_node_name() {
   [ "$NAME" != "" ] && return
-  case $NET in 
+  case $NET in
     "mainnet")
       NAME=thornode
       ;;
