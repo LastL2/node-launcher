@@ -22,6 +22,9 @@ ethRouterContract:
 enableApi: true
 
 debug: false
+chainID: 
+  testnet: thorchain
+  mainnet: thorchain
 
 haltHeight:
 

@@ -115,3 +115,14 @@ ETH Router contract
     {{ .Values.ethRouterContract.testnet }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+chain id
+*/}}
+{{- define "thornode.chainID" -}}
+{{- if eq (include "thornode.net" .) "mainnet" -}}
+    {{ .Values.chainID.mainnet}}
+{{- else -}}
+    {{ .Values.chainID.testnet }}
+{{- end -}}
+{{- end -}}
