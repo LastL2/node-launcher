@@ -68,6 +68,19 @@ Net
 {{- end -}}
 
 {{/*
+Bnet
+*/}}
+{{- define "binance-daemon.bnet" -}}
+{{- if eq (include "binance-daemon.net" .) "mainnet" -}}
+    prod
+{{- else if eq (include "binance-daemon.net" .) "stagenet" -}}
+    prod
+{{- else -}}
+    {{ include "binance-daemon.net" . }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Image
 */}}
 {{- define "binance-daemon.image" -}}
