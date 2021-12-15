@@ -21,6 +21,7 @@ thorApi: thornode:1317
 chainID: 
   testnet: thorchain
   mainnet: thorchain
+  stagenet: thorchain-stagenet
 
 thorDaemon:
   mainnet: thornode:27147

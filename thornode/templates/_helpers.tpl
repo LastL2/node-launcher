@@ -128,6 +128,8 @@ chain id
 {{- define "thornode.chainID" -}}
 {{- if eq (include "thornode.net" .) "mainnet" -}}
     {{ .Values.chainID.mainnet}}
+{{- else if eq (include "thornode.net" .) "stagenet" -}}
+    {{ .Values.chainID.stagenet}}
 {{- else -}}
     {{ .Values.chainID.testnet }}
 {{- end -}}
