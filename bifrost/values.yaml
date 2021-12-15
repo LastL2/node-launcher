@@ -64,7 +64,7 @@ replicaCount: 1
 strategyType: Recreate
 
 image:
-  repository: gcr.io/ninerealms-dev/stagenet
+  repository: registry.gitlab.com/thorchain/thornode
   pullPolicy: IfNotPresent
   tag: mainnet
 

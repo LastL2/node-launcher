@@ -37,8 +37,7 @@ hostNetwork: false
 strategyType: Recreate
 
 image:
-  # repository: registry.gitlab.com/thorchain/thornode
-  repository: gcr.io/ninerealms-dev/stagenet
+  repository: registry.gitlab.com/thorchain/thornode
   pullPolicy: Always
   tag: mainnet
 
