@@ -26,6 +26,7 @@ debug: false
 chainID: 
   testnet: thorchain
   mainnet: thorchain
+  stagenet: thorchain-stagenet
 
 haltHeight:
 
@@ -36,8 +37,9 @@ hostNetwork: false
 strategyType: Recreate
 
 image:
+  # repository: registry.gitlab.com/thorchain/thornode
   repository: gcr.io/ninerealms-dev/stagenet
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: mainnet
 
 imagePullSecrets: []

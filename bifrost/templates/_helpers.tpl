@@ -165,6 +165,8 @@ chainID
 {{- define "bifrost.chainID" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
     {{ .Values.chainID.mainnet }}
+{{- if eq (include "bifrost.net" .) "stagenet" -}}
+    {{ .Values.chainID.stagenet }}
 {{- else -}}
     {{ .Values.chainID.testnet }}
 {{- end -}}
