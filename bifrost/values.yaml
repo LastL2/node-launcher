@@ -39,21 +39,21 @@ bitcoinDaemon:
   mainnet: bitcoin-daemon:8332
   testnet: bitcoin-daemon:18332
   mocknet: bitcoin-daemon:18443
-  stagenet: bitcoin-daemon:18443
+  stagenet: bitcoin-daemon:8332
 
 litecoinDaemon:
   enabled: true
   mainnet: litecoin-daemon:9332
   testnet: litecoin-daemon:19332
   mocknet: litecoin-daemon:19443
-  stagenet: litecoin-daemon:19443
+  stagenet: litecoin-daemon:9332
 
 bitcoinCashDaemon:
   enabled: true
   mainnet: bitcoin-cash-daemon:8332
   testnet: bitcoin-cash-daemon:18332
   mocknet: bitcoin-cash-daemon:18443
-  stagenet: bitcoin-cash-daemon:18443
+  stagenet: bitcoin-cash-daemon:8332
 
 ethereumDaemon:
   enabled: true
