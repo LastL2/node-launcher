@@ -38,7 +38,7 @@ strategyType: Recreate
 
 image:
   repository: registry.gitlab.com/thorchain/thornode
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   tag: mainnet
 
 imagePullSecrets: []
