@@ -73,6 +73,8 @@ RPC Port
 {{- define "litecoin-daemon.rpc" -}}
 {{- if eq (include "litecoin-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.rpc}}
+{{- else if eq (include "litecoin-daemon.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.rpc}}
 {{- else -}}
     {{ .Values.service.port.testnet.rpc }}
 {{- end -}}
