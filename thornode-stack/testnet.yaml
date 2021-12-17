@@ -3,4 +3,4 @@ global:
 
 midgard:
   image:
-    tag: 2.5.8
+    tag: 2.5.11
