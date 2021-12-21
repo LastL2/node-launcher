@@ -4,3 +4,18 @@ global:
 midgard:
   image:
     tag: 2.5.11
+
+binance-daemon:
+  enabled: true
+
+bitcoin-daemon:
+  enabled: true
+
+litecoin-daemon:
+  enabled: true
+
+bitcoin-cash-daemon:
+  enabled: true
+
+ethereum-daemon:
+  enabled: true
