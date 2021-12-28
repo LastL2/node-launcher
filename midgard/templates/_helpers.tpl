@@ -73,6 +73,8 @@ Thor daemon
 {{- define "midgard.thorDaemon" -}}
 {{- if eq (include "midgard.net" .) "mainnet" -}}
     {{ .Values.thorDaemon.mainnet }}
+{{- else if eq (include "midgard.net" .) "stagenet" -}}
+    {{ .Values.thorDaemon.stagenet }}
 {{- else -}}
     {{ .Values.thorDaemon.testnet }}
 {{- end -}}

@@ -39,13 +39,13 @@ confirm() {
 
 get_node_net() {
   if [ "$NET" != "" ]; then
-    if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ]; then
-      die "Error NET variable=$NET. NET variable should be either 'mainnet' or 'testnet'."
+    if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ] && [ "$NET" != "stagenet" ]; then
+      die "Error NET variable=$NET. NET variable should be either 'mainnet', 'testnet', or 'stagenet'."
     fi
     return
   fi
   echo "=> Select net"
-  menu mainnet mainnet testnet
+  menu mainnet mainnet testnet stagenet
   NET=$MENU_SELECTED
   echo
 }
@@ -60,7 +60,17 @@ get_node_type() {
 
 get_node_name() {
   [ "$NAME" != "" ] && return
-  [ "$NET" = "mainnet" ] && NAME=thornode || NAME=thornode-testnet
+  case $NET in
+    "mainnet")
+      NAME=thornode
+      ;;
+    "stagenet")
+      NAME=thornode-stagenet
+      ;;
+    "testnet")
+      NAME=thornode-testnet
+      ;;
+  esac
   read -r -p "=> Enter THORNode name [$NAME]: " name
   NAME=${name:-$NAME}
   echo
@@ -218,6 +228,7 @@ display_status() {
 deploy_genesis() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  [ "$NET" = "stagenet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
   helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
     $args $EXTRA_ARGS \
@@ -239,6 +250,7 @@ deploy_genesis() {
 deploy_validator() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  [ "$NET" = "stagenet" ] && args="--set global.passwordSecret=thornode-password"
   # shellcheck disable=SC2086
   helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
     $args $EXTRA_ARGS \

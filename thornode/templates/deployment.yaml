@@ -92,6 +92,8 @@ spec:
                 key: externalIP
           - name: PEER
             value: {{ default .Values.peer .Values.global.peer }}
+          - name: CHAIN_ID
+            value: {{ include "thornode.chainID" . }}
           - name: VALIDATOR
             {{- if eq .Values.type "fullnode" }}
             value: "false"

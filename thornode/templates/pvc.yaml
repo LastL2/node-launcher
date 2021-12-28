@@ -13,6 +13,8 @@ spec:
       storage: {{ .Values.persistence.size | quote }}
       {{- if eq (include "thornode.net" .) "mainnet" }}
       storage: {{ .Values.persistence.size.mainnet | quote }}
+      {{- else if eq (include "thornode.net" .) "stagenet" }}
+      storage: {{ .Values.persistence.size.stagenet | quote }}
       {{- else }}
       storage: {{ .Values.persistence.size.testnet | quote }}
       {{- end }}

@@ -53,7 +53,7 @@ spec:
             - name: PORT
               value: {{ include "binance-daemon.rpc" . | quote }}
             - name: BNET
-              value: {{ if eq (include "binance-daemon.net" .) "mainnet" }}prod{{- else }}{{ include "binance-daemon.net" . }}{{- end }}
+              value: {{ include "binance-daemon.bnet" . | quote }}
           ports:
             - name: rpc
               containerPort: {{ include "binance-daemon.rpc" . }}
