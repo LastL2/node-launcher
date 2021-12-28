@@ -52,7 +52,7 @@ dependencies:
     version: 0.1.0
     condition: ethereum-daemon.enabled
 
-  - name: bepswap
-    repository: file://../bepswap
+  - name: dogecoin-daemon
+    repository: file://../dogecoin-daemon
     version: 0.1.0
-    condition: bepswap.enabled
+    condition: dogecoin-daemon.enabled
