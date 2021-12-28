@@ -12,6 +12,8 @@ spec:
     requests:
       {{- if eq (include "bifrost.net" .) "mainnet" }}
       storage: {{ .Values.persistence.size.mainnet | quote }}
+      {{- else if eq (include "bifrost.net" .) "stagenet" }}
+      storage: {{ .Values.persistence.size.stagenet | quote }}
       {{- else }}
       storage: {{ .Values.persistence.size.testnet | quote }}
       {{- end }}
