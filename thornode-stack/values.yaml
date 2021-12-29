@@ -33,5 +33,4 @@ ethereum-daemon:
   fullnameOverride: ethereum-daemon
 
 dogecoin-daemon:
-  enabled: false
   fullnameOverride: dogecoin-daemon
