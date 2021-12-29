@@ -39,13 +39,13 @@ confirm() {
 
 get_node_net() {
   if [ "$NET" != "" ]; then
-    if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ]; then
-      die "Error NET variable=$NET. NET variable should be either 'mainnet' or 'testnet'."
+    if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ] && [ "$NET" != "stagenet" ]; then
+      die "Error NET variable=$NET. NET variable should be either 'mainnet', 'testnet', or 'stagenet'."
     fi
     return
   fi
   echo "=> Select net"
-  menu mainnet mainnet testnet
+  menu mainnet mainnet testnet stagenet
   NET=$MENU_SELECTED
   echo
 }
@@ -60,9 +60,34 @@ get_node_type() {
 
 get_node_name() {
   [ "$NAME" != "" ] && return
-  [ "$NET" = "mainnet" ] && NAME=thornode || NAME=thornode-testnet
+  case $NET in
+    "mainnet")
+      NAME=thornode
+      ;;
+    "stagenet")
+      NAME=thornode-stagenet
+      ;;
+    "testnet")
+      NAME=thornode-testnet
+      ;;
+  esac
   read -r -p "=> Enter THORNode name [$NAME]: " name
   NAME=${name:-$NAME}
+  echo
+}
+
+get_discord_channel() {
+  [ "$DISCORD_CHANNEL" != "" ] && unset DISCORD_CHANNEL
+  echo "=> Select THORNode relay channel: "
+  menu chaosnet chaosnet thornode thornode-chaosnet
+  DISCORD_CHANNEL=$MENU_SELECTED
+  echo
+}
+
+get_discord_message() {
+  [ "$DISCORD_MESSAGE" != "" ] && unset DISCORD_MESSAGE
+  read -r -p "=> Enter THORNode relay messge: " discord_message
+  DISCORD_MESSAGE=${discord_message:-$DISCORD_MESSAGE}
   echo
 }
 
@@ -104,7 +129,13 @@ snapshot_available() {
 make_snapshot() {
   local pvc
   local service
+  local snapshot
   service=$1
+  snapshot=$1
+
+  if [[ -n $SNAPSHOT_SUFFIX ]]; then
+    snapshot=$snapshot-$SNAPSHOT_SUFFIX
+  fi
 
   if [ "$service" == "midgard" ]; then
     pvc="data-midgard-timescaledb-0"
@@ -121,20 +152,26 @@ make_snapshot() {
   echo "=> Snapshotting service $boldgreen$service$reset of a THORNode named $boldgreen$NAME$reset"
   echo -n "$boldyellow:: Are you sure? Confirm or skip [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
   echo
-  kubectl -n "$NAME" delete volumesnapshot "$service" >/dev/null 2>&1 || true
+
+  if kubectl -n "$NAME" get volumesnapshot "$snapshot" >/dev/null 2>&1; then
+    echo "Existing snapshot $boldgreen$snapshot$reset exists, ${boldyellow}continuing will overwrite${reset}"
+    confirm
+    kubectl -n "$NAME" delete volumesnapshot "$snapshot" >/dev/null 2>&1 || true
+  fi
+
   cat <<EOF | kubectl -n "$NAME" apply -f -
     apiVersion: snapshot.storage.k8s.io/v1beta1
     kind: VolumeSnapshot
     metadata:
-      name: $service
+      name: $snapshot
     spec:
       source:
         persistentVolumeClaimName: $pvc
 EOF
   echo
-  echo "=> Waiting for $boldgreen$service$reset snapshot to be ready to use (can take up to an hour depending on service and provider)"
-  until kubectl -n "$NAME" get volumesnapshot "$service" -o yaml | grep "readyToUse: true" >/dev/null 2>&1; do sleep 10; done
-  echo "Snapshot for $boldgreen$service$reset created"
+  echo "=> Waiting for $boldgreen$service$reset snapshot $boldyellow$snapshot$reset to be ready to use (can take up to an hour depending on service and provider)"
+  until kubectl -n "$NAME" get volumesnapshot "$snapshot" -o yaml | grep "readyToUse: true" >/dev/null 2>&1; do sleep 10; done
+  echo "Snapshot $boldyellow$snapshot$reset for $boldgreen$service$reset created"
   echo
 }
 
@@ -191,6 +228,16 @@ display_status() {
 deploy_genesis() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  [ "$NET" = "stagenet" ] && args="--set global.passwordSecret=thornode-password"
+  # shellcheck disable=SC2086
+  helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
+    $args $EXTRA_ARGS \
+    --set global.mnemonicSecret=thornode-mnemonic \
+    --set global.net="$NET" \
+    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
+    --set thornode.type="genesis"
+  echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
   # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $args $EXTRA_ARGS \
@@ -203,6 +250,17 @@ deploy_genesis() {
 deploy_validator() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
+  [ "$NET" = "stagenet" ] && args="--set global.passwordSecret=thornode-password"
+  # shellcheck disable=SC2086
+  helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
+    $args $EXTRA_ARGS \
+    --set global.mnemonicSecret=thornode-mnemonic \
+    --set global.net="$NET" \
+    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
+    --set thornode.type="validator" \
+    --set bifrost.peer="$SEED",thornode.seeds="$SEED"
+  echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
   # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $args $EXTRA_ARGS \
@@ -215,14 +273,27 @@ deploy_validator() {
 
 deploy_fullnode() {
   # shellcheck disable=SC2086
+  helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
+    $args $EXTRA_ARGS \
+    --set global.mnemonicSecret=thornode-mnemonic \
+    --set global.net="$NET" \
+    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
+    --set thornode.seeds="$SEED" \
+    --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
+    --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
+    --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
+    --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc=true,gateway.api=true
+  echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
+  # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
     --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.seeds="$SEED" \
-    --set bifrost.enabled=false,binance-daemon.enabled=false \
+    --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
-    --set thornode.type="fullnode",gateway.validator=false
+    --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc=true,gateway.api=true
 }

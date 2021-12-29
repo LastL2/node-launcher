@@ -5,6 +5,9 @@
 net: mainnet
 
 validator: true
+midgard: false
+rpc: true
+api: false
 
 replicaCount: 1
 
@@ -26,6 +29,9 @@ service:
     midgard: 8080
     api: 1317
     mainnet:
+      p2p: 27146
+      rpc: 27147
+    stagenet:
       p2p: 27146
       rpc: 27147
     testnet:

@@ -36,6 +36,15 @@ Install Helm 3 if not already available on your current machine:
 make helm
 ```
 
+## Install Helm plugins
+
+Install Helm plugins needed to run all the next commands properly. This includes a "diff" plugin
+used to display changes between deployments.
+
+```bash
+make helm-plugins
+```
+
 ## Deploy tools
 
 To deploy all tools needed, metrics, logs management, Kubernetes Dashboard, run the command below.
@@ -141,7 +150,7 @@ make set-version
 
 # pause
 
-Send a `pause-chain` to your node, which will globally halt THORChain. This is only to be used by node operators in the event of an emergency, such as a suspected attack on the network. This can only be done once by each node operator per churn. Nodes found abusing this command may be banned by other node operators. Use with extreme caution!
+Send a `pause-chain` to your node, which will globally halt THORChain for 300 blocks. This is only to be used by node operators in the event of an emergency, such as a suspected attack on the network. This can only be done once by each node operator per churn. Nodes found abusing this command may be banned by other node operators. Use with extreme caution!
 
 ```bash
 make pause
@@ -153,6 +162,23 @@ Send a `resume-chain` to your node, which will unpause the network if it is curr
 
 ```bash
 make resume
+```
+
+# relay
+
+Send a message on behalf of your node that will be relayed to a public channel on the dev Discord. This may be used for a number of purposes, including: 
+
+* publicly state approval or disapproval for a proposal
+* propose to ban bad nodes
+* alert the community to something suspicious
+* share logs via pastebin
+* explain the reason for `pause` / `resume` the network
+* etc.
+
+Please do not spam the Discord channels. Attempts to collude or otherwise abuse this privelege may lead to revocation of this feature.
+
+```bash
+make relay
 ```
 
 ## Destroy THORNode

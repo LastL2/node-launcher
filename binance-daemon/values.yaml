@@ -25,6 +25,9 @@ service:
     testnet:
       p2p: 26656
       rpc: 26657
+    stagenet:
+      p2p: 27146
+      rpc: 27147
     mainnet:
       p2p: 27146
       rpc: 27147
@@ -50,6 +53,7 @@ persistence:
   enabled: true
   size:
     testnet: 50Gi
+    stagenet: 500Gi
     mainnet: 500Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"

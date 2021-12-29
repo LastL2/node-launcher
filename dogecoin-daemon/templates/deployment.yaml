@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "bitcoin-daemon.fullname" . }}
+  name: {{ include "dogecoin-daemon.fullname" . }}
   labels:
-    {{- include "bitcoin-daemon.labels" . | nindent 4 }}
+    {{- include "dogecoin-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "bitcoin-daemon.selectorLabels" . | nindent 6 }}
+      {{- include "dogecoin-daemon.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "bitcoin-daemon.selectorLabels" . | nindent 8 }}
+        {{- include "dogecoin-daemon.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "bitcoin-daemon.serviceAccountName" . }}
+      serviceAccountName: {{ include "dogecoin-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -29,9 +29,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+          {{- if eq (include "dogecoin-daemon.net" .) "mocknet" }}
           command: ["/scripts/entrypoint-mock.sh"]
-          {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+          {{- else if eq (include "dogecoin-daemon.net" .) "testnet" }}
           args:
             - -testnet
             - -txindex
@@ -47,13 +47,13 @@ spec:
           {{- end }}
           volumeMounts:
             - name: data
-              mountPath: /home/bitcoin/.bitcoin
+              mountPath: /home/dogecoin/.dogecoin
           ports:
             - name: p2p
-              containerPort: {{ include "bitcoin-daemon.p2p" . }}
+              containerPort: {{ include "dogecoin-daemon.p2p" . }}
               protocol: TCP
             - name: rpc
-              containerPort: {{ include "bitcoin-daemon.rpc" . }}
+              containerPort: {{ include "dogecoin-daemon.rpc" . }}
               protocol: TCP
           startupProbe:
             failureThreshold: 60
@@ -61,36 +61,36 @@ spec:
             periodSeconds: 10
             exec:
               command:
-                - bitcoin-cli
+                - dogecoin-cli
                 - -rpcuser=thorchain
                 - -rpcpassword=password
-              {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+              {{- if eq (include "dogecoin-daemon.net" .) "mocknet" }}
                 - -regtest
-              {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+              {{- else if eq (include "dogecoin-daemon.net" .) "testnet" }}
                 - -testnet
               {{- end }}
                 - ping
           livenessProbe:
             exec:
               command:
-                - bitcoin-cli
+                - dogecoin-cli
                 - -rpcuser=thorchain
                 - -rpcpassword=password
-              {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+              {{- if eq (include "dogecoin-daemon.net" .) "mocknet" }}
                 - -regtest
-              {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+              {{- else if eq (include "dogecoin-daemon.net" .) "testnet" }}
                 - -testnet
               {{- end }}
                 - ping
           readinessProbe:
             exec:
               command:
-                - bitcoin-cli
+                - dogecoin-cli
                 - -rpcuser=thorchain
                 - -rpcpassword=password
-              {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
+              {{- if eq (include "dogecoin-daemon.net" .) "mocknet" }}
                 - -regtest
-              {{- else if eq (include "bitcoin-daemon.net" .) "testnet" }}
+              {{- else if eq (include "dogecoin-daemon.net" .) "testnet" }}
                 - -testnet
               {{- end }}
                 - ping
@@ -100,7 +100,7 @@ spec:
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "bitcoin-daemon.fullname" . }}{{- end }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "dogecoin-daemon.fullname" . }}{{- end }}
       {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
         hostPath:
           path: {{ .Values.persistence.hostPath }}

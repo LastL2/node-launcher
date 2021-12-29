@@ -92,6 +92,8 @@ spec:
                 key: externalIP
           - name: PEER
             value: {{ default .Values.peer .Values.global.peer }}
+          - name: CHAIN_ID
+            value: {{ include "thornode.chainID" . }}
           - name: VALIDATOR
             {{- if eq .Values.type "fullnode" }}
             value: "false"
@@ -185,6 +187,8 @@ spec:
               {{- else}}
               value: {{ .Values.signer.password }}
               {{- end }}
+            - name: CHAIN_ID
+              value: {{ include "thornode.chainID" . }}
           ports:
             - name: api
               containerPort: {{ .Values.service.port.api }}

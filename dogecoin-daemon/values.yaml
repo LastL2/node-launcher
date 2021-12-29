@@ -1,27 +1,28 @@
-# Default values for ethereum-daemon.
+# Default values for dogecoin-daemon.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: mainnet
-
 replicaCount: 1
 
+net: mainnet
+
 image:
-  eth:
-    repository: ethereum/client-go
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
-  scripts:
-    repository: registry.gitlab.com/thorchain/thornode
-    pullPolicy: IfNotPresent
-    tag: mocknet
+  repository: registry.gitlab.com/thorchain/devops/dogecoin-core
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-hostNetwork: false
+persistence:
+  enabled: true
+  size:
+    testnet: 200Gi
+    mainnet: 600Gi
+  accessMode: ReadWriteOnce
+  # storageClass: "-"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -43,7 +44,19 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8545
+  port:
+    mainnet:
+      p2p: 22556
+      rpc: 22555
+    stagenet:
+      p2p: 22556
+      rpc: 22555
+    testnet:
+      p2p: 44556
+      rpc: 44555
+    regtest:
+      p2p: 18444
+      rpc: 18443
 
 ingress:
   enabled: false
@@ -62,25 +75,18 @@ ingress:
    #   hosts:
    #     - midgard.example.com
 
-persistence:
-  enabled: true
-  size:
-    testnet: 300Gi
-    stagenet: 900Gi
-    mainnet: 900Gi
-  accessMode: ReadWriteOnce
-  # storageClass: "-"
-  #
 resources:
   limits:
     # cpu: 1
-    memory: 12Gi
+    memory: 5Gi
   requests:
-    cpu: 2
-    memory: 12Gi
+    cpu: 1
+    memory: 5Gi
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
+
+global: {}

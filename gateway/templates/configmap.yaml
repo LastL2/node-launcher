@@ -94,6 +94,7 @@ data:
       }
       {{- end }}
 
+      {{- if .Values.midgard }}
       server {
         listen {{ .Values.service.port.midgard }};
 
@@ -130,7 +131,9 @@ data:
           proxy_pass http://midgard:{{ .Values.service.port.midgard }};
         }
       }
+      {{- end }}
 
+      {{- if .Values.api }}
       server {
         listen {{ .Values.service.port.api }};
         location / {
@@ -160,7 +163,9 @@ data:
           proxy_pass http://thornode:{{ .Values.service.port.api }};
         }
       }
+      {{- end }}
 
+      {{- if .Values.rpc }}
       server {
         listen {{ include "gateway.rpc" . }};
         location / {
@@ -193,6 +198,7 @@ data:
           proxy_pass http://thornode:{{ include "gateway.rpc" . }};
         }
       }
+      {{- end }}
     }
 
 

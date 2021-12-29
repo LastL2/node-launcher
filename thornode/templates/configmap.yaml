@@ -32,11 +32,22 @@ data:
 
     printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain resume-chain --from "$SIGNER_NAME" --keyring-backend file --chain-id thorchain --yes --gas 1000000 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
+  relay.sh: |
+    #!/bin/sh
+
+    printf "%s\n%s\n%s\n" "$SIGNER_NAME" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode query thorchain discord-relay "$1" "$2" --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
+
   entrypoint.sh: |
     #!/bin/sh
 
     # allow duplicate peers ip behind load balancer
     sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" ~/.thornode/config/config.toml
+
+    # revert block timing to tendermint defaults
+    sed -i -e "s/timeout_propose_delta.*/timeout_propose_delta = \"500ms\"/g" ~/.thornode/config/config.toml
+    sed -i -e "s/timeout_prevote_delta.*/timeout_prevote_delta = \"500ms\"/g" ~/.thornode/config/config.toml
+    sed -i -e "s/timeout_precommit_delta.*/timeout_precommit_delta = \"500ms\"/g" ~/.thornode/config/config.toml
+
 
     # update max file open limit
     ulimit -n 65535
