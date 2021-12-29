@@ -19,6 +19,9 @@ bitcoin-cash-daemon:
 
 ethereum-daemon:
   enabled: true
+<<<<<<< HEAD
 
 dogecoin-daemon:
   enabled: true
+=======
+>>>>>>> master
