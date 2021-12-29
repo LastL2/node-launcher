@@ -48,6 +48,9 @@ service:
     mainnet:
       p2p: 22556
       rpc: 22555
+    stagenet:
+      p2p: 22556
+      rpc: 22555
     testnet:
       p2p: 44556
       rpc: 44555
