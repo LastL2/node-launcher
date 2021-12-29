@@ -21,4 +21,4 @@ ethereum-daemon:
   enabled: true
 
 dogecoin-daemon:
-  enabled: false
+  enabled: true
