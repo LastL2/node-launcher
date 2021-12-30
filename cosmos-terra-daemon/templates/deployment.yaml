@@ -28,58 +28,27 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-
-      initContainers:
-      - name: init-daemon
-        image: {{ include "cosmos-daemon.image" . }}
-        command: ["./scripts/init-daemon.sh"]
-        env:
-          - name: APP_NAME
-            value: {{ .Values.app }}
-        volumeMounts:
-          - name: data
-            mountPath: /opt/cosmos
-          - name: scripts
-            mountPath: /scripts
-      {{- if (eq (include "cosmos-daemon.net" . ) "mainnet") }}
-      - name: check-hardfork
-        image: {{ include "cosmos-daemon.image" . }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["./scripts/check-hardfork.sh"]
-        # command: ["/bin/sh", "-c", "--"]
-        # args: [ "while true; do sleep 30; done;" ]
-        volumeMounts:
-          - name: data
-            mountPath: /opt/cosmos
-          - name: scripts
-            mountPath: /scripts
-        env:
-          - name: COSMOS_HOME
-            value: /opt/cosmos
-      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         image: {{ include "cosmos-daemon.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args:
-          - --home
-          - /opt/cosmos
-          {{- if (eq (include "cosmos-daemon.net" . ) "mainnet") }}
-            {{- toYaml .Values.args.mainnet | nindent 12 }}
-          {{- else if (eq (include "cosmos-daemon.net" . ) "testnet") }}
-            {{- toYaml .Values.args.testnet | nindent 12 }}
-          {{- end }}
         volumeMounts:
           - name: data
-            mountPath: /opt/cosmos
+            mountPath: /opt/terra
           - name: scripts
             mountPath: /scripts
         env:
-          - name: COSMOS_HOME
-            value: /opt/cosmos
+          - name: DATADIR
+            value: /opt/terra
+          - name: SNAPSHOT_NAME
+            value: {{ include "cosmos-daemon.snapshot" . }}
+          - name: SNAPSHOT_BASE_URL
+            value: https://getsfo.quicksync.io
         ports:
+          - name: lcd
+            containerPort: 1317
           - name: rpc
             containerPort: {{ include "cosmos-daemon.rpc" . }}
             protocol: TCP
@@ -87,7 +56,7 @@ spec:
             containerPort: {{ include "cosmos-daemon.p2p" . }}
             protocol: TCP
           - name: prometheus
-            containerPort: 28660
+            containerPort: 26660
             protocol: TCP
         startupProbe:
           failureThreshold: 120

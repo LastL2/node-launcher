@@ -69,40 +69,17 @@ Net
 {{- end -}}
 
 {{/*
-Cosmos App
-*/}}
-{{- define "cosmos-daemon.app" -}}
-{{- default .Values.app -}}
-{{- end -}}
-
-{{/*
-Cosmos Args
-*/}}
-{{- define "cosmos-daemon.args" -}}
-{{- default .Values.args -}}
-{{- end -}}
-
-{{/*
-Cosmos Hardfork Height
-*/}}
-{{- define "cosmos-daemon.hardforkHeight" -}}
-{{- if eq (include "cosmos-daemon.net" .) "mainnet" -}}
-    {{ .Values.hardforkHeight.mainnet}}
-{{- else -}}
-    {{ .Values.hardforkHeight.testnet }}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Tag
 */}}
 {{- define "cosmos-daemon.tag" -}}
 {{- if eq (include "cosmos-daemon.net" .) "mocknet" -}}
     "latest"
 {{- else if eq (include "cosmos-daemon.net" .) "testnet" -}}
-    {{ .Values.image.tag.testnet }}
+    {{- .Values.image.tag.testnet | default .Chart.AppVersion }}
 {{- else if eq (include "cosmos-daemon.net" .) "mainnet" -}}
-    {{ .Values.image.tag.mainnet }}
+    {{- .Values.image.tag.mainnet | default .Chart.AppVersion }}
+{{- else if eq (include "cosmos-daemon.net" .) "stagenet" -}}
+    {{- .Values.image.tag.stagenet | default .Chart.AppVersion }}
 {{- else -}}
     {{ .Chart.AppVersion }}
 {{- end -}}
@@ -119,6 +96,19 @@ Image
 {{- end -}}
 {{- end -}}
 
+{{/*
+Snapshot
+*/}}
+{{- define "cosmos-daemon.snapshot" -}}
+{{- if eq (include "cosmos-daemon.net" .) "testnet" -}}
+    {{ .Values.snapshot.testnet }}
+{{- else if eq (include "cosmos-daemon.net" .) "stagenet" -}}
+    {{ .Values.snapshot.stagenet }}
+{{- else if eq (include "cosmos-daemon.net" .) "mainnet" -}}
+    {{ .Values.snapshot.mainnet }}
+{{- end -}}
+{{- end -}}
+
 
 {{/*
 RPC Port
@@ -126,6 +116,8 @@ RPC Port
 {{- define "cosmos-daemon.rpc" -}}
 {{- if eq (include "cosmos-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.rpc }}
+{{- else if eq (include "cosmos-daemon.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.rpc }}
 {{- else -}}
     {{ .Values.service.port.testnet.rpc }}
 {{- end -}}
@@ -137,6 +129,8 @@ P2P Port
 {{- define "cosmos-daemon.p2p" -}}
 {{- if eq (include "cosmos-daemon.net" .) "mainnet" -}}
     {{ .Values.service.port.mainnet.p2p }}
+{{- else if eq (include "cosmos-daemon.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.p2p }}
 {{- else -}}
     {{ .Values.service.port.testnet.p2p }}
 {{- end -}}

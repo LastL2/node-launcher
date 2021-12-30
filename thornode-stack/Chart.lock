@@ -29,5 +29,8 @@ dependencies:
 - name: dogecoin-daemon
   repository: file://../dogecoin-daemon
   version: 0.1.0
-digest: sha256:590eeaabbaf98042ec7ff12efa12100e18c79853f62a9486a1bb878d1d582cf3
-generated: "2021-06-17T17:26:35.555459+01:00"
+- name: cosmos-terra-daemon
+  repository: file://../cosmos-terra-daemon
+  version: 0.1.0
+digest: sha256:575ac476538aa30ad3e5beb7279ab86801931e276cd4a5eb43f574a38efcaa98
+generated: "2021-12-29T11:45:09.021919-05:00"

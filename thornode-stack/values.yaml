@@ -34,3 +34,6 @@ ethereum-daemon:
 
 dogecoin-daemon:
   fullnameOverride: dogecoin-daemon
+
+cosmos-terra-daemon:
+  fullnameOverride: cosmos-terra-daemon

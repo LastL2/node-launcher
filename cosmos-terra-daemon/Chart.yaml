@@ -1,7 +1,7 @@
 apiVersion: v2
-name: cosmos-gaia-daemon
-description: Gaia Node (Cosmos) daemon component
+name: cosmos-terra-daemon
+description: Terra Node daemon component
 type: application
 version: 0.1.0
 
-appVersion: v4.2.1
+appVersion: v0.5.14-oracle
