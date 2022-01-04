@@ -20,7 +20,8 @@ persistence:
   enabled: true
   size:
     testnet: 200Gi
-    mainnet: 600Gi
+    stagenet: 300Gi
+    mainnet: 300Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
