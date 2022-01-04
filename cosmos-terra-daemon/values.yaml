@@ -7,7 +7,7 @@ net: mainnet
 snapshot:
   mainnet:
   testnet:
-  stagenet: columbus-5-default.20211230.0310.tar.lz4
+  stagenet: columbus-5-default.20220101.0310.tar.lz4
 
 replicaCount: 1
 
@@ -86,10 +86,10 @@ securityContext: {}
 resources:
   requests:
     cpu: 4
-    memory: 20Gi
+    memory: 31Gi
   limits:
     # cpu: 2
-    memory: 20Gi
+    memory: 31Gi
 
 nodeSelector: {}
 
