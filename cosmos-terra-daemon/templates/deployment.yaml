@@ -36,12 +36,10 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
           - name: data
-            mountPath: /opt/terra
+            mountPath: /root/.terra
           - name: scripts
             mountPath: /scripts
         env:
-          - name: DATADIR
-            value: /opt/terra
           - name: SNAPSHOT_NAME
             value: {{ include "cosmos-daemon.snapshot" . }}
           - name: SNAPSHOT_BASE_URL
