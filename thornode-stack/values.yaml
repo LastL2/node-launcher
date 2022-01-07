@@ -32,6 +32,5 @@ bitcoin-cash-daemon:
 ethereum-daemon:
   fullnameOverride: ethereum-daemon
 
-bepswap:
-  enabled: false
-  fullnameOverride: bepswap
+dogecoin-daemon:
+  fullnameOverride: dogecoin-daemon

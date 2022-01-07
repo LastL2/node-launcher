@@ -19,3 +19,6 @@ bitcoin-cash-daemon:
 
 ethereum-daemon:
   enabled: true
+
+dogecoin-daemon:
+  enabled: true
