@@ -91,6 +91,20 @@ get_discord_message() {
   echo
 }
 
+get_mimir_key() {
+  [ "$MIMIR_KEY" != "" ] && unset MIMIR_KEY
+  read -r -p "=> Enter THORNode Mimir key: " mimir_key
+  MIMIR_KEY=${mimir_key:-$MIMIR_KEY}
+  echo
+}
+
+get_mimir_value() {
+  [ "$MIMIR_VALUE" != "" ] && unset MIMIR_VALUE
+  read -r -p "=> Enter THORNode Mimir value: " mimir_value
+  MIMIR_VALUE=${mimir_value:-$MIMIR_VALUE}
+  echo
+}
+
 get_node_info() {
   get_node_net
   get_node_type
