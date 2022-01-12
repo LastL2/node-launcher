@@ -415,6 +415,7 @@ you know what you are doing and want to run each chart separately (not recommend
 
 - binance-daemon: Binance fullnode daemon
 - bitcoin-daemon: Bitcoin fullnode daemon
+- dogecoin-daemon: Dogecoin fullnode daemon
 - litecoin-daemon: Litecoin fullnode daemon
 - bitcoin-cash-daemon: Bitcoin Cash fullnode daemon
 - ethereum-daemon: Ethereum fullnode daemon
