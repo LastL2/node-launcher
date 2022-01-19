@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmos-daemon.fullname" . }}-scripts
+data:
+  init.sh: |
+    GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
+    GENESIS_PATH="/root/.terra/config/genesis.json"
+
+    if [ ! -f $GENESIS_PATH ]; then
+      mkdir -p $(dirname $GENESIS_PATH)
+      wget -O $GENESIS_PATH $GENESIS_URL
+    fi
+
+    # skip snapshot pull if we already have a data directory
+    if [ -d "/root/.terra/data" ]; then
+      exit 0
+    fi
+
+    cd /root/.terra
+    apk add aria2 curl jq lz4
+
+    # pull snapshot
+    URL=`curl https://quicksync.io/terra.json|jq -r '.[] |select(.file=="columbus-5-default")|select (.mirror=="SanFrancisco")|.url'`
+    aria2c -x5 $URL
+    lz4 -d `basename $URL` | tar xf -
+
+  probe.sh: |
+    #!/bin/sh
+
+    return 0
+  

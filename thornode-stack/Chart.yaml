@@ -57,7 +57,7 @@ dependencies:
     version: 0.1.0
     condition: dogecoin-daemon.enabled
 
-  - name: cosmos-terra-daemon
-    repository: file://../cosmos-terra-daemon
+  - name: terra-daemon
+    repository: file://../terra-daemon
     version: 0.1.0
-    condition: cosmos-terra-daemon.enabled
+    condition: terra-daemon.enabled
