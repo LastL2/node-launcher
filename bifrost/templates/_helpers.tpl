@@ -166,7 +166,12 @@ Dogecoin
     {{ .Values.dogecoinDaemon.mocknet }}
 {{- end -}}
 {{- end -}}
-
+{{/*
+bifrost.dogecoinDaemon.enabled
+*/}}
+{{- define "bifrost.dogecoinDaemon.enabled" -}}
+    {{- default .Values.dogecoinDaemon.enabled .Values.global.dogecoinDaemon.enabled -}}
+{{- end -}}
 {{/*
 Ethereum
 */}}

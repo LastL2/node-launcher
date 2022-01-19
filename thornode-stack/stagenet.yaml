@@ -1,5 +1,7 @@
 global:
   tag: stagenet-0.78.1
+  dogecoinDaemon:
+    enabled: true
 
 midgard:
   image:

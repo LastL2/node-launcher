@@ -1,5 +1,7 @@
 global:
   tag: testnet-0.79.1
+  dogecoinDaemon:
+    enabled: false
 
 midgard:
   image:
@@ -22,3 +24,4 @@ ethereum-daemon:
 
 dogecoin-daemon:
   enabled: false
+

@@ -56,7 +56,6 @@ bitcoinCashDaemon:
   stagenet: bitcoin-cash-daemon:8332
 
 dogecoinDaemon:
-  enabled: true
   mainnet: dogecoin-daemon:22555
   testnet: dogecoin-daemon:44555
   mocknet: dogecoin-daemon:18443
