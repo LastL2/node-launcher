@@ -4,10 +4,6 @@
 
 net: mainnet
 
-snapshot:
-  mainnet:
-  stagenet: columbus-5-default.20220101.0310.tar.lz4
-
 replicaCount: 1
 
 image:
