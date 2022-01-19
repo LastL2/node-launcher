@@ -53,6 +53,9 @@ spec:
           - name: p2p
             containerPort: {{ include "cosmos-daemon.p2p" . }}
             protocol: TCP
+          - name: grpc
+            containerPort: {{ include "cosmos-daemon.grpc" . }}
+            protocol: TCP
           - name: prometheus
             containerPort: 26660
             protocol: TCP

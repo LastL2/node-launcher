@@ -15,6 +15,10 @@ spec:
       port: {{ include "cosmos-daemon.p2p" . }}
       targetPort: p2p
       protocol: TCP
+    - name: grpc
+      port: {{ include "cosmos-daemon.grpc" . }}
+      targetPort: grpc
+      protocol: TCP
     - name: prometheus
       port: 28660
       targetPort: prometheus

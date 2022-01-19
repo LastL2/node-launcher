@@ -6,7 +6,6 @@ net: mainnet
 
 snapshot:
   mainnet:
-  testnet:
   stagenet: columbus-5-default.20220101.0310.tar.lz4
 
 replicaCount: 1
@@ -17,7 +16,6 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag:
     mainnet:
-    testnet:
     stagenet:
 
 imagePullSecrets: []
@@ -29,15 +27,14 @@ hostNetwork: false
 service:
   type: ClusterIP
   port:
-    testnet:
-      p2p: 26656
-      rpc: 26657
     mainnet:
       p2p: 26656
       rpc: 26657
+      grpc: 9090
     stagenet:
       p2p: 26656
       rpc: 26657
+      grpc: 9090
 
 ingress:
   enabled: false

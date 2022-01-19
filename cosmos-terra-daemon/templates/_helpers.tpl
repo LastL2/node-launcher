@@ -135,3 +135,16 @@ P2P Port
     {{ .Values.service.port.testnet.p2p }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+GRPC Port
+*/}}
+{{- define "cosmos-daemon.grpc" -}}
+{{- if eq (include "cosmos-daemon.net" .) "mainnet" -}}
+    {{ .Values.service.port.mainnet.grpc }}
+{{- else if eq (include "cosmos-daemon.net" .) "stagenet" -}}
+    {{ .Values.service.port.stagenet.grpc }}
+{{- else -}}
+    {{ .Values.service.port.testnet.grpc }}
+{{- end -}}
+{{- end -}}
