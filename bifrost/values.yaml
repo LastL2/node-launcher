@@ -56,6 +56,7 @@ bitcoinCashDaemon:
   stagenet: bitcoin-cash-daemon:8332
 
 dogecoinDaemon:
+  enabled: 
   mainnet: dogecoin-daemon:22555
   testnet: dogecoin-daemon:44555
   mocknet: dogecoin-daemon:18443
@@ -121,7 +122,7 @@ securityContext: {}
 
 resources:
   requests:
-    cpu: 7
+    cpu: 1
     memory: 2Gi
   limits:
     cpu: 7
