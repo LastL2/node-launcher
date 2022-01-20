@@ -76,7 +76,7 @@ spec:
         image: appropriate/curl
         command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.bitcoinCashDaemon" . }} > /dev/null; do echo waiting for bitcoin cash; sleep 2; done']
       {{- end }}
-      {{- if default .Values.dogecoinDaemon.enabled .Values.global.dogecoinDaemon.enabled }}
+      {{- if .Values.dogecoinDaemon.enabled }}
       - name: init-dogecoin
         image: appropriate/curl
         command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.dogecoinDaemon" . }} > /dev/null; do echo waiting for dogecoin; sleep 2; done']
@@ -140,7 +140,7 @@ spec:
               value: {{ include "bifrost.dogecoinDaemon" . }}
             - name: DOGE_START_BLOCK_HEIGHT
               value: "{{ .Values.dogecoinStartBlockHeight }}"
-            {{- if not (default .Values.dogecoinDaemon.enabled .Values.global.dogecoinDaemon.enabled) }}
+            {{- if not .Values.dogecoinDaemon.enabled }}
             - name: DOGE_DISABLED
               value: "true"
             {{- end}}
