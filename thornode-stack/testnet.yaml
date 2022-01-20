@@ -26,4 +26,3 @@ ethereum-daemon:
 
 dogecoin-daemon:
   enabled: false
-
