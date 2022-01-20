@@ -33,7 +33,7 @@ spec:
         image: alpine
         command:
           - sh
-          - /script/init.sh
+          - /scripts/init.sh
         volumeMounts:
           - name: scripts
             mountPath: /scripts
