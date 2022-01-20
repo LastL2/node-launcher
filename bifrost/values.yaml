@@ -18,7 +18,7 @@ hostNetwork: false
 debug: false
 
 thorApi: thornode:1317
-chainID: 
+chainID:
   testnet: thorchain
   mainnet: thorchain
   stagenet: thorchain-stagenet
@@ -56,7 +56,7 @@ bitcoinCashDaemon:
   stagenet: bitcoin-cash-daemon:8332
 
 dogecoinDaemon:
-  enabled: 
+  enabled: true
   mainnet: dogecoin-daemon:22555
   testnet: dogecoin-daemon:44555
   mocknet: dogecoin-daemon:18443
@@ -122,7 +122,7 @@ securityContext: {}
 
 resources:
   requests:
-    cpu: 1
+    cpu: 7
     memory: 2Gi
   limits:
     cpu: 7

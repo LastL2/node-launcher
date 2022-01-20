@@ -1,5 +1,7 @@
 global:
   tag: testnet-0.79.1
+
+bifrost:
   dogecoinDaemon:
     enabled: false
 
