@@ -142,7 +142,7 @@ spec:
               value: "{{ .Values.dogecoinStartBlockHeight }}"
             {{- if not .Values.dogecoinDaemon.enabled }}
             - name: DOGE_DISABLED
-              value: true
+              value: "true"
             {{- end}}
             - name: ETH_HOST
               value: {{ include "bifrost.ethereumDaemon" . }}
