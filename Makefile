@@ -82,8 +82,8 @@ shell: ## Open a shell for a selected THORNode service
 debug: ## Open a shell for THORNode service mounting volume to debug
 	@./scripts/debug.sh
 
-recover-ninerealms-2934250:
-	@./scripts/recover-ninerealms-2934250.sh
+recover-ninerealms:
+	@./scripts/recover-ninerealms.sh
 
 watch: ## Watch the THORNode pods in real time
 	@./scripts/watch.sh
