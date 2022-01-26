@@ -24,6 +24,7 @@ metadata:
   name: {{ include "midgard.fullname" . }}
   labels:
     {{- include "midgard.labels" . | nindent 4 }}
+    app.kubernetes.io/component: midgard
 spec:
   type: {{ .Values.service.type }}
   ports:
