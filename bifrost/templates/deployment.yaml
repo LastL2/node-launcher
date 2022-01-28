@@ -76,11 +76,11 @@ spec:
         image: appropriate/curl
         command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.bitcoinCashDaemon" . }} > /dev/null; do echo waiting for bitcoin cash; sleep 2; done']
       {{- end }}
-      # {{- if .Values.dogecoinDaemon.enabled }}
-      # - name: init-dogecoin
-      #   image: appropriate/curl
-      #   command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.dogecoinDaemon" . }} > /dev/null; do echo waiting for dogecoin; sleep 2; done']
-      # {{- end }}
+      {{- if .Values.dogecoinDaemon.enabled }}
+      - name: init-dogecoin
+        image: appropriate/curl
+        command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.dogecoinDaemon" . }} > /dev/null; do echo waiting for dogecoin; sleep 2; done']
+      {{- end }}
       {{- if .Values.ethereumDaemon.enabled }}
       - name: init-ethereum
         image: appropriate/curl
@@ -144,6 +144,10 @@ spec:
               value: {{ include "bifrost.terraDaemon" . }}
             - name: TERRA_START_BLOCK_HEIGHT
               value: "{{ .Values.terraStartBlockHeight }}"
+            {{- if not .Values.dogecoinDaemon.enabled }}
+            - name: DOGE_DISABLED
+              value: "true"
+            {{- end}}
             - name: ETH_HOST
               value: {{ include "bifrost.ethereumDaemon" . }}
             - name: ETH_START_BLOCK_HEIGHT
