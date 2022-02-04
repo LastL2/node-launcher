@@ -10,7 +10,7 @@ dogecoind -regtest -txindex -rpcuser=$SIGNER_NAME -rpcpassword=$SIGNER_PASSWD -r
 # give time to dogecoind to start
 while true
 do
-	dogecoin-cli -regtest -rpcuser=$SIGNER_NAME -rpcpassword=$SIGNER_PASSWD generatetoaddress 100 $MASTER_ADDR && break
+	dogecoin-cli -regtest -rpcuser=$SIGNER_NAME -rpcpassword=$SIGNER_PASSWD generatetoaddress 1000 $MASTER_ADDR && break
 	sleep 5
 done
 
