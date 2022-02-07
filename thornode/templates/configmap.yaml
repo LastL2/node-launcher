@@ -42,6 +42,11 @@ data:
 
     printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain mimir "$1" "$2" --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
+  ban.sh: |
+    #!/bin/sh
+
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain ban "$1" --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
+
   entrypoint.sh: |
     #!/bin/sh
 
