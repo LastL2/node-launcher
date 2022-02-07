@@ -112,6 +112,9 @@ relay: ## Send a message that is relayed to a public Discord channel
 mimir: ## Send a mimir command to set a key/value
 	@./scripts/mimir.sh
 
+ban: ## Send a ban command with a node address
+	@./scripts/ban.sh
+
 pause: ## Send a pause-chain transaction to your THORNode
 	@./scripts/pause.sh
 
