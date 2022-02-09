@@ -130,49 +130,22 @@ destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
 destroy-tools: destroy-prometheus destroy-loki destroy-dashboard ## Uninstall Prometheus/Grafana, Loki, Kubernetes dashboard
 
 install-elk: repos ## Install/Update ELK logs management stack
-	@echo "=> Installing ELK Logs Management"
-	@helm upgrade elastic ./elastic-operator --install -n elastic-system --create-namespace --wait
-	@echo Waiting for services to be ready...
-	@kubectl wait --for=condition=Ready --all pods -n elastic-system --timeout=5m
-	@echo
+	@./scripts/install-elk.sh
 
 destroy-elk: ## Uninstall ELK logs management stack
-	@echo "=> Deleting ELK Logs Management"
-	@helm delete elastic -n elastic-system
-	@kubectl delete namespace elastic-system
-	@echo
+	@./scripts/destroy-elk.sh
 
 install-loki: repos ## Install/Update Loki logs management stack
-	@echo "=> Installing Loki Logs Management"
-	@helm upgrade loki grafana/loki-stack --install -n loki-system --create-namespace --wait -f ./loki/values.yaml
-	@echo Waiting for services to be ready...
-	@kubectl wait --for=condition=Ready --all pods -n loki-system --timeout=5m
-	@echo
+	@./scripts/install-loki.sh
 
 destroy-loki: ## Uninstall Loki logs management stack
-	@echo "=> Deleting Loki Logs Management"
-	@helm delete loki -n loki-system
-	@kubectl delete namespace loki-system
-	@echo
+	@./scripts/destroy-loki.sh
 
 install-prometheus: repos ## Install/Update Prometheus/Grafana stack
-	@echo "=> Installing Prometheus/Grafana Stack"
-	@helm upgrade --install prometheus prometheus-community/kube-prometheus-stack -n prometheus-system --create-namespace --wait -f ./prometheus/values.yaml
-	@echo
+	@./scripts/install-prometheus.sh
 
 destroy-prometheus: ## Uninstall Prometheus/Grafana stack
-	@echo "=> Deleting Prometheus/Grafana Stack"
-	@helm delete prometheus -n prometheus-system
-	@kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
-	@kubectl delete crd alertmanagers.monitoring.coreos.com
-	@kubectl delete crd podmonitors.monitoring.coreos.com
-	@kubectl delete crd probes.monitoring.coreos.com
-	@kubectl delete crd prometheuses.monitoring.coreos.com
-	@kubectl delete crd prometheusrules.monitoring.coreos.com
-	@kubectl delete crd servicemonitors.monitoring.coreos.com
-	@kubectl delete crd thanosrulers.monitoring.coreos.com
-	@kubectl delete namespace prometheus-system
-	@echo
+	@./scripts/destroy-prometheus.sh
 
 install-metrics: repos ## Install/Update Metrics Server
 	@echo "=> Installing Metrics"
