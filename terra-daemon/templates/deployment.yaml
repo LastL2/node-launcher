@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cosmos-daemon.fullname" . }}
+  name: {{ include "terra-daemon.fullname" . }}
   labels:
-    {{- include "cosmos-daemon.labels" . | nindent 4 }}
+    {{- include "terra-daemon.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "cosmos-daemon.selectorLabels" . | nindent 6 }}
+      {{- include "terra-daemon.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "cosmos-daemon.selectorLabels" . | nindent 8 }}
+        {{- include "terra-daemon.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "cosmos-daemon.serviceAccountName" . }}
+      serviceAccountName: {{ include "terra-daemon.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
 
@@ -43,7 +43,7 @@ spec:
       - name: {{ .Chart.Name }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
-        image: {{ include "cosmos-daemon.image" . }}
+        image: {{ include "terra-daemon.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
           - name: data
@@ -57,13 +57,13 @@ spec:
           - name: lcd
             containerPort: 1317
           - name: rpc
-            containerPort: {{ include "cosmos-daemon.rpc" . }}
+            containerPort: {{ include "terra-daemon.rpc" . }}
             protocol: TCP
           - name: p2p
-            containerPort: {{ include "cosmos-daemon.p2p" . }}
+            containerPort: {{ include "terra-daemon.p2p" . }}
             protocol: TCP
           - name: grpc
-            containerPort: {{ include "cosmos-daemon.grpc" . }}
+            containerPort: {{ include "terra-daemon.grpc" . }}
             protocol: TCP
           - name: prometheus
             containerPort: 26660
@@ -87,14 +87,14 @@ spec:
             path: /status
             port: rpc
         resources:
-        {{- if not (eq (include "cosmos-daemon.net" . ) "mocknet") }}
+        {{- if not (eq (include "terra-daemon.net" . ) "mocknet") }}
           {{- toYaml .Values.resources | nindent 12 }}
         {{- end }}
       volumes:
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "cosmos-daemon.fullname" . }}{{- end }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "terra-daemon.fullname" . }}{{- end }}
       {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
         hostPath:
           path: {{ .Values.persistence.hostPath }}
@@ -104,7 +104,7 @@ spec:
       {{- end }}
       - name: scripts
         configMap:
-          name: {{ include "cosmos-daemon.fullname" . }}-scripts
+          name: {{ include "terra-daemon.fullname" . }}-scripts
           defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:

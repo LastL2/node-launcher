@@ -6,9 +6,9 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ include "cosmos-daemon.fullname" . }}
+  name: {{ include "terra-daemon.fullname" . }}
   labels:
-    {{- include "cosmos-daemon.labels" . | nindent 4 }}
+    {{- include "terra-daemon.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
