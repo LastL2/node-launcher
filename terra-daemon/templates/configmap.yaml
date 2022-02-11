@@ -7,6 +7,9 @@ data:
     GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
     GENESIS_PATH="/root/.terra/config/genesis.json"
 
+    # Memory leak fix
+    sed -i -e "s/contract-memory-cache-size.*/contract-memory-cache-size = 300/g" ~/.terra/config/app.toml
+
     if [ ! -f $GENESIS_PATH ]; then
       mkdir -p $(dirname $GENESIS_PATH)
       wget -O $GENESIS_PATH $GENESIS_URL
