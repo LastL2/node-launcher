@@ -24,7 +24,7 @@ data:
     apk add aria2 curl jq lz4
 
     # pull snapshot
-    URL=`curl https://quicksync.io/terra.json|jq -r '.[] |select(.file=="columbus-5-default")|select (.mirror=="SanFrancisco")|.url'`
+    URL=`curl https://quicksync.io/terra.json|jq -r ".[] |select(.file==\"columbus-5-default\")|select (.mirror==\"$QUICKSYNC_MIRROR\")|.url"`
     aria2c -x5 $URL
     lz4 -d `basename $URL` | tar xf -
 
@@ -32,4 +32,3 @@ data:
     #!/bin/sh
 
     return 0
-  
