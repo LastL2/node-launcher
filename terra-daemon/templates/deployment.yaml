@@ -34,6 +34,9 @@ spec:
         command:
           - sh
           - /scripts/init.sh
+        env:
+          - name: QUICKSYNC_MIRROR
+            value: {{ .Values.quicksyncMirror }}
         volumeMounts:
           - name: scripts
             mountPath: /scripts
