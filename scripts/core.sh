@@ -105,6 +105,13 @@ get_mimir_value() {
   echo
 }
 
+get_node_address() {
+  [ "$NODE_ADDRESS" != "" ] && unset NODE_ADDRESS
+  read -r -p "=> Enter THORNode address to ban: " node_address
+  NODE_ADDRESS=${node_address:-$NODE_ADDRESS}
+  echo
+}
+
 get_node_info() {
   get_node_net
   get_node_type

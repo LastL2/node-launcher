@@ -24,7 +24,7 @@ enableApi: true
 
 debug: false
 chainID: 
-  testnet: thorchain
+  testnet: thorchain-v1
   mainnet: thorchain
   stagenet: thorchain-stagenet
 
