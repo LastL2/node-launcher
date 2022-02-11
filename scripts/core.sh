@@ -119,7 +119,7 @@ get_node_info_short() {
 get_node_service() {
   [ "$SERVICE" != "" ] && return
   echo "=> Select THORNode service"
-  menu thornode thornode bifrost midgard gateway binance-daemon ethereum-daemon bitcoin-daemon litecoin-daemon bitcoin-cash-daemon midgard-timescaledb
+  menu thornode thornode bifrost midgard gateway binance-daemon ethereum-daemon bitcoin-daemon litecoin-daemon bitcoin-cash-daemon dogecoin-daemon terra-daemon midgard-timescaledb
   SERVICE=$MENU_SELECTED
   echo
 }
