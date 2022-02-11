@@ -24,4 +24,4 @@ dogecoin-daemon:
   enabled: true
 
 cosmos-terra-daemon:
-  enabled: false
+  enabled: true
