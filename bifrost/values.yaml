@@ -67,7 +67,7 @@ ethereumDaemon:
   mainnet: http://ethereum-daemon:8545
 
 terraDaemon: 
-  enabled: true
+  enabled: false
   mainnet: terra-daemon:9090
   stagenet: terra-daemon:9090
 
