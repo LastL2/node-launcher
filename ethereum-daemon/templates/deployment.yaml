@@ -49,7 +49,7 @@ spec:
           {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
           command: [ "sh", "-c", "apk add curl && /entrypoint/ethereum-mock.sh" ]
           {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
-          command: [ "sh", "-c", 'geth --ropsten --syncmode fast --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --whitelist 10920274=0xfd652086d220d506ae5b7cb80fde97d2f3f7028d346cc7d9d384a83d3d638532' ]
+          command: [ "sh", "-c", 'geth --ropsten --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --whitelist 10920274=0xfd652086d220d506ae5b7cb80fde97d2f3f7028d346cc7d9d384a83d3d638532' ]
           {{- else }} # mainnet / stagenet
           command: [ "sh", "-c", 'geth --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
           {{- end }}

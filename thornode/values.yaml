@@ -18,13 +18,13 @@ binanceDaemon:
 ethRouterContract:
   testnet: "0xefA28233838f46a80AaaC8c309077a9ba70D123A"
   mainnet: "0xC145990E84155416144C532E31f89B840Ca8c2cE"
-  stagenet: "0xf5583092dE43C2E40dA895e22CD43978C054241B"
+  stagenet: "0x23d040e8816FF628c54D357612420260301cAE85"
 
 enableApi: true
 
 debug: false
 chainID: 
-  testnet: thorchain
+  testnet: thorchain-v1
   mainnet: thorchain
   stagenet: thorchain-stagenet
 

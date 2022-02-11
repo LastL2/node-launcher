@@ -1,11 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "cosmos-daemon.fullname" . }}-scripts
+  name: {{ include "terra-daemon.fullname" . }}-scripts
 data:
   init.sh: |
     GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
     GENESIS_PATH="/root/.terra/config/genesis.json"
+
+    # Memory leak fix
+    sed -i -e "s/contract-memory-cache-size.*/contract-memory-cache-size = 300/g" ~/.terra/config/app.toml
 
     if [ ! -f $GENESIS_PATH ]; then
       mkdir -p $(dirname $GENESIS_PATH)
@@ -21,7 +24,7 @@ data:
     apk add aria2 curl jq lz4
 
     # pull snapshot
-    URL=`curl https://quicksync.io/terra.json|jq -r '.[] |select(.file=="columbus-5-default")|select (.mirror=="SanFrancisco")|.url'`
+    URL=`curl https://quicksync.io/terra.json|jq -r ".[] |select(.file==\"columbus-5-default\")|select (.mirror==\"$QUICKSYNC_MIRROR\")|.url"`
     aria2c -x5 $URL
     lz4 -d `basename $URL` | tar xf -
 
@@ -29,4 +32,3 @@ data:
     #!/bin/sh
 
     return 0
-  

@@ -1,5 +1,5 @@
 global:
-  tag: stagenet-0.78.1
+  tag: stagenet-0.83.0
 
 midgard:
   image:

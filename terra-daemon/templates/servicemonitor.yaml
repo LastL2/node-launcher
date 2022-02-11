@@ -1,15 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ .Release.Name }}-{{ include "cosmos-daemon.name" . }}
+  name: {{ .Release.Name }}-{{ include "terra-daemon.name" . }}
   namespace: prometheus-system
   labels:
-    {{- include "cosmos-daemon.labels" . | nindent 4 }}
+    {{- include "terra-daemon.labels" . | nindent 4 }}
     release: prometheus
 spec:
   selector:
     matchLabels:
-      {{- include "cosmos-daemon.selectorLabels" . | nindent 6 }}
+      {{- include "terra-daemon.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

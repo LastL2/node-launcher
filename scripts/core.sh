@@ -105,6 +105,13 @@ get_mimir_value() {
   echo
 }
 
+get_node_address() {
+  [ "$NODE_ADDRESS" != "" ] && unset NODE_ADDRESS
+  read -r -p "=> Enter THORNode address to ban: " node_address
+  NODE_ADDRESS=${node_address:-$NODE_ADDRESS}
+  echo
+}
+
 get_node_info() {
   get_node_net
   get_node_type
@@ -119,7 +126,7 @@ get_node_info_short() {
 get_node_service() {
   [ "$SERVICE" != "" ] && return
   echo "=> Select THORNode service"
-  menu thornode thornode bifrost midgard gateway binance-daemon ethereum-daemon bitcoin-daemon litecoin-daemon bitcoin-cash-daemon midgard-timescaledb
+  menu thornode thornode bifrost midgard gateway binance-daemon ethereum-daemon bitcoin-daemon litecoin-daemon bitcoin-cash-daemon dogecoin-daemon terra-daemon midgard-timescaledb
   SERVICE=$MENU_SELECTED
   echo
 }
