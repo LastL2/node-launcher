@@ -66,6 +66,11 @@ ethereumDaemon:
   enabled: true
   mainnet: http://ethereum-daemon:8545
 
+terraDaemon: 
+  enabled: true
+  mainnet: terra-daemon:9090
+  stagenet: terra-daemon:9090
+
 replicaCount: 1
 
 strategyType: Recreate

@@ -27,5 +27,5 @@ ethereum-daemon:
 dogecoin-daemon:
   enabled: false
 
-cosmos-terra-daemon:
+terra-daemon:
   enabled: false
