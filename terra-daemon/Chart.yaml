@@ -4,4 +4,4 @@ description: Terra Node daemon component
 type: application
 version: 0.1.0
 
-appVersion: v0.5.14-oracle
+appVersion: v0.5.16-oracle
