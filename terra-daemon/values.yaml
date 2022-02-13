@@ -7,7 +7,7 @@ net: mainnet
 replicaCount: 1
 
 image:
-  repository: terramoney/core-node
+  repository: terramoney/core
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag:

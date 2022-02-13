@@ -48,6 +48,9 @@ spec:
           {{- toYaml .Values.securityContext | nindent 12 }}
         image: {{ include "terra-daemon.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /usr/local/bin/terrad
+          - start
         volumeMounts:
           - name: data
             mountPath: /root/.terra
