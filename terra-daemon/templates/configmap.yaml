@@ -6,6 +6,11 @@ data:
   init.sh: |
     GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
     GENESIS_PATH="/root/.terra/config/genesis.json"
+    ADDRBOOK_URL="https://network.terra.dev/addrbook.json"
+    ADDRBOOK_PATH="/root/.terra/config/addrbook.json"
+
+    # Fetch address book
+    wget -O $ADDRBOOK_PATH $ADDRBOOK_URL
 
     # Memory leak fix
     sed -i -e "s/contract-memory-cache-size.*/contract-memory-cache-size = 300/g" ~/.terra/config/app.toml

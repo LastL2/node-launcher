@@ -7,7 +7,7 @@ net: mainnet
 replicaCount: 1
 
 image:
-  repository: terramoney/core
+  repository: terramoney/core-node
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag:
@@ -63,8 +63,8 @@ persistence:
   enabled: true
   size:
     testnet: 50Gi
-    mainnet: 2048Gi
-    stagenet: 2048Gi
+    mainnet: 3072Gi
+    stagenet: 3072Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
