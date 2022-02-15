@@ -1,10 +1,10 @@
-SHELL:=/bin/bash
+SHELL := /bin/bash
 
 help: ## Help message
 	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 helm: ## Install Helm 3 dependency
-	@curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+	@./scripts/install-helm.sh
 
 helm-plugins: ## Install Helm plugins
 	@helm plugin install https://github.com/databus23/helm-diff
@@ -192,5 +192,8 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 	@echo Open your browser at http://localhost:8000
 	@kubectl -n kube-system port-forward service/kubernetes-dashboard 8000:443
 
-.PHONY: help helm repo pull tools install-elk install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-elk destroy-loki destroy-prometheus destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot
+lint: ## Run linters (development)
+	./scripts/lint.sh
+
+.PHONY: help helm repo pull tools install-elk install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-elk destroy-loki destroy-prometheus destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot lint
 .EXPORT_ALL_VARIABLES:
