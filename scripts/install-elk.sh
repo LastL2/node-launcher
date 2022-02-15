@@ -4,8 +4,8 @@ set -e
 
 source ./scripts/core.sh
 
-# this will fail on the first install since some crds do not exist
-if helm diff -C 3 upgrade elastic ./elastic-operator --install -n elastic-system; then
+if helm status elastic >/dev/null 2>&1; then
+  helm diff -C 3 upgrade elastic ./elastic-operator --install -n elastic-system
   confirm
 fi
 
