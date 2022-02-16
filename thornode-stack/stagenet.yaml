@@ -1,9 +1,13 @@
 global:
-  tag: stagenet-0.83.0
+  tag: stagenet-0.83.1
 
 midgard:
   image:
     tag: 2.5.11
+
+bifrost:
+  terraDaemon:
+    enabled: true
 
 binance-daemon:
   enabled: true
