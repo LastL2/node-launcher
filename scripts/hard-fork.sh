@@ -27,6 +27,14 @@ SPEC="
           {
             \"name\": \"HARDFORK_BLOCK_HEIGHT\",
             \"value\":\"$HARDFORK_BLOCK_HEIGHT\"
+          },
+          {
+            \"name\": \"CHAIN_ID\",
+            \"value\":\"$CHAIN_ID\"
+          },
+          {
+            \"name\": \"NEW_GENESIS_TIME\",
+            \"value\":\"$NEW_GENESIS_TIME\"
           }
         ],
         \"name\": \"hard-fork\",
