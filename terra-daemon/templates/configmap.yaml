@@ -3,23 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "terra-daemon.fullname" . }}-scripts
 data:
-  init.sh: |
-    GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
-    GENESIS_PATH="/root/.terra/config/genesis.json"
-    ADDRBOOK_URL="https://network.terra.dev/addrbook.json"
-    ADDRBOOK_PATH="/root/.terra/config/addrbook.json"
-
-    # Fetch address book
-    wget -O $ADDRBOOK_PATH $ADDRBOOK_URL
-
-    # Memory leak fix
-    sed -i -e "s/contract-memory-cache-size.*/contract-memory-cache-size = 300/g" ~/.terra/config/app.toml
-
-    if [ ! -f $GENESIS_PATH ]; then
-      mkdir -p $(dirname $GENESIS_PATH)
-      wget -O $GENESIS_PATH $GENESIS_URL
-    fi
-
+  snapshot.sh: |
     # skip snapshot pull if we already have a data directory
     if [ -d "/root/.terra/data" ]; then
       exit 0
@@ -33,6 +17,23 @@ data:
     aria2c -x5 $URL
     lz4 -d `basename $URL` | tar xf -
 
+  init.sh: |
+    GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
+    GENESIS_PATH="/root/.terra/config/genesis.json"
+    ADDRBOOK_URL="https://network.terra.dev/addrbook.json"
+    ADDRBOOK_PATH="/root/.terra/config/addrbook.json"
+
+    # Memory leak fix
+    sed -i -e "s/contract-memory-cache-size.*/contract-memory-cache-size = 300/g" ~/.terra/config/app.toml
+
+    if [ ! -f $GENESIS_PATH ]; then
+      mkdir -p $(dirname $GENESIS_PATH)
+      wget -O $GENESIS_PATH $GENESIS_URL
+    fi
+
+    # Fetch address book
+    wget -O $ADDRBOOK_PATH $ADDRBOOK_URL
+   
   probe.sh: |
     #!/bin/sh
 
