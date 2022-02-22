@@ -139,4 +139,6 @@ tolerations: []
 
 affinity: {}
 
-global: {}
+global:
+  gateway:
+    enabled: false

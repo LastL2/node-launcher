@@ -1,21 +1,11 @@
 stages:
   - validate
 
-shellcheck:
-  image: koalaman/shellcheck-alpine:latest
+linter:
+  image: registry.gitlab.com/thorchain/devops/node-launcher
   stage: validate
-  before_script:
-    - shellcheck --version
   script:
-    - find . -type f -name "*.*sh" | xargs shellcheck --exclude SC1091,SC2034
-
-shfmt:
-  image: mvdan/shfmt:v3.3.0-alpine
-  stage: validate
-  before_script:
-    - shfmt -version
-  script:
-    - find . -type f -name "*.*sh" | xargs shfmt -i 2 -ci -d
+    - ./scripts/lint.sh
 
 include:
   - template: Security/SAST.gitlab-ci.yml
