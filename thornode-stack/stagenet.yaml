@@ -1,9 +1,13 @@
 global:
-  tag: stagenet-0.78.1
+  tag: stagenet-0.83.1
 
 midgard:
   image:
     tag: 2.5.11
+
+bifrost:
+  terraDaemon:
+    enabled: true
 
 binance-daemon:
   enabled: true
@@ -21,4 +25,7 @@ ethereum-daemon:
   enabled: true
 
 dogecoin-daemon:
+  enabled: true
+
+terra-daemon:
   enabled: true

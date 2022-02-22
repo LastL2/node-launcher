@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "terra-daemon.fullname" . }}
+  labels:
+    {{- include "terra-daemon.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "terra-daemon.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "terra-daemon.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "terra-daemon.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      initContainers:
+      - name: init
+        image: alpine
+        command:
+          - sh
+          - /scripts/init.sh
+        env:
+          - name: QUICKSYNC_MIRROR
+            value: {{ .Values.quicksyncMirror }}
+        volumeMounts:
+          - name: scripts
+            mountPath: /scripts
+          - name: data
+            mountPath: /root/.terra
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: {{ include "terra-daemon.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+          - name: data
+            mountPath: /root/.terra
+          - name: scripts
+            mountPath: /scripts
+        env:
+          - name: SNAPSHOT_BASE_URL
+            value: https://getsfo.quicksync.io
+        ports:
+          - name: lcd
+            containerPort: 1317
+          - name: rpc
+            containerPort: {{ include "terra-daemon.rpc" . }}
+            protocol: TCP
+          - name: p2p
+            containerPort: {{ include "terra-daemon.p2p" . }}
+            protocol: TCP
+          - name: grpc
+            containerPort: {{ include "terra-daemon.grpc" . }}
+            protocol: TCP
+          - name: prometheus
+            containerPort: 26660
+            protocol: TCP
+        startupProbe:
+          failureThreshold: 120
+          periodSeconds: 10
+          timeoutSeconds: 10
+          exec:
+            command:
+              - /scripts/probe.sh
+        livenessProbe:
+          timeoutSeconds: 10
+          periodSeconds: 10
+          exec:
+            command:
+              - /scripts/probe.sh
+        readinessProbe:
+          timeoutSeconds: 10
+          httpGet:
+            path: /status
+            port: rpc
+        resources:
+        {{- if not (eq (include "terra-daemon.net" . ) "mocknet") }}
+          {{- toYaml .Values.resources | nindent 12 }}
+        {{- end }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "terra-daemon.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ include "terra-daemon.fullname" . }}-scripts
+          defaultMode: 0777
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

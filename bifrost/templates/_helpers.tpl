@@ -168,6 +168,21 @@ Dogecoin
 {{- end -}}
 
 {{/*
+Terra
+*/}}
+{{- define "bifrost.terraDaemon" -}}
+{{- if eq (include "bifrost.net" .) "mainnet" -}}
+    {{ .Values.terraDaemon.mainnet }}
+{{- else if eq (include "bifrost.net" .) "stagenet" -}}
+    {{ .Values.terraDaemon.stagenet }}
+{{- else if eq (include "bifrost.net" .) "testnet" -}}
+    {{ .Values.terraDaemon.testnet }}
+{{- else -}}
+    {{ .Values.terraDaemon.mocknet }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Ethereum
 */}}
 {{- define "bifrost.ethereumDaemon" -}}

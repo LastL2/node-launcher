@@ -4,6 +4,8 @@ global:
 bifrost:
   dogecoinDaemon:
     enabled: false
+  terraDaemon:
+    enabled: false
 
 midgard:
   image:
@@ -25,4 +27,7 @@ ethereum-daemon:
   enabled: true
 
 dogecoin-daemon:
+  enabled: false
+
+terra-daemon:
   enabled: false

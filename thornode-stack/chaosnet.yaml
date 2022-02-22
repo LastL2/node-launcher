@@ -5,6 +5,10 @@ midgard:
   image:
     tag: 2.5.13
 
+bifrost:
+  terraDaemon:
+    enabled: false
+
 binance-daemon:
   enabled: true
 
@@ -21,4 +25,7 @@ ethereum-daemon:
   enabled: true
 
 dogecoin-daemon:
+  enabled: true
+
+terra-daemon:
   enabled: true

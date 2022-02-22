@@ -140,8 +140,16 @@ spec:
               value: {{ include "bifrost.dogecoinDaemon" . }}
             - name: DOGE_START_BLOCK_HEIGHT
               value: "{{ .Values.dogecoinStartBlockHeight }}"
+            - name: TERRA_HOST
+              value: {{ include "bifrost.terraDaemon" . }}
+            - name: TERRA_START_BLOCK_HEIGHT
+              value: "{{ .Values.terraStartBlockHeight }}"
             {{- if not .Values.dogecoinDaemon.enabled }}
             - name: DOGE_DISABLED
+              value: "true"
+            {{- end}}
+            {{- if not .Values.terraDaemon.enabled }}
+            - name: TERRA_DISABLED
               value: "true"
             {{- end}}
             - name: ETH_HOST

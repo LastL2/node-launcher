@@ -56,3 +56,8 @@ dependencies:
     repository: file://../dogecoin-daemon
     version: 0.1.0
     condition: dogecoin-daemon.enabled
+
+  - name: terra-daemon
+    repository: file://../terra-daemon
+    version: 0.1.0
+    condition: terra-daemon.enabled
