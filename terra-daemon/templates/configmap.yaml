@@ -37,4 +37,16 @@ data:
   probe.sh: |
     #!/bin/sh
 
-    return 0
+    FILE=/root/.terra/.probe_last_height
+    ENDPOINT=localhost:$TERRA_DAEMON_SERVICE_PORT/status
+
+    STATUS=$(curl -sL --fail -m 10 "$ENDPOINT") || exit 1
+    if [ ! -f "$FILE" ]; then
+      echo "$STATUS" | jq -r ".result.sync_info.latest_block_height" >$FILE
+      exit 1
+    fi
+
+    OLD=$(cat $FILE)
+    echo "$STATUS" | jq -r ".result.sync_info.latest_block_height" > $FILE
+    CURRENT=$(cat $FILE)
+    [ "$OLD" == "$CURRENT" ] && exit 1 || exit 0
