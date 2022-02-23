@@ -82,8 +82,7 @@ spec:
             containerPort: 26660
             protocol: TCP
         startupProbe:
-          initialDelaySeconds: 180
-          failureThreshold: 120
+          failureThreshold: 60
           periodSeconds: 30
           timeoutSeconds: 10
           exec:
