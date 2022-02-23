@@ -35,8 +35,6 @@ data:
     wget -O $ADDRBOOK_PATH $ADDRBOOK_URL
    
   probe.sh: |
-    #!/bin/bash
-
     FILE=/root/.terra/.probe_last_height
     ENDPOINT=localhost:$TERRA_DAEMON_SERVICE_PORT/status
 
