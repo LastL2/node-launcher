@@ -14,7 +14,15 @@ if ! node_exists; then
   die "No existing THORNode found, make sure this is the correct name"
 fi
 
-HEIGHT=3865589
+HEIGHTS=$(
+  curl -s 'https://storage.googleapis.com/storage/v1/b/public-snapshots-ninerealms/o?delimiter=%2F&prefix=thornode/' |
+    jq -r '.prefixes | map(match("thornode/([0-9]+)/").captures[0].string) | map(tonumber) | sort | reverse | map(tostring) | join(" ")'
+)
+LATEST_HEIGHT=$(echo "$HEIGHTS" | awk '{print $1}')
+echo "=> Select block height to recover"
+# shellcheck disable=SC2068
+menu "$LATEST_HEIGHT" ${HEIGHTS[@]}
+HEIGHT=$MENU_SELECTED
 
 echo "=> Recovering height Nine Realms snapshot at height $HEIGHT in THORNode in $boldgreen$NAME$reset"
 confirm
@@ -54,24 +62,20 @@ EOF
 # reset node state
 echo "waiting for recover pod to be ready..."
 kubectl wait --for=condition=ready pods/recover-thornode -n "$NAME" --timeout=5m >/dev/null 2>&1
-echo "clearing thornode data..."
-kubectl exec -n "$NAME" -it recover-thornode -- /bin/sh -c 'rm -rf /root/.thornode/data/*'
-echo "resetting validator state..."
-kubectl exec -n "$NAME" -it recover-thornode -- /bin/sh -c '
-echo "{\"height\":\"0\",\"round\":0,\"step\":0}" > /root/.thornode/data/priv_validator_state.json'
 
 # note to user on resume
-echo "${boldyellow}If the snapshot fails to sync resume with the following:$reset"
-echo kubectl exec -n "$NAME" -it recover-thornode -- gsutil -m rsync -i -r \\
-echo "  gs://public-snapshots-ninerealms/thornode/$HEIGHT/ /root/.thornode/data/"
-echo
+echo "${boldyellow}If the snapshot fails to sync resume by re-running the make target.$reset"
 
 # unset gcloud account to access public bucket in GKE clusters with workload identity
 kubectl exec -n "$NAME" -it recover-thornode -- /bin/sh -c 'gcloud config set account none'
 
 # recover nine realms snapshot
 echo "pulling nine realms snapshot..."
-kubectl exec -n "$NAME" -it recover-thornode -- gsutil -m rsync -i -r \
+kubectl exec -n "$NAME" -it recover-thornode -- gsutil -m rsync -r -d \
+  "gs://public-snapshots-ninerealms/thornode/$HEIGHT/" /root/.thornode/data/
+
+echo "repeat sync pass in case of errors..."
+kubectl exec -n "$NAME" -it recover-thornode -- gsutil rsync -r -d \
   "gs://public-snapshots-ninerealms/thornode/$HEIGHT/" /root/.thornode/data/
 
 echo "=> ${boldgreen}Proceeding to clean up recovery pod and restart thornode$reset"
