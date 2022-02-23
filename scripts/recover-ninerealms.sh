@@ -27,8 +27,6 @@ HEIGHT=$MENU_SELECTED
 echo "=> Recovering height Nine Realms snapshot at height $HEIGHT in THORNode in $boldgreen$NAME$reset"
 confirm
 
-IMAGE="google/cloud-sdk"
-
 # stop thornode
 echo "stopping thornode..."
 kubectl scale -n "$NAME" --replicas=0 deploy/thornode --timeout=5m
@@ -45,7 +43,7 @@ metadata:
 spec:
   containers:
   - name: recover
-    image: $IMAGE
+    image: google/cloud-sdk@sha256:f94bacf262ad8f5e7173cea2db3d969c43b938a036e3c6294036c3d96261f2f4
     command:
       - tail
       - -f

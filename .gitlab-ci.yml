@@ -2,7 +2,7 @@ stages:
   - validate
 
 linter:
-  image: registry.gitlab.com/thorchain/devops/node-launcher
+  image: registry.gitlab.com/thorchain/devops/node-launcher@sha256:744718ddfad1948dfdb1342670aadf38f25b2472f9c5c56e42c260a4fc051011
   stage: validate
   script:
     - ./scripts/lint.sh

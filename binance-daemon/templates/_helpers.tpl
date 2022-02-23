@@ -37,7 +37,7 @@ Common labels
 {{- define "binance-daemon.labels" -}}
 helm.sh/chart: {{ include "binance-daemon.chart" . }}
 {{ include "binance-daemon.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ include "daemon.tag" . | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -81,13 +81,20 @@ Bnet
 {{- end -}}
 
 {{/*
+Tag
+*/}}
+{{- define "daemon.tag" -}}
+    {{ .Values.image.tag | default .Chart.AppVersion }}
+{{- end -}}
+
+{{/*
 Image
 */}}
 {{- define "binance-daemon.image" -}}
 {{- if eq (include "binance-daemon.net" .) "mocknet" -}}
     "{{ .Values.image.mocknet }}:latest"
 {{- else -}}
-    "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+    "{{ .Values.image.name }}:{{ include "daemon.tag" . }}@sha256:{{ .Values.image.hash }}"
 {{- end -}}
 {{- end -}}
 

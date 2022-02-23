@@ -29,10 +29,9 @@ allowedUserIds: ALL
 replicaCount: 1
 
 image:
-  repository: block42blockchaincompany/thornode_bot
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  name: block42blockchaincompany/thornode_bot
+  tag: "" # When tag is empty it defaults to the chart appVersion.
+  hash: e7605c0697672e0f0058903fad49a81a504479d71bba7f499902e5933bb58997
 
 persistence:
   enabled: true

@@ -7,10 +7,9 @@ replicaCount: 1
 net: mainnet
 
 image:
-  repository: registry.gitlab.com/thorchain/devops/bitcoin-core
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  name: registry.gitlab.com/thorchain/devops/bitcoin-core
+  tag: "" # When tag is empty it defaults to the chart appVersion.
+  hash: 99d186380f0898e0454de78612e46fd2eb11f2df9074af636058fcf6e658bb91
 
 imagePullSecrets: []
 nameOverride: ""
