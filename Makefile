@@ -129,12 +129,6 @@ destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
 
 destroy-tools: destroy-prometheus destroy-loki destroy-dashboard ## Uninstall Prometheus/Grafana, Loki, Kubernetes dashboard
 
-install-elk: repos ## Install/Update ELK logs management stack
-	@./scripts/install-elk.sh
-
-destroy-elk: ## Uninstall ELK logs management stack
-	@./scripts/destroy-elk.sh
-
 install-loki: repos ## Install/Update Loki logs management stack
 	@./scripts/install-loki.sh
 
@@ -168,12 +162,6 @@ destroy-dashboard: ## Uninstall Kubernetes dashboard
 	@helm delete kubernetes-dashboard -n kube-system
 	@echo
 
-kibana: ## Access Kibana UI through port-forward locally
-	@echo User: elastic
-	@echo Password: $(shell kubectl -n elastic-system get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo)
-	@echo Open your browser at https://localhost:5601
-	@kubectl -n elastic-system port-forward service/elasticsearch-kb-http 5601
-
 grafana: ## Access Grafana UI through port-forward locally
 	@echo User: admin
 	@echo Password: thorchain
@@ -195,5 +183,5 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 lint: ## Run linters (development)
 	./scripts/lint.sh
 
-.PHONY: help helm repo pull tools install-elk install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-elk destroy-loki destroy-prometheus destroy-metrics prometheus grafana kibana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot lint
+.PHONY: help helm repo pull tools install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-loki destroy-prometheus destroy-metrics prometheus grafana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot lint
 .EXPORT_ALL_VARIABLES:

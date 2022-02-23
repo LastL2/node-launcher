@@ -166,7 +166,7 @@ make resume
 
 # relay
 
-Send a message on behalf of your node that will be relayed to a public channel on the dev Discord. This may be used for a number of purposes, including: 
+Send a message on behalf of your node that will be relayed to a public channel on the dev Discord. This may be used for a number of purposes, including:
 
 * publicly state approval or disapproval for a proposal
 * propose to ban bad nodes
@@ -303,64 +303,6 @@ when deploying a mainnet validator THORNode.
 make destroy-loki
 ```
 
-## Deploy Elastick Search logs management stack
-
-If you prefer to use the Elastic Search stack, there is a command available for that.
-
-You can deploy the ELK log management automatically using the command below:
-
-```bash
-make install-elk
-```
-
-This command will deploy the Elastic Search chart.
-It can take a while to deploy all the services, usually up to 5 minutes
-depending on resources running your kubernetes cluster.
-
-You can check the services being deployed in your kubernetes namespace `elastic-system`.
-
-### Access Kibana
-
-We have created a make command to automate this task to access Kibana from your
-local workstation:
-
-```bash
-make kibana
-```
-
-Open https://localhost:5601 in your browser. Your browser will show a warning because the self-signed
-certificate configured by default is not verified by a third party certificate authority
-and not trusted by your browser. You can temporarily acknowledge the warning for the purposes
-of this quick start but it is highly recommended that you configure valid certificates for any production deployments.
-
-Login as the elastic user. The password should have been displayed in the previous command (`make kibana`).
-
-
-To manually access Kibana follow these instructions:
-A ClusterIP Service is automatically created for Kibana:
-
-```bash
-kubectl -n elastic-system get service elasticsearch-kb-http
-```
-
-Use kubectl port-forward to access Kibana from your local workstation:
-
-```bash
-kubectl -n elastic-system port-forward service/elasticsearch-kb-http 5601
-```
-
-Login as the `elastic` user. The password can be obtained with the following command:
-
-```bash
-kubectl -n elastic-system get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
-```
-
-### Destroy ELK logs management stack
-
-```bash
-make destroy-elk
-```
-
 ## Deploy Kubernetes Dashboard
 
 You can also deploy the Kubernetes dashboard to monitor your cluster resources.
@@ -422,7 +364,6 @@ you know what you are doing and want to run each chart separately (not recommend
 
 ### Tools
 
-- elastic-operator: ELK stack using operator for logs management
 - prometheus: Prometheus stack for metrics
 - loki: Loki stack for logs
 - kubernetes-dashboard: Kubernetes dashboard
