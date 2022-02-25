@@ -3,7 +3,7 @@ global:
 
 midgard:
   image:
-    tag: 2.5.13
+    tag: 2.5.15
 
 bifrost:
   terraDaemon:

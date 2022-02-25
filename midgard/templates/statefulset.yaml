@@ -42,6 +42,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ['/entrypoint.sh']
+          {{- if .Values.blockstore.enabled }}
+          env:
+            - name: MIDGARD_BLOCKSTORE_LOCAL
+              value: /blockstore
+            - name: MIDGARD_BLOCKSTORE_REMOTE
+              value: {{ .Values.blockstore.remote }}
+          {{- end }}
           volumeMounts:
           - name: config
             mountPath: /config.json.tpl
@@ -49,6 +56,10 @@ spec:
           - name: config
             mountPath: /entrypoint.sh
             subPath: entrypoint.sh
+          {{- if .Values.blockstore.enabled }}
+          - name: blockstore
+            mountPath: /blockstore
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -81,6 +92,34 @@ spec:
           configMap:
             name: {{ include "midgard.fullname" . }}-config
             defaultMode: 0777
+  {{- if .Values.blockstore.enabled }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: blockstore
+      annotations:
+      {{- range $key, $value := .Values.persistence.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+    spec:
+      accessModes:
+      - {{ .Values.persistence.accessMode | quote }}
+      resources:
+        requests:
+          storage: {{ .Values.blockstore.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- else }}
+      - name: blockstore
+        emptyDir: {}
+  {{- end }}
+  {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -93,6 +132,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+
 ---
 apiVersion: apps/v1
 kind: StatefulSet
