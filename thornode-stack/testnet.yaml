@@ -7,7 +7,11 @@ bifrost:
 
 midgard:
   image:
-    tag: 2.5.13
+    tag: 2.5.15
+  blockstore:
+    enabled: true
+    remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/testnet/v2/
+    size: 5Gi
 
 binance-daemon:
   enabled: true
