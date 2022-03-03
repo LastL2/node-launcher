@@ -1,5 +1,5 @@
 global:
-  tag: testnet-0.81.0
+  tag: testnet-0.81.1
 
 bifrost:
   dogecoinDaemon:
