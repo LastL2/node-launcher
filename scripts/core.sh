@@ -255,7 +255,6 @@ deploy_genesis() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="genesis"
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
@@ -264,7 +263,6 @@ deploy_genesis() {
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="genesis"
 }
 
@@ -277,7 +275,6 @@ deploy_validator() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="validator" \
     --set bifrost.peer="$SEED",thornode.seeds="$SEED"
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
@@ -287,7 +284,6 @@ deploy_validator() {
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="validator" \
     --set bifrost.peer="$SEED",thornode.seeds="$SEED"
 }
@@ -298,7 +294,6 @@ deploy_fullnode() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.seeds="$SEED" \
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
@@ -312,7 +307,6 @@ deploy_fullnode() {
     --create-namespace $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.seeds="$SEED" \
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \

@@ -67,7 +67,10 @@ data:
 
     if [ "$HARDFORK_BLOCK_HEIGHT" != "" ]; then
       # don't even start if height is equal or higher than halt block height
-      [ "$(jq </root/.thornode/data/priv_validator_state.json -r .height)" -lt "$HARDFORK_BLOCK_HEIGHT" ] || exit 1
+      if [ "$(jq </root/.thornode/data/priv_validator_state.json -r .height)" -ge "$HARDFORK_BLOCK_HEIGHT" ]; then
+        echo "reached hard fork height: $HARDFORK_BLOCK_HEIGHT"
+        sleep infinity
+      fi
 
       ARGS="$ARGS --halt-height $HARDFORK_BLOCK_HEIGHT"
     fi
