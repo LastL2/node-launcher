@@ -6,4 +6,4 @@ get_node_info_short
 get_mimir_key
 get_mimir_value
 
-kubectl exec -it -n "$NAME" -c thornode deploy/thornode -- /kube-scripts/mimir.sh "$MIMIR_KEY" "$MIMIR_VALUE" >/dev/null
+kubectl exec -it -n "$NAME" -c thornode deploy/thornode -- /kube-scripts/mimir.sh "$MIMIR_KEY" "$MIMIR_VALUE"
