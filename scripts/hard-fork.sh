@@ -2,6 +2,21 @@
 
 source ./scripts/core.sh
 
+if [ -z "$HARDFORK_BLOCK_HEIGHT" ]; then
+  warn "HARDFORK_BLOCK_HEIGHT must be set"
+  exit 1
+fi
+
+if [ -z "$CHAIN_ID" ]; then
+  warn "CHAIN_ID must be set"
+  exit 1
+fi
+
+if [ -z "$NEW_GENESIS_TIME" ]; then
+  warn "NEW_GENESIS_TIME must be set"
+  exit 1
+fi
+
 get_node_info_short
 
 if ! node_exists; then
@@ -11,7 +26,11 @@ fi
 echo "=> Hard forking THORNode chain state at block height $boldyellow$HARDFORK_BLOCK_HEIGHT$reset from $boldgreen$NAME$reset"
 confirm
 
-IMAGE=$(kubectl -n "$NAME" get deploy/thornode -o jsonpath='{$.spec.template.spec.containers[:1].image}')
+if [ -z "$IMAGE" ]; then
+  IMAGE=$(kubectl -n "$NAME" get deploy/thornode -o jsonpath='{$.spec.template.spec.containers[:1].image}')
+  echo "IMAGE was unset - using current THORNode image for export: $IMAGE"
+fi
+
 SPEC="
 {
   \"apiVersion\": \"v1\",
