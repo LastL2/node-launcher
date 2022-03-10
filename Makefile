@@ -55,6 +55,9 @@ hard-reset-thornode: ## Hard reset and resync thornode service from scratch on 
 backup: ## Backup specific files from either thornode of bifrost service of a THORNode.
 	@./scripts/backup.sh
 
+full-backup: ## Create volume snapshots and backups for both thornode and bifrost services.
+	@./scripts/full-backup.sh
+
 restore-backup: ## Restore backup specific files from either thornode of bifrost service of a THORNode.
 	@./scripts/restore-backup.sh
 
