@@ -79,6 +79,9 @@ export-state: ## Export chain state
 hard-fork: ## Hard fork chain
 	@./scripts/hard-fork.sh
 
+hard-fork-testnet: ## hard fork testnet
+	@HARDFORK_BLOCK_HEIGHT=1774779 NEW_GENESIS_TIME='2022-03-11T03:01:39.80256368Z' CHAIN_ID='thorchain-testnet-v2' IMAGE='registry.gitlab.com/thorchain/thornode:testnet-0.81.1' ./scripts/hard-fork.sh
+
 shell: ## Open a shell for a selected THORNode service
 	@./scripts/shell.sh
 
