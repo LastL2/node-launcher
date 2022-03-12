@@ -2,7 +2,7 @@ global:
   tag: testnet-0.81.2
 
 thornode:
-  haltHeight: 1774779
+  haltHeight: "1821177"
 
 bifrost:
   dogecoinDaemon:
