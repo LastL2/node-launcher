@@ -173,7 +173,10 @@ make_snapshot() {
 
   echo
   echo "=> Snapshotting service $boldgreen$service$reset of a THORNode named $boldgreen$NAME$reset"
-  confirm
+  if [ -z "$TC_NO_CONFIRM" ]; then
+    echo -n "$boldyellow:: Are you sure? Confirm [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
+  fi
+  echo
 
   if kubectl -n "$NAME" get volumesnapshot "$snapshot" >/dev/null 2>&1; then
     echo "Existing snapshot $boldgreen$snapshot$reset exists, ${boldyellow}continuing will overwrite${reset}"
