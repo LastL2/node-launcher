@@ -49,7 +49,7 @@ spec:
       - name: halt-height
         image: {{ include "thornode.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ['sh', '-c', '[ $(cat /root/.thornode/data/priv_validator_state.json | jq -r .height) -lt {{ .Values.haltHeight}} ] || exit 1']
+        command: ['sh', '-c', '[ $(cat /root/.thornode/data/priv_validator_state.json | jq -r .height) -lt {{ .Values.haltHeight }} ] || sleep infinity']
         volumeMounts:
           - name: data
             mountPath: /root/

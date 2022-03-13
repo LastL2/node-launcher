@@ -33,7 +33,9 @@ die() {
 }
 
 confirm() {
-  echo -n "$boldyellow:: Are you sure? Confirm [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && exit
+  if [ -z "$TC_NO_CONFIRM" ]; then
+    echo -n "$boldyellow:: Are you sure? Confirm [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && exit
+  fi
   echo
 }
 
@@ -171,8 +173,7 @@ make_snapshot() {
 
   echo
   echo "=> Snapshotting service $boldgreen$service$reset of a THORNode named $boldgreen$NAME$reset"
-  echo -n "$boldyellow:: Are you sure? Confirm or skip [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && return
-  echo
+  confirm
 
   if kubectl -n "$NAME" get volumesnapshot "$snapshot" >/dev/null 2>&1; then
     echo "Existing snapshot $boldgreen$snapshot$reset exists, ${boldyellow}continuing will overwrite${reset}"
@@ -194,6 +195,86 @@ EOF
   until kubectl -n "$NAME" get volumesnapshot "$snapshot" -o yaml | grep "readyToUse: true" >/dev/null 2>&1; do sleep 10; done
   echo "Snapshot $boldyellow$snapshot$reset for $boldgreen$service$reset created"
   echo
+}
+
+make_backup() {
+  local service
+  local spec
+  service=$1
+
+  if [ "$service" = "bifrost" ]; then
+    spec="
+    {
+      \"apiVersion\": \"v1\",
+      \"spec\": {
+        \"containers\": [
+          {
+            \"command\": [
+              \"sh\",
+              \"-c\",
+              \"sleep 300\"
+            ],
+            \"name\": \"$service\",
+            \"image\": \"busybox:1.33\",
+            \"volumeMounts\": [
+              {\"mountPath\": \"/root/.thornode\", \"name\": \"data\", \"subPath\": \"thornode\"},
+              {\"mountPath\": \"/var/data/bifrost\", \"name\": \"data\", \"subPath\": \"data\"}
+            ]
+          }
+        ],
+        \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"$service\"}}]
+      }
+    }"
+  else
+    spec="
+    {
+      \"apiVersion\": \"v1\",
+      \"spec\": {
+        \"containers\": [
+          {
+            \"command\": [
+              \"sh\",
+              \"-c\",
+              \"sleep 300\"
+            ],
+            \"name\": \"$service\",
+            \"image\": \"busybox:1.33\",
+            \"volumeMounts\": [{\"mountPath\": \"/root\", \"name\":\"data\"}]
+          }
+        ],
+        \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"$service\"}}]
+      }
+    }"
+
+  fi
+
+  echo
+  echo "=> Backing up service $boldgreen$service$reset from THORNode in $boldgreen$NAME$reset"
+  confirm
+
+  local pod
+  pod="deploy/$service"
+  if (kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$service" 2>&1 | grep "No resources found") >/dev/null 2>&1; then
+    kubectl run -n "$NAME" "backup-$service" --restart=Never --image="busybox:1.33" --overrides="$spec"
+    kubectl wait --for=condition=ready pods "backup-$service" -n "$NAME" --timeout=5m >/dev/null 2>&1
+    pod="pod/backup-$service"
+  fi
+
+  local date
+  date=$(date +%s)
+  mkdir -p "backups/$service"
+  if [ "$service" = "bifrost" ]; then
+    kubectl exec -it -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cf \"$service-$date.tar\" localstate-*.json"
+  else
+    kubectl exec -it -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cf \"$service-$date.tar\" config/"
+  fi
+  kubectl exec -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cf - \"$service-$date.tar\"" | tar xf - -C "$PWD/backups/$service"
+
+  if (kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$service" 2>&1 | grep "No resources found") >/dev/null 2>&1; then
+    kubectl delete pod --now=true -n "$NAME" "backup-$service"
+  fi
+
+  echo "Backup available in path ./backups/$service"
 }
 
 create_mnemonic() {
@@ -255,7 +336,6 @@ deploy_genesis() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="genesis"
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
@@ -264,7 +344,6 @@ deploy_genesis() {
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="genesis"
 }
 
@@ -277,7 +356,6 @@ deploy_validator() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="validator" \
     --set bifrost.peer="$SEED",thornode.seeds="$SEED"
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
@@ -287,7 +365,6 @@ deploy_validator() {
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.type="validator" \
     --set bifrost.peer="$SEED",thornode.seeds="$SEED"
 }
@@ -298,7 +375,6 @@ deploy_fullnode() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.seeds="$SEED" \
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
@@ -312,7 +388,6 @@ deploy_fullnode() {
     --create-namespace $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.haltHeight="$HARDFORK_BLOCK_HEIGHT" \
     --set thornode.seeds="$SEED" \
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \

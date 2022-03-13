@@ -1,5 +1,8 @@
 global:
-  tag: testnet-0.81.1
+  tag: testnet-0.81.2
+
+thornode:
+  haltHeight: "1821177"
 
 bifrost:
   dogecoinDaemon:

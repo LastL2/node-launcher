@@ -39,6 +39,10 @@ case $NET in
     ;;
 esac
 
+if [ -n "$HARDFORK_BLOCK_HEIGHT" ]; then
+  EXTRA_ARGS="$EXTRA_ARGS --set thornode.haltHeight=$HARDFORK_BLOCK_HEIGHT"
+fi
+
 create_namespace
 create_password
 create_mnemonic

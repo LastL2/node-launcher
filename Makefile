@@ -55,6 +55,9 @@ hard-reset-thornode: ## Hard reset and resync thornode service from scratch on 
 backup: ## Backup specific files from either thornode of bifrost service of a THORNode.
 	@./scripts/backup.sh
 
+full-backup: ## Create volume snapshots and backups for both thornode and bifrost services.
+	@./scripts/full-backup.sh
+
 restore-backup: ## Restore backup specific files from either thornode of bifrost service of a THORNode.
 	@./scripts/restore-backup.sh
 
@@ -75,6 +78,9 @@ export-state: ## Export chain state
 
 hard-fork: ## Hard fork chain
 	@./scripts/hard-fork.sh
+
+hard-fork-testnet: ## hard fork testnet
+	@HARDFORK_BLOCK_HEIGHT=1821177 NEW_GENESIS_TIME='2022-03-14T05:07:38.219785087Z' CHAIN_ID='thorchain-testnet-v2' IMAGE='registry.gitlab.com/thorchain/thornode:testnet-0.81.2' ./scripts/hard-fork.sh
 
 shell: ## Open a shell for a selected THORNode service
 	@./scripts/shell.sh

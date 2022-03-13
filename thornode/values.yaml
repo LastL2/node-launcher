@@ -23,7 +23,7 @@ ethRouterContract:
 enableApi: true
 
 debug: false
-chainID: 
+chainID:
   testnet: thorchain-v1
   mainnet: thorchain
   stagenet: thorchain-stagenet
@@ -54,7 +54,7 @@ service:
       rpc: 26657
     stagenet:
       p2p: 27146
-      rpc: 27147 
+      rpc: 27147
     mainnet:
       p2p: 27146
       rpc: 27147
