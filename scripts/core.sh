@@ -382,7 +382,7 @@ deploy_fullnode() {
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
-    --set dogecoin-daemon.enabled=false \
+    --set dogecoin-daemon.enabled=false,terra-daemon.enabled=false \
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc=true,gateway.api=true
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
