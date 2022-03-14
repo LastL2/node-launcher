@@ -19,7 +19,7 @@ debug: false
 
 thorApi: thornode:1317
 chainID:
-  testnet: thorchain-v1
+  testnet: thorchain-testnet-v2
   mainnet: thorchain
   stagenet: thorchain-stagenet
 
