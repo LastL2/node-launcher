@@ -80,7 +80,7 @@ hard-fork: ## Hard fork chain
 	@./scripts/hard-fork.sh
 
 hard-fork-testnet: ## hard fork testnet
-	@HARDFORK_BLOCK_HEIGHT=1821177 NEW_GENESIS_TIME='2022-03-14T05:07:38.219785087Z' CHAIN_ID='thorchain-testnet-v2' IMAGE='registry.gitlab.com/thorchain/thornode:testnet-0.81.2' ./scripts/hard-fork.sh
+	@HARDFORK_BLOCK_HEIGHT=1821177 NEW_GENESIS_TIME='2022-03-14T19:32:38.219785087Z' CHAIN_ID='thorchain-testnet-v2' IMAGE='registry.gitlab.com/thorchain/thornode:testnet-0.81.2' ./scripts/hard-fork.sh
 
 shell: ## Open a shell for a selected THORNode service
 	@./scripts/shell.sh
