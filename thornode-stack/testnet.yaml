@@ -16,6 +16,8 @@ midgard:
     size: 5Gi
 
 binance-daemon:
+  image:
+    tag: 0.9.0-tn-hf1
   enabled: true
 
 bitcoin-daemon:
