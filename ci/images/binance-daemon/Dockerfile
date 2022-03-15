@@ -35,8 +35,8 @@ RUN curl -Ls --create-dirs -o /usr/local/bin/tbnbcli ${REPO_URL}/cli/testnet/${C
 
   # Copy config files for testnet and prod chains of fullnode
   && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/app.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/app.toml \
-  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/config.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/config.toml \
-  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/genesis.json ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/genesis.json \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/config.toml ${REPO_URL}/fullnode/testnet/0.8.1/config/config.toml \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/genesis.json ${REPO_URL}/fullnode/testnet/0.8.1/config/genesis.json \
   && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/app.toml ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/app.toml \
   && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/config.toml ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/config.toml \
   && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/genesis.json ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/genesis.json
