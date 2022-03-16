@@ -19,9 +19,5 @@ spec:
       port: {{ include "terra-daemon.grpc" . }}
       targetPort: grpc
       protocol: TCP
-    - name: prometheus
-      port: 28660
-      targetPort: prometheus
-      protocol: TCP
   selector:
     {{- include "terra-daemon.selectorLabels" . | nindent 4 }}

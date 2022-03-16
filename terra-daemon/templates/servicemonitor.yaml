@@ -14,5 +14,5 @@ spec:
     matchNames:
     - {{ .Release.Namespace }}
   endpoints:
-  - port: prometheus
+  - port: rpc
     interval: 15s
