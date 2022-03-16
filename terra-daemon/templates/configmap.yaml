@@ -6,6 +6,8 @@ data:
   snapshot.sh: |
     # skip snapshot pull if we already have a data directory
     if [ -d "/root/.terra/data" ]; then
+      # delete snapshot archive if it exists
+      rm -f /root/.terra/*.lz4
       exit 0
     fi
 
