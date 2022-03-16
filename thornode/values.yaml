@@ -14,7 +14,6 @@ signer:
 peer:
 seeds:
 peerApi:
-binanceDaemon:
 ethRouterContract:
   testnet: "0xefA28233838f46a80AaaC8c309077a9ba70D123A"
   mainnet: "0xC145990E84155416144C532E31f89B840Ca8c2cE"
