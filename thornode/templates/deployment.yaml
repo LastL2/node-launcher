@@ -67,12 +67,6 @@ spec:
         command: ['sh', '-c', "until nc -zv {{ .Values.peerApi }}:1317; do echo waiting for peer thornode; sleep 2; done"]
       {{- end }}
 
-      {{- if default .Values.binanceDaemon .Values.global.binanceDaemon }}
-      - name: init-binance
-        image: appropriate/curl
-        command: ['sh', '-c', "until curl -s {{ default .Values.binanceDaemon .Values.global.binanceDaemon }} > /dev/null; do echo waiting for binance-daemon; sleep 2; done"]
-      {{- end }}
-
       - name: init-thornode
         image: {{ include "thornode.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
