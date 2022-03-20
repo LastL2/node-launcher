@@ -24,7 +24,7 @@ enableApi: true
 debug: false
 chainID:
   testnet: thorchain-testnet-v2
-  mainnet: thorchain
+  mainnet: thorchain-mainnet-v1
   stagenet: thorchain-stagenet
 
 haltHeight:
