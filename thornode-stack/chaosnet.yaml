@@ -6,7 +6,11 @@ thornode:
 
 midgard:
   image:
-    tag: 2.6.1
+    tag: 2.6.7
+  blockstore:
+    enabled: true
+    remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/mainnet/v2/
+    size: 5Gi
 
 bifrost:
   terraDaemon:
