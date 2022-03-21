@@ -9,7 +9,7 @@ bifrost:
 
 midgard:
   image:
-    tag: 2.6.1
+    tag: 2.6.7
   blockstore:
     enabled: true
     remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/testnet/v2/
