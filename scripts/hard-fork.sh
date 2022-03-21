@@ -52,6 +52,19 @@ SPEC="
             \"value\":\"$CHAIN_ID\"
           },
           {
+            \"name\": \"SIGNER_NAME\",
+            \"value\":\"thorchain\"
+          },
+          {
+            \"name\": \"SIGNER_PASSWD\",
+            \"valueFrom\": {
+              \"secretKeyRef\": {
+                \"key\": \"password\",
+                \"name\": \"thornode-password\"
+              }
+            }
+          },
+          {
             \"name\": \"NEW_GENESIS_TIME\",
             \"value\":\"$NEW_GENESIS_TIME\"
           }
