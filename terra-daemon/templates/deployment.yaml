@@ -78,9 +78,6 @@ spec:
           - name: grpc
             containerPort: {{ include "terra-daemon.grpc" . }}
             protocol: TCP
-          - name: prometheus
-            containerPort: 26660
-            protocol: TCP
         startupProbe:
           failureThreshold: 60
           periodSeconds: 30
