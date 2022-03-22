@@ -31,8 +31,6 @@ haltHeight:
 
 replicaCount: 1
 
-hostNetwork: false
-
 strategyType: Recreate
 
 image:

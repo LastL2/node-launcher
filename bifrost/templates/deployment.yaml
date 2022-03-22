@@ -24,11 +24,6 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
 
-      {{- if .Values.hostNetwork }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
-
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -37,9 +32,9 @@ spec:
       - name: init-external-ip
         image: alpine/k8s:1.18.2
         {{- if .Values.global.gateway.enabled }}
-        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway.name }}', '{{ include "bifrost.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', 'false', '{{ .Values.global.gateway.name }}', '{{ include "bifrost.fullname" . }}-external-ip']
         {{- else }}
-        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "bifrost.fullname" . }}', '{{ include "bifrost.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', 'false', '{{ include "bifrost.fullname" . }}', '{{ include "bifrost.fullname" . }}-external-ip']
         {{- end }}
         volumeMounts:
         - name: scripts

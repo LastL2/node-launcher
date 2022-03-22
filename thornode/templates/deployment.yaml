@@ -24,11 +24,6 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
 
-      {{- if .Values.hostNetwork }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
-
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -37,9 +32,9 @@ spec:
       - name: init-external-ip
         image: alpine/k8s:1.18.2
         {{- if .Values.global.gateway.enabled }}
-        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway.name }}', '{{ include "thornode.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', 'false', '{{ .Values.global.gateway.name }}', '{{ include "thornode.fullname" . }}-external-ip']
         {{- else }}
-        command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ include "thornode.fullname" . }}', '{{ include "thornode.fullname" . }}-external-ip']
+        command: ['/scripts/external-ip.sh', 'false', '{{ include "thornode.fullname" . }}', '{{ include "thornode.fullname" . }}-external-ip']
         {{- end }}
         volumeMounts:
         - name: scripts
@@ -105,11 +100,7 @@ spec:
           - name: SEED
             valueFrom:
               fieldRef:
-                {{- if .Values.hostNetwork }}
-                fieldPath: spec.nodeName
-                {{- else}}
                 fieldPath: metadata.name
-                {{- end }}
           - name: NET
             value: {{ include "thornode.net" . }}
           - name: SIGNER_NAME
