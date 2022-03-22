@@ -1,8 +1,8 @@
 global:
-  tag: chaosnet-multichain-0.81.4
+  tag: chaosnet-multichain-1.82.0
 
 thornode:
-  haltHeight: "4786559"
+  haltHeight: 
 
 midgard:
   image:
