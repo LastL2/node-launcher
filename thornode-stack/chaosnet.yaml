@@ -12,10 +12,6 @@ midgard:
     remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/mainnet/v2/
     size: 5Gi
 
-bifrost:
-  terraDaemon:
-    enabled: false
-
 binance-daemon:
   enabled: true
 
