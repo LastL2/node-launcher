@@ -68,8 +68,8 @@ ethereumDaemon:
 
 terraDaemon: 
   enabled: true
-  mainnet: terra-daemon:9090
-  stagenet: terra-daemon:9090
+  mainnet: http://terra-daemon:26657
+  stagenet: http://terra-daemon:26657
 
 replicaCount: 1
 
