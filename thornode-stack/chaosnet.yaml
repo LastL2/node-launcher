@@ -2,11 +2,11 @@ global:
   tag: chaosnet-multichain-1.82.0
 
 thornode:
-  haltHeight: 
+  haltHeight:
 
 midgard:
   image:
-    tag: 2.6.7
+    tag: 2.6.9
   blockstore:
     enabled: true
     remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/mainnet/v2/
