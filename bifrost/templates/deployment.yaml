@@ -144,6 +144,10 @@ spec:
               value: {{ include "bifrost.terraDaemon" . }}
             - name: TERRA_START_BLOCK_HEIGHT
               value: "{{ .Values.terraStartBlockHeight }}"
+            {{- if not .Values.litecoinDaemon.enabled }}
+            - name: LTC_DISABLED
+              value: "true"
+            {{- end}}
             {{- if not .Values.dogecoinDaemon.enabled }}
             - name: DOGE_DISABLED
               value: "true"
