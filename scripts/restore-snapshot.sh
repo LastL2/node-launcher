@@ -11,7 +11,7 @@ fi
 get_node_info_short
 if [ "$SERVICE" == "" ]; then
   echo "=> Select a THORNode service to restore a snapshot"
-  menu thornode thornode bifrost midgard binance-daemon bitcoin-daemon bitcoin-cash-daemon ethereum-daemon litecoin-daemon
+  menu thornode thornode bifrost midgard binance-daemon bitcoin-daemon bitcoin-cash-daemon dogecoin-daemon ethereum-daemon litecoin-daemon terra-daemon
   SERVICE=$MENU_SELECTED
   echo
 fi
