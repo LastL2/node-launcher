@@ -18,6 +18,7 @@ data:
     URL=`curl https://quicksync.io/terra.json|jq -r ".[] |select(.file==\"columbus-5-default\")|select (.mirror==\"$QUICKSYNC_MIRROR\")|.url"`
     aria2c -x5 $URL
     lz4 -d `basename $URL` | tar xf -
+    rm -f /root/.terra/*.lz4
 
   init.sh: |
     GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
@@ -35,7 +36,7 @@ data:
 
     # Fetch address book
     wget -O $ADDRBOOK_PATH $ADDRBOOK_URL
-   
+
   probe.sh: |
     #!/bin/sh
 
