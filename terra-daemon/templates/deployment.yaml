@@ -32,7 +32,6 @@ spec:
       - name: snapshot
         image: alpine
         command:
-          - sh
           - /scripts/snapshot.sh
         env:
           - name: QUICKSYNC_MIRROR
@@ -45,7 +44,6 @@ spec:
       - name: init
         image: alpine
         command:
-          - sh
           - /scripts/init.sh
         volumeMounts:
           - name: scripts

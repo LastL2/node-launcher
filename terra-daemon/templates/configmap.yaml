@@ -4,6 +4,10 @@ metadata:
   name: {{ include "terra-daemon.fullname" . }}-scripts
 data:
   snapshot.sh: |
+    #!/bin/sh
+
+    set -euo pipefail
+
     # skip snapshot pull if we already have a data directory
     if [ -d "/root/.terra/data" ]; then
       # delete snapshot archive if it exists
@@ -14,20 +18,40 @@ data:
     cd /root/.terra
     apk add aria2 curl jq lz4
 
+    # fetch snapshot url
+    URL=`curl -s https://quicksync.io/terra.json|jq -r ".[] |select(.file==\"columbus-5-pruned\")|select (.mirror==\"$QUICKSYNC_MIRROR\")|.url"`
+
+    # clean stale snapshots
+    if ls /root/.terra/columbus-5-* >/dev/null 2>&1; then
+      ls /root/.terra/columbus-5-* | while read line; do
+        if [ "$(basename $URL)" = "$(basename $line)" ] || [ "$(basename $URL).aria2" = "$(basename $line)" ]; then
+          echo "leaving snapshot to resume: $line"
+        else
+          echo "cleaning stale snapshot: $line"
+          rm $line
+        fi
+      done
+    fi
+
     # pull snapshot
-    URL=`curl https://quicksync.io/terra.json|jq -r ".[] |select(.file==\"columbus-5-default\")|select (.mirror==\"$QUICKSYNC_MIRROR\")|.url"`
-    aria2c -x5 $URL
+    aria2c -c -x5 $URL
     lz4 -d `basename $URL` | tar xf -
     rm -f /root/.terra/*.lz4
 
   init.sh: |
+    #!/bin/sh
+
+    set -euo pipefail
+
     GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
     GENESIS_PATH="/root/.terra/config/genesis.json"
     ADDRBOOK_URL="https://network.terra.dev/addrbook.json"
     ADDRBOOK_PATH="/root/.terra/config/addrbook.json"
 
     # Memory leak fix
-    sed -i -e "s/contract-memory-cache-size.*/contract-memory-cache-size = 300/g" ~/.terra/config/app.toml
+    if [ -f ~/.terra/config/app.toml ]; then
+      sed -i -e "s/contract-memory-cache-size.*/contract-memory-cache-size = 300/g" ~/.terra/config/app.toml
+    fi
 
     if [ ! -f $GENESIS_PATH ]; then
       mkdir -p $(dirname $GENESIS_PATH)
@@ -39,6 +63,8 @@ data:
 
   probe.sh: |
     #!/bin/sh
+
+    set -euo pipefail
 
     FILE=/root/.terra/.probe_last_height
     ENDPOINT=localhost:$TERRA_DAEMON_SERVICE_PORT/status
