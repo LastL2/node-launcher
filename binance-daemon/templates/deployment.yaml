@@ -50,6 +50,8 @@ spec:
             - name: scripts
               mountPath: /scripts
           env:
+            - name: RECOVER_NINEREALMS_SNAPSHOT
+              value: "{{ .Values.recoverNineRealmsSnapshot }}"
             - name: PORT
               value: {{ include "binance-daemon.rpc" . | quote }}
             - name: BNET
