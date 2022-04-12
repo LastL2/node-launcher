@@ -19,6 +19,8 @@ fullnameOverride: ""
 
 hostNetwork: false
 
+recoverNineRealmsSnapshot: false
+
 service:
   type: ClusterIP
   port:

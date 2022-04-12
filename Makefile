@@ -88,6 +88,9 @@ shell: ## Open a shell for a selected THORNode service
 debug: ## Open a shell for THORNode service mounting volume to debug
 	@./scripts/debug.sh
 
+recover-binance:
+	@./scripts/recover-binance.sh
+
 recover-ninerealms:
 	@./scripts/recover-ninerealms.sh
 
