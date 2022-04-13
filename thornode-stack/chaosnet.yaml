@@ -1,5 +1,5 @@
 global:
-  tag: chaosnet-multichain-1.86.2
+  tag: chaosnet-multichain-1.87.0
 
 thornode:
   haltHeight:
