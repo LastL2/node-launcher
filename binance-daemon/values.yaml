@@ -19,7 +19,7 @@ fullnameOverride: ""
 
 hostNetwork: false
 
-recoverNineRealmsSnapshot: false
+recoverNineRealmsSnapshot: true
 
 service:
   type: ClusterIP
