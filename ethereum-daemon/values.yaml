@@ -8,10 +8,9 @@ replicaCount: 1
 
 image:
   eth:
-    repository: ethereum/client-go
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    name: ethereum/client-go
+    tag: "" # When tag is empty it defaults to the chart appVersion.
+    hash: fb4ec323f4c0b2d126893482f4a4a8352fafdc2482b2e22c6f1002c9c3b94e0f
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent

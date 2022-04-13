@@ -7,11 +7,10 @@ net: mainnet
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/thorchain/devops/binance-node
-  mocknet: registry.gitlab.com/thorchain/bepswap/mock-binance
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  name: registry.gitlab.com/thorchain/devops/binance-node
+  tag: "" # When tag is empty it defaults to the chart appVersion.
+  hash: f888c697e8d81ad45b4d27ee7f7f35769824ef2e9d309a69da4e6eaca549a50b
+  mocknet: registry.gitlab.com/thorchain/bepswap/mock-binance # TODO: is this still used?
 
 imagePullSecrets: []
 nameOverride: ""

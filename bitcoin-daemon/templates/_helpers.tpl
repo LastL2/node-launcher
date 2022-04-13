@@ -37,7 +37,7 @@ Common labels
 {{- define "bitcoin-daemon.labels" -}}
 helm.sh/chart: {{ include "bitcoin-daemon.chart" . }}
 {{ include "bitcoin-daemon.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ include "daemon.tag" . | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -58,6 +58,13 @@ Create the name of the service account to use
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Tag
+*/}}
+{{- define "daemon.tag" -}}
+    {{ .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 {{/*

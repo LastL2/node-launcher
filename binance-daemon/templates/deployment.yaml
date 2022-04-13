@@ -43,7 +43,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "binance-daemon.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: data
               mountPath: /opt/bnbchaind

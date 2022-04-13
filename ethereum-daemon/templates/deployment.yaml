@@ -44,8 +44,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.eth.repository }}:{{ .Values.image.eth.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.eth.pullPolicy }}
+          image: {{ .Values.image.eth.name }}:{{ include "daemon.tag" . }}@sha256:{{ .Values.image.eth.hash }}
+          imagePullPolicy: IfNotPresent
           {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
           command: [ "sh", "-c", "apk add curl && /entrypoint/ethereum-mock.sh" ]
           {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
