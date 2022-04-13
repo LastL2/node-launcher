@@ -58,34 +58,6 @@ spec:
       - name: init-thorchain
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thornode; sleep 2; done']
-      - name: init-binance
-        image: alpine/k8s:1.18.2
-        command: ['sh', '-c', 'until curl -sL --fail {{ include "bifrost.binanceDaemon" . }}/abci_info > /dev/null; do echo waiting for binance; sleep 2; done']
-      {{- if .Values.bitcoinDaemon.enabled }}
-      - name: init-bitcoin
-        image: alpine/k8s:1.18.2
-        command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.bitcoinDaemon" . }} > /dev/null; do echo waiting for bitcoin; sleep 2; done']
-      {{- end }}
-      {{- if .Values.litecoinDaemon.enabled }}
-      - name: init-litecoin
-        image: alpine/k8s:1.18.2
-        command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.litecoinDaemon" . }} > /dev/null; do echo waiting for litecoin; sleep 2; done']
-      {{- end }}
-      {{- if .Values.bitcoinCashDaemon.enabled }}
-      - name: init-bitcoin-cash
-        image: alpine/k8s:1.18.2
-        command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.bitcoinCashDaemon" . }} > /dev/null; do echo waiting for bitcoin cash; sleep 2; done']
-      {{- end }}
-      {{- if .Values.dogecoinDaemon.enabled }}
-      - name: init-dogecoin
-        image: alpine/k8s:1.18.2
-        command: ['sh', '-c', 'until curl -sL --fail --data-binary ''{"jsonrpc": "1.0", "id": "node-status", "method": "getblockchaininfo", "params": []}'' -H "content-type: text/plain;" http://thorchain:password@{{ include "bifrost.dogecoinDaemon" . }} > /dev/null; do echo waiting for dogecoin; sleep 2; done']
-      {{- end }}
-      {{- if .Values.ethereumDaemon.enabled }}
-      - name: init-ethereum
-        image: alpine/k8s:1.18.2
-        command: ['sh', '-c', 'until curl -sL --fail {{ include "bifrost.ethereumDaemon" . }} > /dev/null; do echo waiting for ethereum; sleep 2; done']
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
