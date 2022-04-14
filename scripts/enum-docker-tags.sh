@@ -2,12 +2,13 @@
 # Given a Docker image name, enumerate the published tags -> full hashes.
 set -euo pipefail
 
-if [ $# -ne 1 ]; then
-  echo "Usage: $0 <gitlab registry image name>"
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <gitlab registry image name> [<specific tag>]"
   exit 1
 fi
 
 IMAGE="$1"
+SPECIFIC_TAG="${2:-}"
 
 get_auth_token() {
   IMAGE="$1"
@@ -38,7 +39,14 @@ get_manifest() {
     awk '/^Docker-Content-Digest:/ { print $2 }' | sed -e 's/[[:space:]]//g'
 }
 
-for TAG in $(get_tags "$IMAGE"); do
+if [ -z "$SPECIFIC_TAG" ]; then
+  TAGS=$(get_tags "$IMAGE")
+else
+  TAGS="$SPECIFIC_TAG"
+fi
+
+# shellcheck disable=SC2068
+for TAG in ${TAGS[@]}; do
   SHA=$(get_manifest "$IMAGE" "$TAG")
   printf "%s -> %s\n" "$SHA" "$TAG"
 done

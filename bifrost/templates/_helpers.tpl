@@ -37,7 +37,7 @@ Common labels
 {{- define "bifrost.labels" -}}
 helm.sh/chart: {{ include "bifrost.chart" . }}
 {{ include "bifrost.selectorLabels" . }}
-app.kubernetes.io/version: {{ include "bifrost.tag" . | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ include "bifrost.tag" . | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -71,14 +71,18 @@ Net
 Tag
 */}}
 {{- define "bifrost.tag" -}}
-{{- default .Values.image.tag .Values.global.tag -}}
+{{- coalesce  .Values.global.tag .Values.image.tag .Chart.AppVersion -}}
 {{- end -}}
 
 {{/*
 Image
 */}}
 {{- define "bifrost.image" -}}
+{{- if or (eq (include "bifrost.net" .) "mocknet") (eq (include "bifrost.net" .) "testnet") -}}
 {{- .Values.image.repository -}}:{{ include "bifrost.tag" . }}
+{{- else -}}
+{{- .Values.image.repository -}}:{{ include "bifrost.tag" . }}@sha256:{{ coalesce .Values.global.hash .Values.image.hash }}
+{{- end -}}
 {{- end -}}
 
 {{/*

@@ -1,17 +1,43 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Check for k8s definitions that aren't using explicit hashes.
-UNCHAINED=$(git grep -E '^\s*image:\s*[^\s]+' | grep -v sha256)
+get_image_versions() {
+  local CONF="$1"
+  local NET="$1"
+  (
+    pushd thornode-stack/
+    helm dependency build
+    popd
+  ) &>/dev/null
+  if [ "$CONF" == "chaosnet" ]; then
+    NET="mainnet"
+  fi
+  helm template --values thornode-stack/"$CONF".yaml \
+    --set "global.net=$NET" \
+    --set "midgard.enabled=true" thornode-stack/ |
+    grep -E '^\s*image:\s*[^\s]+'
+}
 
-if [ "$(printf "%s" "$UNCHAINED" | wc -l)" -ne 0 ]; then
-  cat <<EOF
-[ERR] Some container images are specified without an explicit hash:
+check_charts() {
+  local NET="$1"
+
+  # Check for k8s definitions that aren't using explicit hashes.
+  UNCHAINED=$(get_image_versions "$NET" | grep -v sha256 || true)
+
+  if [ "$(printf "%s" "$UNCHAINED" | wc -l)" -ne 0 ]; then
+    cat <<EOF
+[ERR] Some container images are specified without an explicit hash in config $NET:
+
 $UNCHAINED
+
 EOF
-  # TODO(asmund): enable this failure exit when all hashes are pinned.
-  #exit 1
-fi
+    exit 1
+  fi
+}
+
+for NET in stagenet chaosnet; do
+  check_charts "$NET"
+done
 
 # Lint shell scripts.
 find . -type f -name '*.*sh' |
@@ -27,6 +53,11 @@ find . -type f -name 'Chart.yaml' -printf '%h\n' |
     helm lint .
     popd
   done
+
+# Check thornode-stack with the various net configs.
+for NET in stagenet chaosnet testnet; do
+  helm lint --values thornode-stack/"$NET".yaml thornode-stack/
+done
 
 # TODO: enable yamllint - will be a major whitespace change across the charts.
 # yamllint .

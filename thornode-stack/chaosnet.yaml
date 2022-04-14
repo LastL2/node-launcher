@@ -1,5 +1,6 @@
 global:
   tag: chaosnet-multichain-1.87.1
+  hash: c8a9211f2862464ae72b2e7e89bf2661d8e8ebab79e9a2cf05e0eaffe2f939c8
 
 thornode:
   haltHeight:
@@ -11,8 +12,10 @@ thornode:
     peer: "c3613862c2608b3e861406ad02146f41cf5124e6@statesync-seed.ninerealms.com:27146"
 
 midgard:
+  # TODO: remove this block and let it default to midgard's current chartVersion?
   image:
     tag: 2.6.9
+    hash: ba574692aa730f1a9aaea7f1f05e65e532ed50251e26d01014dbb1bbbde8e107
   blockstore:
     enabled: true
     remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/mainnet/v2/
