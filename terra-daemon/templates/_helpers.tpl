@@ -38,7 +38,7 @@ Common labels
 {{- define "terra-daemon.labels" -}}
 helm.sh/chart: {{ include "terra-daemon.chart" . }}
 {{ include "terra-daemon.selectorLabels" . }}
-app.kubernetes.io/version: {{ include "terra-daemon.tag" . | quote }}
+app.kubernetes.io/version: {{ include "daemon.tag" . | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -71,29 +71,8 @@ Net
 {{/*
 Tag
 */}}
-{{- define "terra-daemon.tag" -}}
-{{- if eq (include "terra-daemon.net" .) "mocknet" -}}
-    "latest"
-{{- else if eq (include "terra-daemon.net" .) "testnet" -}}
-    {{- .Values.image.tag.testnet | default .Chart.AppVersion }}
-{{- else if eq (include "terra-daemon.net" .) "mainnet" -}}
-    {{- .Values.image.tag.mainnet | default .Chart.AppVersion }}
-{{- else if eq (include "terra-daemon.net" .) "stagenet" -}}
-    {{- .Values.image.tag.stagenet | default .Chart.AppVersion }}
-{{- else -}}
-    {{ .Chart.AppVersion }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Image
-*/}}
-{{- define "terra-daemon.image" -}}
-{{- if eq (include "terra-daemon.net" .) "mocknet" -}}
-    "{{ .Values.image.mocknet }}:{{ include "terra-daemon.tag" . }}"
-{{- else -}}
-    "{{ .Values.image.repository }}:{{ include "terra-daemon.tag" . }}"
-{{- end -}}
+{{- define "daemon.tag" -}}
+    {{ .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 {{/*

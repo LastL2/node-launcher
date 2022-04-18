@@ -35,7 +35,7 @@ spec:
 
       initContainers:
       - name: init-external-ip
-        image: alpine/k8s:1.18.2
+        image: alpine/k8s:{{ .Values.global.images.alpineK8s.tag }}@sha256:{{ .Values.global.images.alpineK8s.hash }}
         {{- if .Values.global.gateway.enabled }}
         command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway.name }}', '{{ include "bifrost.fullname" . }}-external-ip']
         {{- else }}
@@ -45,7 +45,7 @@ spec:
         - name: scripts
           mountPath: /scripts
       - name: init-keepalive
-        image: busybox
+        image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
         command:
         - /bin/sh
         - -c
@@ -56,7 +56,7 @@ spec:
         securityContext:
           privileged: true
       - name: init-thorchain
-        image: busybox:1.28
+        image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
         command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thornode; sleep 2; done']
       - name: init-binance
         image: alpine/k8s:1.18.2

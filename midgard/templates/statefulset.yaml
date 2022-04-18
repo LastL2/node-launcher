@@ -30,10 +30,10 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: init-database
-          image: busybox:1.28
+          image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
           command: ['sh', '-c', "export INDEX=${HOSTNAME##*-}; until nc -zv {{ include "midgard.fullname" . }}-timescaledb-$INDEX.{{ include "midgard.fullname" . }}-timescaledb:{{ .Values.postgres.port }}; do echo waiting for timescale database; sleep 2; done"]
         - name: init-thor
-          image: busybox:1.28
+          image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
           command: ['sh', '-c', "until nc -zv {{ .Values.thorApi }}; do echo waiting for thornode; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}

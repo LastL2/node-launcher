@@ -7,12 +7,10 @@ net: mainnet
 replicaCount: 1
 
 image:
-  repository: terramoney/core-node
+  name: terramoney/core-node
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag:
-    mainnet:
-    stagenet:
+  tag: "" # When tag is empty it defaults to the chart appVersion.
+  hash: "ba3b6a36f37fd62d5d1e116d8a25e7e5e87ea1bafaf4267e2fc3b896ef973605"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -101,4 +99,8 @@ tolerations: []
 
 affinity: {}
 
-global: {}
+global:
+  images:
+    alpine:
+      tag: latest
+      hash: 4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454

@@ -142,3 +142,10 @@ affinity: {}
 global:
   gateway:
     enabled: false
+  images:
+    alpineK8s:
+      tag: 1.18.2
+      hash: 768491682ca99e14498ddb62973a95a664a0525ca18e7ad0eaab2621d3124f5b
+    busybox:
+      tag: latest
+      hash: caa382c432891547782ce7140fb3b7304613d3b0438834dce1cad68896ab110a

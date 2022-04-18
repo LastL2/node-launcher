@@ -87,4 +87,8 @@ tolerations: []
 
 affinity: {}
 
-global: {}
+global:
+  images:
+    alpineK8s:
+      tag: 1.18.2
+      hash: sha256:768491682ca99e14498ddb62973a95a664a0525ca18e7ad0eaab2621d3124f5b

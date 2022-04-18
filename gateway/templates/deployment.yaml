@@ -23,7 +23,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
       - name: init-external-ip
-        image: alpine/k8s:1.18.2
+        image: alpine/k8s:{{ .Values.global.images.alpineK8s.tag }}@sha256:{{ .Values.global.images.alpineK8s.hash }}
         command: ['/scripts/external-ip.sh', 'false', '{{ include "gateway.fullname" . }}', '{{ include "gateway.fullname" . }}-external-ip']
         volumeMounts:
         - name: config
