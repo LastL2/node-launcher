@@ -35,7 +35,7 @@ spec:
 
       initContainers:
       - name: init-external-ip
-        image: alpine/k8s:1.18.2
+        image: alpine/k8s:{{ .Values.global.images.alpineK8s.tag }}@sha256:{{ .Values.global.images.alpineK8s.hash }}
         {{- if .Values.global.gateway.enabled }}
         command: ['/scripts/external-ip.sh', '{{ .Values.hostNetwork }}', '{{ .Values.global.gateway.name }}', '{{ include "thornode.fullname" . }}-external-ip']
         {{- else }}
@@ -57,13 +57,13 @@ spec:
 
       {{- if default .Values.peer .Values.global.peer }}
       - name: init-peer
-        image: busybox:1.28
+        image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
         command: ['sh', '-c', 'until nc -zv {{ default .Values.peer .Values.global.peer }}:{{ include "thornode.rpc" . }}; do echo waiting for peer thornode; sleep 2; done']
       {{- end }}
 
       {{- if .Values.peerApi }}
       - name: init-peer-api
-        image: busybox:1.28
+        image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
         command: ['sh', '-c', "until nc -zv {{ .Values.peerApi }}:1317; do echo waiting for peer thornode; sleep 2; done"]
       {{- end }}
 

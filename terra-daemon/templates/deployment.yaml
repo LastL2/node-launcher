@@ -30,7 +30,7 @@ spec:
       {{- end }}
       initContainers:
       - name: snapshot
-        image: alpine
+        image: alpine:{{ .Values.global.images.alpine.tag }}@sha256:{{ .Values.global.images.alpine.hash }}
         command:
           - /scripts/snapshot.sh
         env:
@@ -42,7 +42,7 @@ spec:
           - name: data
             mountPath: /root/.terra
       - name: init
-        image: alpine
+        image: alpine:{{ .Values.global.images.alpine.tag }}@sha256:{{ .Values.global.images.alpine.hash }}
         command:
           - /scripts/init.sh
         volumeMounts:
@@ -54,7 +54,7 @@ spec:
       - name: {{ .Chart.Name }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
-        image: {{ include "terra-daemon.image" . }}
+        image: {{ .Values.image.name }}:{{ include "daemon.tag" . }}@sha256:{{ .Values.image.hash }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
           - name: data
