@@ -136,21 +136,38 @@ data:
       {{- if .Values.api }}
       server {
         listen {{ .Values.service.port.api }};
-        location / {
-          proxy_hide_header Access-Control-Allow-Origin;
-          proxy_hide_header Access-Control-Allow-Methods;
-          proxy_hide_header Access-Control-Allow-Headers;
-          proxy_hide_header Access-Control-Allow-Credentials;
-          add_header Access-Control-Allow-Origin '*' always;
-          add_header Access-Control-Allow-Credentials true always;
-          add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
-          add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
 
+        add_header Access-Control-Allow-Credentials true always;
+        add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
+        add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
+        add_header Access-Control-Allow-Origin '*' always;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_hide_header Access-Control-Allow-Methods;
+        proxy_hide_header Access-Control-Allow-Headers;
+        proxy_hide_header Access-Control-Allow-Credentials;
+
+        location ~* ^/thorchain/(constants|inbound_addresses|lastblock|mimir|network|node|pool|queue|vault|version) {
           if ($request_method = 'OPTIONS') {
-            add_header Access-Control-Allow-Origin '*' always;
-            add_header Access-Control-Allow-Credentials true always;
-            add_header Access-Control-Allow-Methods 'GET,OPTIONS,POST' always;
-            add_header Access-Control-Allow-Headers 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Token-Auth,X-Mx-ReqToken,X-Requested-With' always;
+            add_header 'Access-Control-Max-Age' 1728000 always;
+            add_header 'Content-Type' 'text/plain; charset=utf-8' always;
+            add_header 'Content-Length' 0 always;
+            return 204;
+          }
+
+          add_header Cache-Control "no-cache, must-revalidate, max-age=0" always;
+          add_header X-Cache-Status $upstream_cache_status always;
+          proxy_cache thornode;
+          proxy_cache_lock on;
+          proxy_cache_lock_timeout 20s;
+          proxy_cache_lock_age 20s;
+          proxy_cache_valid any 5s;
+          proxy_set_header Host $http_host;
+          proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
+          proxy_pass http://thornode:{{ .Values.service.port.api }};
+        }
+
+        location / {
+          if ($request_method = 'OPTIONS') {
             add_header 'Access-Control-Max-Age' 1728000 always;
             add_header 'Content-Type' 'text/plain; charset=utf-8' always;
             add_header 'Content-Length' 0 always;
