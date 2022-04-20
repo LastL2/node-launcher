@@ -6,7 +6,9 @@ net: mainnet
 
 validator: true
 midgard: false
-rpc: true
+rpc:
+  enabled: true
+  limited: true
 api: false
 
 replicaCount: 1
