@@ -45,7 +45,7 @@ spec:
       protocol: TCP
       name: api
     {{- end }}
-    {{- if .Values.rpc }}
+    {{- if .Values.rpc.enabled }}
     - port: {{ include "gateway.rpc" . }}
       targetPort: rpc
       protocol: TCP

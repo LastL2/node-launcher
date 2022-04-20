@@ -76,6 +76,9 @@ data:
 
       proxy_cache_path  /var/cache/nginx/thornode levels=1:2 keys_zone=thornode:10m;
 
+      limit_conn_zone $server_name zone=rpc_conn:10m;
+      limit_req_zone $binary_remote_addr zone=rpc_req:10m rate=1r/s;
+
       server {
         listen 80;
         location /healthz {
@@ -165,10 +168,19 @@ data:
       }
       {{- end }}
 
-      {{- if .Values.rpc }}
+      {{- if .Values.rpc.enabled }}
       server {
         listen {{ include "gateway.rpc" . }};
+
+        {{- if .Values.rpc.limited }}
+        limit_conn rpc_conn 1;
+        limit_rate 1m;
+        limit_req zone=rpc_req;
+
+        location ~* ^/(genesis|status) {
+        {{- else }}
         location / {
+        {{- end }}
           proxy_hide_header Access-Control-Allow-Origin;
           proxy_hide_header Access-Control-Allow-Methods;
           proxy_hide_header Access-Control-Allow-Headers;
