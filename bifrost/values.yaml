@@ -13,8 +13,6 @@ signer:
 # use in multi nodes envs
 peer:
 
-hostNetwork: false
-
 debug: false
 
 thorApi: thornode:1317
@@ -66,7 +64,7 @@ ethereumDaemon:
   enabled: true
   mainnet: http://ethereum-daemon:8545
 
-terraDaemon: 
+terraDaemon:
   enabled: true
   mainnet: http://terra-daemon:26657
   stagenet: http://terra-daemon:26657
