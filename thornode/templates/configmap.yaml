@@ -136,6 +136,54 @@ data:
     fi
 
     kubectl create configmap "$CONFIGMAP" --from-literal=externalIP="$external_ip" --dry-run=client -o yaml | kubectl apply -f -
+
+  auto-update.sh: |
+    #!/bin/bash
+
+    set -euo pipefail
+
+    # retrieve current nodes
+    curl -sL -o /tmp/nodes {{ .Values.autoupdate.nodes }}
+
+    # lookup version used by 2/3 of the network
+    ACTIVE_NODES=$(jq -r '[.[] | select(.status == "Active")] | length' /tmp/nodes)
+    THRESHOLD=$(($ACTIVE_NODES*2/3))
+    NET_VERSION=$(jq -r "[.[] | select(.status==\"Active\")] | group_by(.version)[] | select(length > $THRESHOLD) | .[0].version" /tmp/nodes)
+
+    # this will be empty if the network does not have >2/3 on a single version
+    if [ -z "$NET_VERSION" ]; then
+      echo "network has not reached 2/3 consensus on version, skipping upgrade"
+      exit 0
+    fi
+
+    # retrieve thornode version
+    THORNODE_IMAGE=$(kubectl get deploy thornode -o jsonpath="{.spec.template.spec.containers[0].image}")
+    THORNODE_INIT_IMAGE=$(kubectl get deploy thornode -o jsonpath="{.spec.template.spec.initContainers[?(@.name==\"init-thornode\")].image}")
+
+    # sanity checks
+    if [ -z "$THORNODE_IMAGE" ] || [ -z "$THORNODE_INIT_IMAGE" ]; then
+      echo "unable to retrieve thornode image versions"
+      exit 1
+    fi
+    if [[ "$THORNODE_IMAGE" != "$THORNODE_INIT_IMAGE" ]]; then
+      echo "thornode image and thornode init image are different versions"
+      echo "thornode image: $THORNODE_IMAGE"
+      echo "thornode init image: $THORNODE_INIT_IMAGE"
+      exit 1
+    fi
+
+    # abort if we are already up to date
+    THORNODE_VERSION=$(echo $THORNODE_IMAGE | awk -F- '{print $3}')
+    if [[ "$THORNODE_VERSION" == "$NET_VERSION" ]]; then
+      echo "current thornode version $THORNODE_VERSION is up to date"
+      exit 0
+    fi
+
+    # patch the thornode version
+    NEW_IMAGE=$(echo $(echo $THORNODE_IMAGE | awk 'BEGIN {FS=OFS="-"} {$NF=""}1')$NET_VERSION)
+    echo "updating thornode version $THORNODE_VERSION -> $NET_VERSION"
+    echo "new image $NEW_IMAGE"
+    kubectl set image deployment/thornode {{ .Chart.Name }}=$NEW_IMAGE init-thornode=$NEW_IMAGE
 ---
 apiVersion: v1
 kind: ConfigMap
