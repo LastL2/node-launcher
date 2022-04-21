@@ -19,6 +19,14 @@ ethRouterContract:
   mainnet: "0xC145990E84155416144C532E31f89B840Ca8c2cE"
   stagenet: "0x23d040e8816FF628c54D357612420260301cAE85"
 
+statesync:
+  enabled: false
+  seed: false
+  trustHeight: 0
+  trustHash: ""
+  rpcServers: "https://rpc.ninerealms.com:443,https://rpc.thorchain.info:443"
+  peer: ""
+
 enableApi: true
 
 debug: false

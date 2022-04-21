@@ -65,14 +65,20 @@ spec:
       - name: init-thornode
         image: {{ include "thornode.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /kube-scripts/init.sh
         {{- if eq .Values.type "genesis" }}
-        command: ["/scripts/genesis.sh"]
+          -  /scripts/genesis.sh
         {{- else }}
-        command: ["/scripts/validator.sh"]
+          -  /scripts/validator.sh
         {{- end }}
         volumeMounts:
           - name: data
             mountPath: /root/
+          - name: scripts
+            mountPath: /kube-scripts/
+          - name: configs
+            mountPath: /kube-configs/
         env:
           - name: EXTERNAL_IP
             valueFrom:
@@ -221,6 +227,10 @@ spec:
         configMap:
           name: {{ include "thornode.fullname" . }}-scripts
           defaultMode: 0777
+      - name: configs
+        configMap:
+          name: {{ include "thornode.fullname" . }}-configs
+          defaultMode: 0666
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
