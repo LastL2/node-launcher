@@ -3,6 +3,12 @@ global:
 
 thornode:
   haltHeight:
+  statesync:
+    enabled: false
+    seed: false
+    trustHeight: "5200000"
+    trustHash: "B6F7DD933F1943DB4C7A409348C7D0247930F72105D9373B7E0D375922E42B15"
+    peer: "c3613862c2608b3e861406ad02146f41cf5124e6@statesync-seed.ninerealms.com:27146"
 
 midgard:
   image:
@@ -10,7 +16,7 @@ midgard:
   blockstore:
     enabled: true
     remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/mainnet/v2/
-    size: 5Gi
+    size: 20Gi
 
 binance-daemon:
   enabled: true
