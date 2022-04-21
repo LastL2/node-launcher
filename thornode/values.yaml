@@ -5,6 +5,10 @@
 net: mainnet
 type: validator
 
+autoupdate:
+  enabled: false
+  nodes: https://thornode.ninerealms.com/thorchain/nodes
+
 signer:
   name: thorchain
   password: password
