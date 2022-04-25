@@ -14,7 +14,7 @@ EOF
 fi
 
 # Lint shell scripts.
-find . -type f -name '*.*sh' |
+find . -type f -name '*.*sh' | grep -v '^./ci/images/' |
   while read -r SCRIPT; do
     shellcheck --external-sources --exclude SC2034 "$SCRIPT"
     shfmt -i 2 -ci -d "$SCRIPT"
