@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gaia-daemon.fullname" . }}-scripts
+data:
+  init.sh: |
+    # pull genesis
+    if [ -f "/root/.gaia/config/genesis.json" ]; then
+      mkdir -p /root/.gaia/config
+      cd /root/.gaia/config
+      wget https://github.com/cosmos/mainnet/raw/master/genesis.gaia-4.json.gz
+      gunzip genesis.gaia-4.json.gz
+      mv genesis.gaia-4.json genesis.json
+    fi
+
+    # always pull latest address book
+    mv /root/.gaia/config/addrbook.json /root/.gaia/config/addrbook.json.bak
+    wget -O /root/.gaia/config/addrbook.json https://quicksync.io/addrbook.cosmos.json
+
+    # skip snapshot pull and cleanup tar if we already have a data directory
+    if [ -d "/root/.gaia/data" ]; then
+      echo "cleaning snapshot data..."
+      rm /root/.gaia/*.lz4
+      exit 0
+    fi
+
+    apk add aria2 curl jq lz4
+
+    # pull snapshot
+    cd /root/.gaia
+    URL=`curl https://quicksync.io/cosmos.json|jq -r '.[] |select(.file=="gaia-4-default")|.url'`
+    aria2c -x5 $URL
+    lz4 -d `basename $URL` | tar xf -

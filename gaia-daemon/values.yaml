@@ -1,0 +1,99 @@
+# Default values for gaia-daemon.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+net: mainnet
+
+replicaCount: 1
+
+image:
+  name: us-central1-docker.pkg.dev/ninerealms-prod/services/cosmos
+  pullPolicy: IfNotPresent
+  tag: "" # When tag is empty it defaults to the chart appVersion.
+  hash: "fd06762a380a198fb3cd26e29840948ab680f2485b55b7ce715006d73af1eef1"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+hostNetwork: false
+
+service:
+  type: ClusterIP
+  port:
+    mainnet:
+      p2p: 26656
+      rpc: 26657
+      grpc: 9090
+    stagenet:
+      p2p: 26656
+      rpc: 26657
+      grpc: 9090
+
+ingress:
+  enabled: false
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-production
+  hosts:
+    []
+    # - host: midgard.example.com
+    #   paths:
+    #   - path: /
+    #     backend:
+    #       serviceName: gateway
+    #       servicePort: midgard
+  tls:
+    []
+    # - secretName: midgard-tls
+    #   hosts:
+    #     - midgard.example.com
+
+persistence:
+  enabled: true
+  size:
+    testnet: 50Gi
+    mainnet: 2Ti
+    stagenet: 2Ti
+  accessMode: ReadWriteOnce
+  # storageClass: "-"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  requests:
+    cpu: 4
+    memory: 16Gi
+  limits:
+    # cpu: 2
+    memory: 16Gi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+global:
+  images:
+    alpine:
+      tag: latest
+      hash: 4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454
