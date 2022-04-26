@@ -37,7 +37,7 @@ Common labels
 {{- define "thornode.labels" -}}
 helm.sh/chart: {{ include "thornode.chart" . }}
 {{ include "thornode.selectorLabels" . }}
-app.kubernetes.io/version: {{ include "thornode.tag" . | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ include "thornode.tag" . | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/net: {{ include "thornode.net" . }}
 app.kubernetes.io/type: {{ .Values.type }}
@@ -73,14 +73,19 @@ Net
 Tag
 */}}
 {{- define "thornode.tag" -}}
-{{- default .Values.image.tag .Values.global.tag -}}
+{{- coalesce  .Values.global.tag .Values.image.tag .Chart.AppVersion -}}
 {{- end -}}
 
 {{/*
 Image
 */}}
 {{- define "thornode.image" -}}
+{{/* A hash is not needed for mocknet/testnet, or in the case that a node is not a validator w/ key material and autoupdate is enabled. */}}
+{{- if or (eq (include "thornode.net" .) "mocknet") (eq (include "thornode.net" .) "testnet") (and .Values.autoupdate.enabled (eq .Values.type "fullnode")) -}}
 {{- .Values.image.repository -}}:{{ include "thornode.tag" . }}
+{{- else -}}
+{{- .Values.image.repository -}}:{{ include "thornode.tag" . }}@sha256:{{ coalesce .Values.global.hash .Values.image.hash }}
+{{- end -}}
 {{- end -}}
 
 {{/*
