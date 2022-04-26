@@ -19,6 +19,9 @@ midgard:
 
 binance-daemon:
   enabled: true
+  image:
+    tag: 0.9.0-tn-hf1
+    hash: "21a81a0580944488599cd67324f6ed80b9d0d3048ef1e783d2a84cff0e68961e"
 
 bitcoin-daemon:
   enabled: true
