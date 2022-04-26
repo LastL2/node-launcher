@@ -194,7 +194,7 @@ data:
         limit_rate 1m;
         limit_req zone=rpc_req;
 
-        location ~* ^/(genesis|status) {
+        location ~* ^/(genesis|health|status) {
         {{- else }}
         location / {
         {{- end }}
