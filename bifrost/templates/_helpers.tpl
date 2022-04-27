@@ -190,7 +190,7 @@ Terra
 Ethereum
 */}}
 {{- define "bifrost.ethereumDaemon" -}}
-{{ .Values.ethereumDaemon.mainnet }}
+{{ index .Values.ethereumDaemon (include "bifrost.net" .) }}
 {{- end -}}
 
 {{/*
@@ -204,4 +204,11 @@ chainID
 {{- else -}}
     {{ .Values.chainID.testnet }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+ethSuggestedFeeVersion
+*/}}
+{{- define "bifrost.ethSuggestedFeeVersion" -}}
+    {{ index .Values.ethSuggestedFeeVersion (include "bifrost.net" .) }}
 {{- end -}}
