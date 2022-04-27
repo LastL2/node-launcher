@@ -66,10 +66,15 @@ ethereumDaemon:
   enabled: true
   mainnet: http://ethereum-daemon:8545
 
-terraDaemon: 
+terraDaemon:
   enabled: true
   mainnet: http://terra-daemon:26657
   stagenet: http://terra-daemon:26657
+
+gaiaDaemon:
+  enabled: false
+  mainnet: http://gaia-daemon:26657
+  stagenet: http://gaia-daemon:26657
 
 replicaCount: 1
 

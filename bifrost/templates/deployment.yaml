@@ -116,6 +116,10 @@ spec:
               value: {{ include "bifrost.terraDaemon" . }}
             - name: TERRA_START_BLOCK_HEIGHT
               value: "{{ .Values.terraStartBlockHeight }}"
+            - name: GAIA_HOST
+              value: {{ include "bifrost.gaiaDaemon" . }}
+            - name: GAIA_START_BLOCK_HEIGHT
+              value: "{{ .Values.gaiaStartBlockHeight }}"
             {{- if not .Values.litecoinDaemon.enabled }}
             - name: LTC_DISABLED
               value: "true"
@@ -126,6 +130,10 @@ spec:
             {{- end}}
             {{- if not .Values.terraDaemon.enabled }}
             - name: TERRA_DISABLED
+              value: "true"
+            {{- end}}
+            {{- if not .Values.gaiaDaemon.enabled }}
+            - name: GAIA_DISABLED
               value: "true"
             {{- end}}
             - name: ETH_HOST

@@ -32,5 +32,8 @@ dependencies:
 - name: terra-daemon
   repository: file://../terra-daemon
   version: 0.1.0
-digest: sha256:bda3b7742974ff95188915f921aa439306e56600f3e5221c8496d0ce901d5c44
-generated: "2022-01-19T17:58:02.922861-06:00"
+- name: gaia-daemon
+  repository: file://../gaia-daemon
+  version: 0.1.0
+digest: sha256:46062ef6350191fce5aa5b27a981a8b538f93522907cd801cc0173f47632aa21
+generated: "2022-04-27T10:51:49.774801021-04:00"

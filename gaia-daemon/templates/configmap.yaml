@@ -4,6 +4,10 @@ metadata:
   name: {{ include "gaia-daemon.fullname" . }}-scripts
 data:
   init.sh: |
+    #!/bin/sh
+
+    set -euo pipefail
+
     # pull genesis
     if [ -f "/root/.gaia/config/genesis.json" ]; then
       mkdir -p /root/.gaia/config
@@ -14,8 +18,10 @@ data:
     fi
 
     # always pull latest address book
-    mv /root/.gaia/config/addrbook.json /root/.gaia/config/addrbook.json.bak
-    wget -O /root/.gaia/config/addrbook.json https://quicksync.io/addrbook.cosmos.json
+    if [ -f /root/.gaia/config/addrbook.json ]; then
+      mv /root/.gaia/config/addrbook.json /root/.gaia/config/addrbook.json.bak
+      wget -O /root/.gaia/config/addrbook.json https://quicksync.io/addrbook.cosmos.json
+    fi
 
     # skip snapshot pull and cleanup tar if we already have a data directory
     if [ -d "/root/.gaia/data" ]; then
@@ -24,10 +30,25 @@ data:
       exit 0
     fi
 
+    cd /root/.gaia
     apk add aria2 curl jq lz4
 
+    # clean stale snapshots
+    if ls /root/.gaia/cosmoshub-4-* >/dev/null 2>&1; then
+      ls /root/.gaia/cosmoshub-4-* | while read line; do
+        if [ "$(basename $URL)" = "$(basename $line)" ] || [ "$(basename $URL).aria2" = "$(basename $line)" ]; then
+          echo "leaving snapshot to resume: $line"
+        else
+          echo "cleaning stale snapshot: $line"
+          rm $line
+        fi
+      done
+    fi
+
     # pull snapshot
-    cd /root/.gaia
-    URL=`curl https://quicksync.io/cosmos.json|jq -r '.[] |select(.file=="gaia-4-default")|.url'`
+    URL=`curl https://quicksync.io/cosmos.json | jq -r '.[] |select(.file=="cosmoshub-4-pruned")|.url'`
     aria2c -x5 $URL
     lz4 -d `basename $URL` | tar xf -
+
+    # cleanup
+    rm /root/.gaia/*.lz4

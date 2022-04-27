@@ -183,6 +183,13 @@ Terra
 {{- end -}}
 
 {{/*
+Gaia
+*/}}
+{{- define "bifrost.gaiaDaemon" -}}
+{{- index .Values.gaiaDaemon (include "bifrost.net" .) -}}
+{{- end -}}
+
+{{/*
 Ethereum
 */}}
 {{- define "bifrost.ethereumDaemon" -}}
