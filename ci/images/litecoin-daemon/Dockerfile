@@ -22,6 +22,7 @@ RUN for key in \
 		gpg --no-tty --keyserver pgp.mit.edu --recv-keys "$key" || \
 		gpg --no-tty --keyserver keyserver.pgp.com --recv-keys "$key" || \
 		gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
+		gpg --no-tty --keyserver keys.openpgp.org --recv-keys "$key" || \
 		gpg --no-tty --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
 	done
 

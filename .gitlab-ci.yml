@@ -1,11 +1,20 @@
+########################################################################################
+# Config
+########################################################################################
+
 stages:
   - validate
+  - build
 
-linter:
-  image: registry.gitlab.com/thorchain/devops/node-launcher@sha256:744718ddfad1948dfdb1342670aadf38f25b2472f9c5c56e42c260a4fc051011
-  stage: validate
-  script:
-    - ./scripts/lint.sh
+variables:
+  SCAN_KUBERNETES_MANIFESTS: "true"
+  KUBESEC_HELM_CHARTS_PATH: ./thornode-stack
+  KUBESEC_HELM_OPTIONS: --dependency-update
+
+
+########################################################################################
+# Gitlab Jobs
+########################################################################################
 
 include:
   - template: Security/SAST.gitlab-ci.yml
@@ -17,7 +26,23 @@ sast:
 secret_detection:
   stage: validate
 
-variables:
-  SCAN_KUBERNETES_MANIFESTS: "true"
-  KUBESEC_HELM_CHARTS_PATH: ./thornode-stack
-  KUBESEC_HELM_OPTIONS: --dependency-update
+
+########################################################################################
+# Custom Jobs
+########################################################################################
+
+lint:
+  image: registry.gitlab.com/thorchain/devops/node-launcher@sha256:744718ddfad1948dfdb1342670aadf38f25b2472f9c5c56e42c260a4fc051011
+  stage: validate
+  script:
+    - ./scripts/lint.sh
+
+build:
+  image: docker:20.10.12
+  stage: build
+  only:
+    - master
+  services:
+    - docker:20.10.12-dind
+  script:
+    - ./ci/images/build.sh
