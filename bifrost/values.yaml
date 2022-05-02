@@ -2,7 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: mainnet
+net: testnet
+
+ethSuggestedFeeVersion:
+  mainnet: 1
+  stagenet: 2
+  testnet: 1
 
 signer:
   name: thorchain
@@ -19,7 +24,7 @@ thorApi: thornode:1317
 chainID:
   testnet: thorchain-testnet-v2
   mainnet: thorchain-mainnet-v1
-  stagenet: thorchain-stagenet
+  stagenet: thorchain-stagenet-v2
 
 thorDaemon:
   mainnet: thornode:27147
@@ -63,6 +68,9 @@ dogecoinDaemon:
 ethereumDaemon:
   enabled: true
   mainnet: http://ethereum-daemon:8545
+  testnet: http://ethereum-daemon:8545
+  mocknet: http://ethereum-daemon:8545
+  stagenet: http://ethereum-daemon:8545
 
 terraDaemon:
   enabled: true
@@ -81,7 +89,8 @@ strategyType: Recreate
 image:
   repository: registry.gitlab.com/thorchain/thornode
   pullPolicy: IfNotPresent
-  tag: mainnet
+  tag: testnet
+  hash: "" # Not used for mocknet/testnet
 
 imagePullSecrets: []
 nameOverride: ""

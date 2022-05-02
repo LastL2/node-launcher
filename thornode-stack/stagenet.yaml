@@ -1,9 +1,11 @@
 global:
-  tag: stagenet-1.83.0
+  tag: stagenet-1.87.1
+  hash: b260f6bac627fa18c7f42b5f314f07da20338b8bb04d15554a18071aae9c0f4d
 
 midgard:
   image:
     tag: 2.6.7
+    hash: 041825f08eaf8cb6830991819b0b21bc6430abbe36905a61fbac5eb80e740f92
 
 binance-daemon:
   enabled: true

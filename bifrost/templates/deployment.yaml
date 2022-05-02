@@ -135,6 +135,8 @@ spec:
               value: {{ include "bifrost.ethereumDaemon" . }}
             - name: ETH_START_BLOCK_HEIGHT
               value: "{{ .Values.ethereumStartBlockHeight }}"
+            - name: ETH_SUGGESTED_FEE_VERSION
+              value: '{{ include "bifrost.ethSuggestedFeeVersion" . }}'
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
             - name: SIGNER_NAME

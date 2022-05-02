@@ -192,10 +192,6 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 lint: ## Run linters (development)
 	./scripts/lint.sh
 
-build-ci: ## Build Docker CI image (development)
-	@docker build -t registry.gitlab.com/thorchain/devops/node-launcher -f ci/Dockerfile .
-	@docker inspect --format '{{.Id}}' registry.gitlab.com/thorchain/devops/node-launcher
-
-.PHONY: help helm repo pull tools install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-loki destroy-prometheus destroy-metrics prometheus grafana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot lint build-ci
+.PHONY: help helm repo pull tools install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-loki destroy-prometheus destroy-metrics prometheus grafana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot lint
 
 .EXPORT_ALL_VARIABLES:
