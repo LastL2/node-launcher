@@ -11,7 +11,6 @@ variables:
   KUBESEC_HELM_CHARTS_PATH: ./thornode-stack
   KUBESEC_HELM_OPTIONS: --dependency-update
 
-
 ########################################################################################
 # Gitlab Jobs
 ########################################################################################
@@ -25,7 +24,6 @@ sast:
 
 secret_detection:
   stage: validate
-
 
 ########################################################################################
 # Custom Jobs
@@ -44,5 +42,7 @@ build:
     - master
   services:
     - docker:20.10.12-dind
+  before_script:
+    - apk add coreutils findutils
   script:
     - ./ci/images/build.sh
