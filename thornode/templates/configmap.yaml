@@ -47,17 +47,20 @@ data:
 
     printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain ban "$1" --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --gas-adjustment 2 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
 
-  entrypoint.sh: |
+  init.sh: |
     #!/bin/sh
 
-    # allow duplicate peers ip behind load balancer
-    sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" ~/.thornode/config/config.toml
+    # init chain
+    if [ ! -f ~/.thornode/config/genesis.json ]; then
+      "$@"
+    fi
 
-    # revert block timing to tendermint defaults
-    sed -i -e "s/timeout_propose_delta.*/timeout_propose_delta = \"500ms\"/g" ~/.thornode/config/config.toml
-    sed -i -e "s/timeout_prevote_delta.*/timeout_prevote_delta = \"500ms\"/g" ~/.thornode/config/config.toml
-    sed -i -e "s/timeout_precommit_delta.*/timeout_precommit_delta = \"500ms\"/g" ~/.thornode/config/config.toml
+    # reset config and update seeds
+    cp /kube-configs/config.toml ~/.thornode/config/config.toml
+    "$@"
 
+  entrypoint.sh: |
+    #!/bin/sh
 
     # update max file open limit
     ulimit -n 65535
@@ -75,6 +78,16 @@ data:
 
       ARGS="$ARGS --halt-height $HARDFORK_BLOCK_HEIGHT"
     fi
+
+    # fullnodes keep latest 10 snapshots
+    {{- if and (eq .Values.type "fullnode") .Values.statesync.seed }}
+    ARGS="$ARGS --state-sync.snapshot-interval 50000 --state-sync.snapshot-keep-recent 10"
+    {{- end }}
+
+    {{- if .Values.statesync.peer }}
+    ARGS="$ARGS --p2p.persistent_peers {{ .Values.statesync.peer }}"
+    {{- end }}
+
     # shellcheck disable=SC2086
     printf "%s\n%s\n" "$SIGNER_NAME" "$SIGNER_PASSWD" | thornode start $ARGS
 
@@ -123,3 +136,172 @@ data:
     fi
 
     kubectl create configmap "$CONFIGMAP" --from-literal=externalIP="$external_ip" --dry-run=client -o yaml | kubectl apply -f -
+
+  auto-update.sh: |
+    #!/bin/bash
+
+    set -euo pipefail
+
+    # retrieve current nodes
+    curl -sL -o /tmp/nodes {{ .Values.autoupdate.nodes }}
+
+    # lookup version used by 2/3 of the network
+    ACTIVE_NODES=$(jq -r '[.[] | select(.status == "Active")] | length' /tmp/nodes)
+    THRESHOLD=$(($ACTIVE_NODES*2/3))
+    NET_VERSION=$(jq -r "[.[] | select(.status==\"Active\")] | group_by(.version)[] | select(length > $THRESHOLD) | .[0].version" /tmp/nodes)
+
+    # this will be empty if the network does not have >2/3 on a single version
+    if [ -z "$NET_VERSION" ]; then
+      echo "network has not reached 2/3 consensus on version, skipping upgrade"
+      exit 0
+    fi
+
+    # retrieve thornode version
+    THORNODE_IMAGE=$(kubectl get deploy thornode -o jsonpath="{.spec.template.spec.containers[0].image}")
+    THORNODE_INIT_IMAGE=$(kubectl get deploy thornode -o jsonpath="{.spec.template.spec.initContainers[?(@.name==\"init-thornode\")].image}")
+
+    # sanity checks
+    if [ -z "$THORNODE_IMAGE" ] || [ -z "$THORNODE_INIT_IMAGE" ]; then
+      echo "unable to retrieve thornode image versions"
+      exit 1
+    fi
+    if [[ "$THORNODE_IMAGE" != "$THORNODE_INIT_IMAGE" ]]; then
+      echo "thornode image and thornode init image are different versions"
+      echo "thornode image: $THORNODE_IMAGE"
+      echo "thornode init image: $THORNODE_INIT_IMAGE"
+      exit 1
+    fi
+
+    # abort if we are already up to date
+    THORNODE_VERSION=$(echo $THORNODE_IMAGE | awk -F- '{print $3}')
+    if [[ "$THORNODE_VERSION" == "$NET_VERSION" ]]; then
+      echo "current thornode version $THORNODE_VERSION is up to date"
+      exit 0
+    fi
+
+    # patch the thornode version
+    NEW_IMAGE=$(echo $(echo $THORNODE_IMAGE | awk 'BEGIN {FS=OFS="-"} {$NF=""}1')$NET_VERSION)
+    echo "updating thornode version $THORNODE_VERSION -> $NET_VERSION"
+    echo "new image $NEW_IMAGE"
+    kubectl set image deployment/thornode {{ .Chart.Name }}=$NEW_IMAGE init-thornode=$NEW_IMAGE
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "thornode.fullname" . }}-configs
+data:
+  config.toml: |
+    # https://docs.tendermint.com/v0.34/tendermint-core/configuration.html
+
+    proxy_app = "tcp://127.0.0.1:26658"
+    moniker = "local"
+    fast_sync = true
+    db_backend = "goleveldb"
+    db_dir = "data"
+    log_level = "info"
+    log_format = "plain"
+    genesis_file = "config/genesis.json"
+    priv_validator_key_file = "config/priv_validator_key.json"
+    priv_validator_state_file = "data/priv_validator_state.json"
+    priv_validator_laddr = ""
+    node_key_file = "config/node_key.json"
+    abci = "socket"
+    filter_peers = false
+
+    [rpc]
+    laddr = "tcp://127.0.0.1:26657"
+    cors_allowed_origins = []
+    cors_allowed_methods = ["HEAD", "GET", "POST"]
+    cors_allowed_headers = ["Origin", "Accept", "Content-Type", "X-Requested-With", "X-Server-Time"]
+    grpc_laddr = ""
+    grpc_max_open_connections = 900
+    unsafe = false
+    max_open_connections = 900
+    max_subscription_clients = 100
+    max_subscriptions_per_client = 5
+    timeout_broadcast_tx_commit = "10s"
+    max_body_bytes = 1000000
+    max_header_bytes = 1048576
+    tls_cert_file = ""
+    tls_key_file = ""
+    pprof_laddr = "localhost:6060"
+
+    [p2p]
+    laddr = "tcp://0.0.0.0:26656"
+    external_address = ""
+    seeds = ""
+    persistent_peers = ""
+    upnp = false
+    addr_book_file = "config/addrbook.json"
+    addr_book_strict = false
+    max_num_inbound_peers = 40
+    max_num_outbound_peers = 10
+    unconditional_peer_ids = ""
+    persistent_peers_max_dial_period = "0s"
+    flush_throttle_timeout = "100ms"
+    max_packet_msg_payload_size = 1024
+    send_rate = 5120000
+    recv_rate = 5120000
+    pex = true
+    seed_mode = false
+    private_peer_ids = ""
+    allow_duplicate_ip = true
+    handshake_timeout = "20s"
+    dial_timeout = "3s"
+
+    [mempool]
+    recheck = true
+    broadcast = true
+    wal_dir = ""
+    size = 5000
+    max_txs_bytes = 1073741824
+    cache_size = 10000
+    keep-invalid-txs-in-cache = false
+    max_tx_bytes = 1048576
+    max_batch_bytes = 0
+
+    [statesync]
+    {{- if .Values.statesync.enabled }}
+    enable = true
+    trust_height = {{ .Values.statesync.trustHeight }}
+    trust_hash = "{{ .Values.statesync.trustHash }}"
+    rpc_servers = "{{ .Values.statesync.rpcServers }}"
+    {{- else }}
+    enable = false
+    trust_height = 0
+    trust_hash = ""
+    rpc_servers = ""
+    {{- end }}
+    trust_period = "168h0m0s"
+    discovery_time = "15s"
+    temp_dir = ""
+    chunk_request_timeout = "10s"
+    chunk_fetchers = "4"
+
+    [fastsync]
+    version = "v0"
+
+    [consensus]
+    wal_file = "data/cs.wal/wal"
+    timeout_propose = "3s"
+    timeout_propose_delta = "500ms"
+    timeout_prevote = "1s"
+    timeout_prevote_delta = "500ms"
+    timeout_precommit = "1s"
+    timeout_precommit_delta = "500ms"
+    timeout_commit = "5s"
+    double_sign_check_height = 0
+    skip_timeout_commit = false
+    create_empty_blocks = true
+    create_empty_blocks_interval = "0s"
+    peer_gossip_sleep_duration = "100ms"
+    peer_query_maj23_sleep_duration = "2s"
+
+    [tx_index]
+    indexer = "kv"
+
+    [instrumentation]
+    prometheus = true
+    prometheus_listen_addr = ":26660"
+    max_open_connections = 3
+    namespace = "tendermint"

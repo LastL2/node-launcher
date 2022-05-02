@@ -384,7 +384,7 @@ deploy_fullnode() {
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
     --set dogecoin-daemon.enabled=false,terra-daemon.enabled=false \
     --set gaia-daemon.enabled=false \
-    --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc=true,gateway.api=true
+    --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
   # shellcheck disable=SC2086
@@ -398,5 +398,5 @@ deploy_fullnode() {
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
     --set dogecoin-daemon.enabled=false,terra-daemon.enabled=false \
     --set gaia-daemon.enabled=false \
-    --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc=true,gateway.api=true
+    --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
 }

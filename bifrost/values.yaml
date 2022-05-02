@@ -13,8 +13,6 @@ signer:
 # use in multi nodes envs
 peer:
 
-hostNetwork: false
-
 debug: false
 
 thorApi: thornode:1317

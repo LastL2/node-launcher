@@ -16,8 +16,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-hostNetwork: false
-
 recoverNineRealmsSnapshot: true
 
 service:

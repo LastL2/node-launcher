@@ -5,6 +5,10 @@
 net: mainnet
 type: validator
 
+autoupdate:
+  enabled: false
+  nodes: https://thornode.ninerealms.com/thorchain/nodes
+
 signer:
   name: thorchain
   password: password
@@ -19,6 +23,14 @@ ethRouterContract:
   mainnet: "0xC145990E84155416144C532E31f89B840Ca8c2cE"
   stagenet: "0x23d040e8816FF628c54D357612420260301cAE85"
 
+statesync:
+  enabled: false
+  seed: false
+  trustHeight: 0
+  trustHash: ""
+  rpcServers: "https://rpc.ninerealms.com:443,https://rpc.thorchain.info:443"
+  peer: ""
+
 enableApi: true
 
 debug: false
@@ -30,8 +42,6 @@ chainID:
 haltHeight:
 
 replicaCount: 1
-
-hostNetwork: false
 
 strategyType: Recreate
 

@@ -23,8 +23,6 @@ fullnameOverride: ""
 # - Singapore
 quicksyncMirror: Netherlands
 
-hostNetwork: false
-
 service:
   type: ClusterIP
   port:
