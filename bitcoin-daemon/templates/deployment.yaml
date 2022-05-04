@@ -27,7 +27,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ .Values.image.name }}:{{ include "daemon.tag" . }}@sha256:{{ .Values.image.hash }}
+          image: {{ .Values.image.name }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.hash }}
           imagePullPolicy: IfNotPresent
           {{- if eq (include "bitcoin-daemon.net" .) "mocknet" }}
           command: ["/scripts/entrypoint-mock.sh"]

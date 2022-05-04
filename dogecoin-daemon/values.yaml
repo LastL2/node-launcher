@@ -7,9 +7,9 @@ replicaCount: 1
 net: mainnet
 
 image:
-  name: registry.gitlab.com/thorchain/devops/dogecoin-core
-  tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: a756769d507cf1624e706380dfdb006634c177866089f5f627b826fb4a731d65
+  name: registry.gitlab.com/thorchain/devops/node-launcher
+  tag: "dogecoin-daemon-1.14.5"
+  hash: "39fff4abd54c7bafc6994a4b4a4a2790ae6707a0258244bb3d1188e04138da79"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -71,9 +71,9 @@ ingress:
     #       serviceName: gateway
     #       servicePort: midgard
   tls: []
-   # - secretName: midgard-tls
-   #   hosts:
-   #     - midgard.example.com
+    # - secretName: midgard-tls
+    #   hosts:
+    #     - midgard.example.com
 
 resources:
   limits:

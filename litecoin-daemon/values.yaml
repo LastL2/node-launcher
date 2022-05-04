@@ -7,9 +7,9 @@ replicaCount: 1
 net: mainnet
 
 image:
-  name: registry.gitlab.com/thorchain/devops/litecoin-core
-  tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: 0a6eed5b174c01a7c9409a8de46a0887295576d401fec2058583118356b2e7bc
+  name: registry.gitlab.com/thorchain/devops/node-launcher
+  tag: "litecoin-daemon-0.18.1"
+  hash: "18c39a716ee6f3f670d00589648f6f82b55e732365ca2f97883d23dca2afc33b"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -71,9 +71,9 @@ ingress:
     #       serviceName: gateway
     #       servicePort: midgard
   tls: []
-   # - secretName: midgard-tls
-   #   hosts:
-   #     - midgard.example.com
+    # - secretName: midgard-tls
+    #   hosts:
+    #     - midgard.example.com
 
 resources:
   limits:
