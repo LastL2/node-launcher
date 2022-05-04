@@ -7,9 +7,9 @@ replicaCount: 1
 net: mainnet
 
 image:
-  name: registry.gitlab.com/thorchain/devops/bitcoin-core
-  tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: 99d186380f0898e0454de78612e46fd2eb11f2df9074af636058fcf6e658bb91
+  name: registry.gitlab.com/thorchain/devops/node-launcher
+  tag: "bitcoin-daemon-22.0"
+  hash: "ac7e331275e6f0d709f14e2a4a6f5da1e6733ac6637c40944c043ab90e23e32a"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -71,9 +71,9 @@ ingress:
     #       serviceName: gateway
     #       servicePort: midgard
   tls: []
-   # - secretName: midgard-tls
-   #   hosts:
-   #     - midgard.example.com
+    # - secretName: midgard-tls
+    #   hosts:
+    #     - midgard.example.com
 
 resources:
   limits:
