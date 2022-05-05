@@ -36,4 +36,4 @@ spec:
               defaultMode: 0555
           - name: backups
             persistentVolumeClaim:
-              claimName: backups
+              claimName: mirror-backups
