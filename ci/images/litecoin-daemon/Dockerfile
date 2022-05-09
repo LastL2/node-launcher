@@ -1,6 +1,6 @@
 FROM alpine:3.12.1
 
-ENV LITECOIN_VERSION=0.18.1
+ENV LITECOIN_VERSION=0.21.2
 ENV GLIBC_VERSION=2.28-r0
 ENV LITECOIN_DATA=/home/litecoin/.litecoin
 
@@ -15,20 +15,13 @@ RUN apk update \
 	&& apk --no-cache add glibc-${GLIBC_VERSION}.apk \
 	&& apk --no-cache add glibc-bin-${GLIBC_VERSION}.apk
 
-RUN for key in \
-	B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-	FE3348877809386C \
-	; do \
-		gpg --no-tty --keyserver pgp.mit.edu --recv-keys "$key" || \
-		gpg --no-tty --keyserver keyserver.pgp.com --recv-keys "$key" || \
-		gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-		gpg --no-tty --keyserver keys.openpgp.org --recv-keys "$key" || \
-		gpg --no-tty --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-	done
+# NOTE: The signing key expired on 4/26/22 and is not returned by keyservers.
+COPY davidburkett38-key.pgp .
+RUN gpg --no-tty --import davidburkett38-key.pgp
 
 RUN wget https://download.litecoin.org/litecoin-${LITECOIN_VERSION}/linux/litecoin-${LITECOIN_VERSION}-x86_64-linux-gnu.tar.gz \
-	&& wget https://download.litecoin.org/litecoin-${LITECOIN_VERSION}/linux/litecoin-${LITECOIN_VERSION}-linux-signatures.asc \
-	&& gpg --verify litecoin-${LITECOIN_VERSION}-linux-signatures.asc \
+	&& wget https://download.litecoin.org/litecoin-${LITECOIN_VERSION}/linux/litecoin-${LITECOIN_VERSION}-x86_64-linux-gnu.tar.gz.asc \
+	&& gpg --verify litecoin-${LITECOIN_VERSION}-x86_64-linux-gnu.tar.gz.asc \
 	&& tar --strip=2 -xzf *.tar.gz -C /usr/local/bin \
 	&& rm *.tar.gz
 
