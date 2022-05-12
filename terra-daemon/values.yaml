@@ -46,9 +46,12 @@ ingress:
     # - host: midgard.example.com
     #   paths:
     #   - path: /
+    #     pathType: ImplementationSpecific
     #     backend:
-    #       serviceName: gateway
-    #       servicePort: midgard
+    #       service
+    #         name: gateway
+    #         port:
+    #           name: midgard
   tls:
     []
     # - secretName: midgard-tls
