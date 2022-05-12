@@ -30,7 +30,7 @@ secret_detection:
 ########################################################################################
 
 lint:
-  image: registry.gitlab.com/thorchain/devops/node-launcher@sha256:744718ddfad1948dfdb1342670aadf38f25b2472f9c5c56e42c260a4fc051011
+  image: registry.gitlab.com/thorchain/devops/node-launcher@sha256:2b2d9db334392528e56bfbd83395ee5e8ca4a5017acab155c257364c07faa576
   stage: validate
   script:
     - ./scripts/lint.sh
