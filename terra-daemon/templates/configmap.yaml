@@ -9,21 +9,21 @@ data:
     set -euo pipefail
 
     # skip snapshot pull if we already have a data directory
-    if [ -d "/root/.terra/data" ]; then
+    if [ -d "/terra/.terra/data" ]; then
       # delete snapshot archive if it exists
-      rm -f /root/.terra/*.lz4
+      rm -f /terra/.terra/*.lz4
       exit 0
     fi
 
-    cd /root/.terra
+    cd /terra/.terra
     apk add aria2 curl jq lz4
 
     # fetch snapshot url
     URL=`curl -s https://quicksync.io/terra.json|jq -r ".[] |select(.file==\"columbus-5-pruned\")|select (.mirror==\"$QUICKSYNC_MIRROR\")|.url"`
 
     # clean stale snapshots
-    if ls /root/.terra/columbus-5-* >/dev/null 2>&1; then
-      ls /root/.terra/columbus-5-* | while read line; do
+    if ls /terra/.terra/columbus-5-* >/dev/null 2>&1; then
+      ls /terra/.terra/columbus-5-* | while read line; do
         if [ "$(basename $URL)" = "$(basename $line)" ] || [ "$(basename $URL).aria2" = "$(basename $line)" ]; then
           echo "leaving snapshot to resume: $line"
         else
@@ -36,7 +36,9 @@ data:
     # pull snapshot
     aria2c -c -x5 $URL
     lz4 -d `basename $URL` | tar xf -
-    rm -f /root/.terra/*.lz4
+    rm -f /terra/.terra/*.lz4
+
+    chown -R 1000:1000 /terra/.terra
 
   init.sh: |
     #!/bin/sh
@@ -44,9 +46,9 @@ data:
     set -euo pipefail
 
     GENESIS_URL="https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json"
-    GENESIS_PATH="/root/.terra/config/genesis.json"
+    GENESIS_PATH="/terra/.terra/config/genesis.json"
     ADDRBOOK_URL="https://network.terra.dev/addrbook.json"
-    ADDRBOOK_PATH="/root/.terra/config/addrbook.json"
+    ADDRBOOK_PATH="/terra/.terra/config/addrbook.json"
 
     # Memory leak fix
     if [ -f ~/.terra/config/app.toml ]; then
@@ -66,10 +68,10 @@ data:
 
     set -euo pipefail
 
-    FILE=/root/.terra/.probe_last_height
+    FILE=/terra/.terra/.probe_last_height
     ENDPOINT=localhost:$TERRA_DAEMON_SERVICE_PORT/status
 
-    STATUS=$(curl -sL --fail -m 10 "$ENDPOINT") || exit 1
+    STATUS=$(wget -q -O - -T 20 "$ENDPOINT") || exit 1
     if [ ! -f "$FILE" ]; then
       echo "$STATUS" | jq -r ".result.sync_info.latest_block_height" >$FILE
       exit 1
