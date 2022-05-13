@@ -16,8 +16,8 @@ RUN apk add git cmake
 # RUN apk add libusb-dev linux-headers
 
 # NOTE: This is the only section modified from the Dockerfile in terra-money/core.
-ARG COMMIT=25d61133997144485b839880d02d9bcc11bb4c52
-ARG TAG=v0.5.19
+ARG COMMIT=1302858e753f7985ff8ed73afcd951e111af5155
+ARG TAG=v0.5.20
 WORKDIR /code
 RUN git init && \
   git remote add origin https://github.com/terra-money/core && \
