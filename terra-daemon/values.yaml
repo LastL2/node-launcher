@@ -7,10 +7,10 @@ net: mainnet
 replicaCount: 1
 
 image:
-  name: terramoney/core-node
+  name: registry.gitlab.com/thorchain/devops/node-launcher
+  tag: terra-daemon-0.5.20
+  hash: 34f8a8a09d4579780691f918a6d35fbea2b45c2d70bd27a4601a4d253761fe25
   pullPolicy: IfNotPresent
-  tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: "ba3b6a36f37fd62d5d1e116d8a25e7e5e87ea1bafaf4267e2fc3b896ef973605"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -74,11 +74,10 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext:
-  fsGroup: 1000
-
 securityContext:
-  {}
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
   # capabilities:
   #   drop:
   #   - ALL
