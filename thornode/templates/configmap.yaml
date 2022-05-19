@@ -3,6 +3,25 @@ kind: ConfigMap
 metadata:
   name: {{ include "thornode.fullname" . }}-scripts
 data:
+  retry.sh: |
+    #!/bin/sh
+
+    TRY=0
+
+    while [ $TRY -lt 5 ]
+    do
+      "$@" 2>/tmp/retry-out
+
+      cat /tmp/retry-out
+      if ! grep "account sequence mismatch" /tmp/retry-out >/dev/null; then
+        break
+      fi
+
+      TRY=$((TRY+1))
+      echo Retrying account sequence mismatch, try $TRY...
+      sleep 2
+    done
+
   set-node-keys.sh: |
     #!/bin/sh
 
