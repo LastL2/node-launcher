@@ -4,12 +4,12 @@
 
 FROM tendermintdev/rbuilder:latest as build
 
-ARG COMMIT=cd27aaaf39cc7819b5164e4baf3fd5aad23ec52a
+ARG SRC_COMMIT=cd27aaaf39cc7819b5164e4baf3fd5aad23ec52a
 ARG TAG=v7.0.2
 RUN git init && \
   git remote add origin https://github.com/cosmos/gaia && \
   git fetch --depth 1 origin $TAG && \
-  git checkout $COMMIT && \
+  git checkout $SRC_COMMIT && \
   make build
 
 
