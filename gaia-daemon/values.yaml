@@ -8,7 +8,6 @@ replicaCount: 1
 
 image:
   name: us-central1-docker.pkg.dev/ninerealms-prod/services/cosmos
-  pullPolicy: IfNotPresent
   tag: "" # When tag is empty it defaults to the chart appVersion.
   hash: "fd06762a380a198fb3cd26e29840948ab680f2485b55b7ce715006d73af1eef1"
 

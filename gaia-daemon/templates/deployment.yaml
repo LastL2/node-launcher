@@ -43,7 +43,7 @@ spec:
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         image: {{ .Values.image.name }}:{{ include "daemon.tag" . }}@sha256:{{ .Values.image.hash }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: IfNotPresent
         volumeMounts:
           - name: data
             mountPath: /root/.gaia
