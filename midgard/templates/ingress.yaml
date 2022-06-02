@@ -1,11 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "midgard.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -32,10 +28,17 @@ spec:
       http:
         paths:
         {{- range .paths }}
-          - path: {{ . }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              service:
+                name: {{ .backend.service.name }}
+                port:
+                  {{- if .backend.service.port.number }}
+                  number: {{ .backend.service.port.number }}
+                  {{- else if .backend.service.port.name }}
+                  name: {{ .backend.service.port.name }}
+                  {{- end }}
         {{- end }}
   {{- end }}
 {{- end }}

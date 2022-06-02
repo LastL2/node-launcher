@@ -1,5 +1,5 @@
 global:
-  tag: testnet-1.87.1
+  tag: testnet-1.90.0
 
 bifrost:
   dogecoinDaemon:
@@ -10,19 +10,13 @@ bifrost:
     enabled: false
 
 midgard:
-  image:
-    tag: 2.6.9
-    hash: ba574692aa730f1a9aaea7f1f05e65e532ed50251e26d01014dbb1bbbde8e107
   blockstore:
     enabled: true
     remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/testnet/v2/
-    size: 5Gi
+    size: 10Gi
 
 binance-daemon:
   enabled: true
-  image:
-    tag: 0.9.0-tn-hf1
-    hash: "21a81a0580944488599cd67324f6ed80b9d0d3048ef1e783d2a84cff0e68961e"
 
 bitcoin-daemon:
   enabled: true

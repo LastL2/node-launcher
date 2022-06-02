@@ -7,9 +7,9 @@ net: mainnet
 replicaCount: 1
 
 image:
-  name: registry.gitlab.com/thorchain/devops/binance-node
-  tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: f888c697e8d81ad45b4d27ee7f7f35769824ef2e9d309a69da4e6eaca549a50b
+  name: registry.gitlab.com/thorchain/devops/node-launcher
+  tag: "binance-daemon-0.9.0-1"
+  hash: "a048a93519981611939c097d27dac61f2b2969df165db491971efc356822cc4f"
   mocknet: registry.gitlab.com/thorchain/bepswap/mock-binance # TODO: is this still used?
 
 imagePullSecrets: []
@@ -44,9 +44,9 @@ ingress:
     #       serviceName: gateway
     #       servicePort: midgard
   tls: []
-   # - secretName: midgard-tls
-   #   hosts:
-   #     - midgard.example.com
+    # - secretName: midgard-tls
+    #   hosts:
+    #     - midgard.example.com
 
 persistence:
   enabled: true

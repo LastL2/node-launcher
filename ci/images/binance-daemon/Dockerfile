@@ -6,13 +6,18 @@ ARG HOST_USER_GID=1000
 ARG FULLNODE_TESTNET=0.9.0
 ARG FULLNODE_PROD=0.9.0
 
+# NOTE: the latest version of the testnet fullnode directory does not contain
+# these files, so reference the last version which contained them.
+ARG FULLNODE_TESTNET_CONFIG=0.8.1
+ARG FULLNODE_TESTNET_GENESIS=0.8.1
+
 ARG LIGHTNODE_TESTNET=0.8.3
 ARG LIGHTNODE_PROD=0.8.3
 
 ARG CLI_TESTNET=0.9.0
 ARG CLI_PROD=0.9.0
 
-ARG REPO_URL=https://github.com/binance-chain/node-binary/raw/master
+ARG REPO_URL=https://github.com/binance-chain/node-binary/raw/d6ad58e55cfec5fb84931b3dcb3b2f1920e1dc22
 
 ENV BNCHOME=/opt/bnbchaind
 
@@ -35,8 +40,8 @@ RUN curl -Ls --create-dirs -o /usr/local/bin/tbnbcli ${REPO_URL}/cli/testnet/${C
 
   # Copy config files for testnet and prod chains of fullnode
   && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/app.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/app.toml \
-  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/config.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/config.toml \
-  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/genesis.json ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET}/config/genesis.json \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/config.toml ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET_CONFIG}/config/config.toml \
+  && curl -Ls --create-dirs -o /node-binary/fullnode/testnet/config/genesis.json ${REPO_URL}/fullnode/testnet/${FULLNODE_TESTNET_GENESIS}/config/genesis.json \
   && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/app.toml ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/app.toml \
   && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/config.toml ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/config.toml \
   && curl -Ls --create-dirs -o /node-binary/fullnode/prod/config/genesis.json ${REPO_URL}/fullnode/prod/${FULLNODE_PROD}/config/genesis.json

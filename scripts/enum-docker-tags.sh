@@ -25,7 +25,8 @@ get_tags() {
   TOKEN=$(get_auth_token "$IMAGE")
 
   LIST_URI="https://registry.gitlab.com/v2/$IMAGE/tags/list"
-  curl --silent --get -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" "$LIST_URI" | jq --raw-output '.tags[]'
+  curl --silent --get -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" "$LIST_URI" |
+    jq --raw-output '.tags[]'
 }
 
 get_manifest() {
@@ -35,8 +36,8 @@ get_manifest() {
   TOKEN=$(get_auth_token "$IMAGE")
 
   MANIFEST_URI="https://registry.gitlab.com/v2/$IMAGE/manifests/$TAG"
-  curl -i --silent --head -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" "$MANIFEST_URI" |
-    awk '/^Docker-Content-Digest:/ { print $2 }' | sed -e 's/[[:space:]]//g'
+  curl -i --silent -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" "$MANIFEST_URI" |
+    awk 'BEGIN{IGNORECASE=1} /^Docker-Content-Digest:/ { print $2 }' | sed -e 's/[[:space:]]//g'
 }
 
 if [ -z "$SPECIFIC_TAG" ]; then
@@ -45,8 +46,18 @@ else
   TAGS="$SPECIFIC_TAG"
 fi
 
+printf '['
+
+FIRST=""
 # shellcheck disable=SC2068
 for TAG in ${TAGS[@]}; do
+  if [ -z "$FIRST" ]; then
+    FIRST="n"
+  else
+    printf ','
+  fi
   SHA=$(get_manifest "$IMAGE" "$TAG")
-  printf "%s -> %s\n" "$SHA" "$TAG"
+  printf '\n  {"tag": "%s", "hash": "%s"}' "$TAG" "$SHA"
 done
+
+printf '\n]\n'

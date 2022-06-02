@@ -1,16 +1,5 @@
 Helm Charts
 
-****
-
-> **Mirror**
->
-> This repo mirrors from THORChain Gitlab to Github.
-> To contribute, please contact the team and commit to the Gitlab repo:
->
-> https://gitlab.com/thorchain/devops/helm-charts
-
-
-****
 ========
 
 Charts to deploy THORNode stack and tools.
@@ -26,7 +15,7 @@ Once you have your THORNode up and running, please follow instructions [here](ht
 
 ## Running Kubernetes cluster
 
-To get a Kubernetes cluster running, you can use the Terraform scripts [here](https://gitlab.com/thorchain/devops/terraform-scripts).
+To get a Kubernetes cluster running, you can use the Terraform scripts [here](https://gitlab.com/thorchain/devops/cluster-launcher).
 
 ## Install Helm 3
 
@@ -334,6 +323,9 @@ Open http://localhost:8000 in your browser.
 make destroy-dashboard
 ```
 
+### Alerts ###
+
+A guide for setting up Prometheus alerts can be found in [Alerting.md](./docs/Alerting.md)
 
 ## Charts available:
 
@@ -355,15 +347,16 @@ you know what you are doing and want to run each chart separately (not recommend
 
 ### External services:
 
-- binance-daemon: Binance fullnode daemon
-- bitcoin-daemon: Bitcoin fullnode daemon
-- dogecoin-daemon: Dogecoin fullnode daemon
-- litecoin-daemon: Litecoin fullnode daemon
-- bitcoin-cash-daemon: Bitcoin Cash fullnode daemon
-- ethereum-daemon: Ethereum fullnode daemon
+- *-daemon: Individual chain fullnode daemons
 
 ### Tools
 
 - prometheus: Prometheus stack for metrics
 - loki: Loki stack for logs
 - kubernetes-dashboard: Kubernetes dashboard
+
+### Development ###
+
+The image used for CI of this repository is found in [ci/](./ci/).
+
+The node daemon images used in the charts here are built from [ci/images/](./ci/images).
