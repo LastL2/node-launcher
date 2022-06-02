@@ -38,8 +38,6 @@ lint:
 build:
   image: docker:20.10.12
   stage: build
-  only:
-    - master
   services:
     - docker:20.10.12-dind
   before_script:

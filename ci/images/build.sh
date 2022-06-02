@@ -15,7 +15,9 @@ find ci/images/ -name version -printf '%h\n' | xargs basename -a | while read -r
   else
     echo "Building image $image:$version..."
     docker build -t "$REGISTRY:$image-$version" "ci/images/$image"
-    docker push "$REGISTRY:$image-$version"
+    if [ "$CI_COMMIT_BRANCH" = "master" ]; then
+      docker push "$REGISTRY:$image-$version"
+    fi
   fi
 
 done
