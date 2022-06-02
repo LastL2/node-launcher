@@ -8,8 +8,8 @@ data:
 
     set -euo pipefail
 
-    # pull genesis
-    if [ -f "/root/.gaia/config/genesis.json" ]; then
+    # pull genesis if it does not exist
+    if [ ! -f "/root/.gaia/config/genesis.json" ]; then
       mkdir -p /root/.gaia/config
       cd /root/.gaia/config
       wget https://github.com/cosmos/mainnet/raw/master/genesis.gaia-4.json.gz
@@ -17,7 +17,7 @@ data:
       mv genesis.gaia-4.json genesis.json
     fi
 
-    # always pull latest address book
+    # pull the latest address book (if it already exists)
     if [ -f /root/.gaia/config/addrbook.json ]; then
       mv /root/.gaia/config/addrbook.json /root/.gaia/config/addrbook.json.bak
       wget -O /root/.gaia/config/addrbook.json https://quicksync.io/addrbook.cosmos.json
