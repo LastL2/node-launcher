@@ -20,7 +20,7 @@ data:
     # pull the latest address book (if it already exists)
     if [ -f /root/.gaia/config/addrbook.json ]; then
       mv /root/.gaia/config/addrbook.json /root/.gaia/config/addrbook.json.bak
-      wget -O /root/.gaia/config/addrbook.json https://quicksync.io/addrbook.cosmos.json
+      wget -O /root/.gaia/config/addrbook.json https://quicksync.io/addrbook.cosmos.json || mv addrbook.json.bak addrbook.json
     fi
 
     # skip snapshot pull and cleanup tar if we already have a data directory
