@@ -3,6 +3,16 @@ kind: ConfigMap
 metadata:
   name: {{ include "ethereum-daemon.fullname" . }}-scripts
 data:
+  init-beacon-testnet.sh: |
+    #!/bin/sh
+
+    set -euo pipefail
+
+    mkdir -p /data/beacon
+    if [ ! -f /data/beacon/genesis.ssz ]; then
+      wget -O /data/beacon/genesis.ssz https://github.com/eth-clients/merge-testnets/raw/main/ropsten-beacon-chain/genesis.ssz
+    fi
+
   probe.sh: |
     #!/bin/sh
 
