@@ -3,6 +3,25 @@ kind: ConfigMap
 metadata:
   name: {{ include "gaia-daemon.fullname" . }}-scripts
 data:
+  probe.sh: |
+    #!/bin/bash
+
+    set -euo pipefail
+
+    FILE=/root/.gaia/.probe_last_height
+    ENDPOINT=localhost:$GAIA_DAEMON_SERVICE_PORT/status
+
+    STATUS=$(curl -s --fail -m 20 "$ENDPOINT") || exit 1
+    if [ ! -f "$FILE" ]; then
+      echo "$STATUS" | jq -r ".result.sync_info.latest_block_height" >$FILE
+      exit 1
+    fi
+
+    OLD=$(cat $FILE)
+    echo "$STATUS" | jq -r ".result.sync_info.latest_block_height" > $FILE
+    CURRENT=$(cat $FILE)
+    [ "$OLD" == "$CURRENT" ] && exit 1 || exit 0
+
   init.sh: |
     #!/bin/sh
 
