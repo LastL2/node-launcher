@@ -7,9 +7,9 @@ net: mainnet
 replicaCount: 1
 
 image:
-  name: us-central1-docker.pkg.dev/ninerealms-prod/services/cosmos
-  tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: "fd06762a380a198fb3cd26e29840948ab680f2485b55b7ce715006d73af1eef1"
+  name: registry.gitlab.com/thorchain/devops/node-launcher
+  tag: gaia-daemon-7.0.2
+  hash: "68278ac40515cce9d69f9b1ec41699335560e2a19ee942cd849383f128a37035"
 
 imagePullSecrets: []
 nameOverride: ""

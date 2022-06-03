@@ -38,7 +38,7 @@ Common labels
 {{- define "gaia-daemon.labels" -}}
 helm.sh/chart: {{ include "gaia-daemon.chart" . }}
 {{ include "gaia-daemon.selectorLabels" . }}
-app.kubernetes.io/version: {{ include "daemon.tag" . | quote }}
+app.kubernetes.io/version: {{ .Values.image.tag }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -66,13 +66,6 @@ Net
 */}}
 {{- define "gaia-daemon.net" -}}
 {{- default .Values.net .Values.global.net -}}
-{{- end -}}
-
-{{/*
-Tag
-*/}}
-{{- define "daemon.tag" -}}
-    {{ .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
