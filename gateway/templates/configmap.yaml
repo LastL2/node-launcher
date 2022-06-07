@@ -49,7 +49,6 @@ data:
 
     kubectl create configmap "$CONFIGMAP" --from-literal=externalIP="$external_ip" --dry-run=client -o yaml | kubectl apply -f -
 
-
   nginx.conf: |
     user  nginx;
     worker_processes  auto;
@@ -100,6 +99,14 @@ data:
       {{- if .Values.midgard }}
       server {
         listen {{ .Values.service.port.midgard }};
+
+        {{- if gt (len .Values.whitelistIPs) 0 }}
+
+        {{- range .Values.whitelistIPs }}
+        allow {{ . }};
+        {{- end }}
+        deny all;
+        {{- end }}
 
         location / {
           proxy_hide_header Access-Control-Allow-Origin;

@@ -11,6 +11,10 @@ rpc:
   limited: true
 api: false
 
+# whitelistIPs contains a list of allowed IP addresses or CIDRs. Defaults to allow all
+# traffic if not provided.
+whitelistIPs: []
+
 replicaCount: 1
 
 image:
@@ -60,9 +64,9 @@ ingress:
     #       serviceName: gateway
     #       servicePort: midgard
   tls: []
-   # - secretName: midgard-tls
-   #   hosts:
-   #     - midgard.example.com
+    # - secretName: midgard-tls
+    #   hosts:
+    #     - midgard.example.com
 
 podSecurityContext: {}
   # fsGroup: 2000
