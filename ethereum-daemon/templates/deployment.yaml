@@ -58,7 +58,7 @@ spec:
           {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
           command: [ "sh", "-c", "apk add curl && /entrypoint/ethereum-mock.sh" ]
           {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
-          command: [ "sh", "-c", 'geth --override.terminaltotaldifficulty 100000000000000000000000 --ropsten --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --eth.requiredblocks 10920274=0xfd652086d220d506ae5b7cb80fde97d2f3f7028d346cc7d9d384a83d3d638532' ]
+          command: [ "sh", "-c", 'geth --override.terminaltotaldifficulty 50000000000000000 --ropsten --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --eth.requiredblocks 10920274=0xfd652086d220d506ae5b7cb80fde97d2f3f7028d346cc7d9d384a83d3d638532' ]
           {{- else }} # mainnet / stagenet
           command: [ "sh", "-c", 'geth --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
           {{- end }}
@@ -114,7 +114,7 @@ spec:
             - /app/cmd/beacon-chain/beacon-chain
             - --ropsten
             - --datadir=/data/beacon
-            - --http-web3provider=http://localhost:8545
+            - --http-web3provider=http://localhost:8551
             - --accept-terms-of-use
             - --genesis-state=/data/beacon/genesis.ssz
             - --jwt-secret=/data/.ethereum/ropsten/geth/jwtsecret
