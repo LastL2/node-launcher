@@ -1,6 +1,6 @@
 global:
-  tag: chaosnet-multichain-1.90.0
-  hash: bb6ffb1167bd5b91f0a4a31495bca76e9f2955def1f02685d3859b5669d22969
+  tag: chaosnet-multichain-1.91.0
+  hash: 8d89d9794c546982aa9c71f7c57faf5811cd6c3d337168b9651907c583dba396
 
 thornode:
   haltHeight:
