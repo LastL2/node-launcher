@@ -27,3 +27,6 @@ dogecoin-daemon:
 
 terra-daemon:
   enabled: true
+
+gaia-daemon:
+  enabled: true

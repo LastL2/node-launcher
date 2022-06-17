@@ -61,3 +61,8 @@ dependencies:
     repository: file://../terra-daemon
     version: 0.1.0
     condition: terra-daemon.enabled
+
+  - name: gaia-daemon
+    repository: file://../gaia-daemon
+    version: 0.1.0
+    condition: gaia-daemon.enabled
