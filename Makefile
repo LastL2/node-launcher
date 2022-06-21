@@ -28,6 +28,9 @@ update-dependencies:
 	@helm dependencies update ./thornode-stack
 	@echo
 
+update-trust-state: ## Updates statesync trusted height/hash and Midgard blockstore hashes from Nine Realms
+	@./scripts/update-trust-state.sh
+
 mnemonic: ## Retrieve and display current mnemonic for backup from your THORNode
 	@./scripts/mnemonic.sh
 
