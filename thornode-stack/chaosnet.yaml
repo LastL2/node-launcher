@@ -7,8 +7,8 @@ thornode:
   statesync:
     enabled: false
     seed: false
-    trustHeight: "5200000"
-    trustHash: "B6F7DD933F1943DB4C7A409348C7D0247930F72105D9373B7E0D375922E42B15"
+    trustHeight: "6000000"
+    trustHash: "2FECE74B0A5718FEC478A1E8541F158D32466334843E05BB6CBEF5BECC87BEC7"
     peer: "c3613862c2608b3e861406ad02146f41cf5124e6@statesync-seed.ninerealms.com:27146"
 
 midgard:
