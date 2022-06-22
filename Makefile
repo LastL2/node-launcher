@@ -40,6 +40,9 @@ pods: ## Get THORNode Kubernetes pods
 install: pull update-dependencies ## Deploy a THORNode
 	@./scripts/install.sh
 
+recycle: pull update-dependencies ## Destroy and recreate a THORNode recycling existing daemons to avoid re-sync
+	@./scripts/recycle.sh
+
 update: pull update-dependencies ## Update a THORNode to latest version
 	@./scripts/update.sh
 
