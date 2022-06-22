@@ -113,6 +113,10 @@ spec:
               value: "{{ .Values.terraStartBlockHeight }}"
             - name: GAIA_HOST
               value: {{ include "bifrost.gaiaDaemon" . }}
+            - name: GAIA_GRPC_HOST
+              value: {{ include "bifrost.gaiaDaemonGRPC" . }}
+            - name: GAIA_GRPC_TLS
+              value: "{{ include "bifrost.gaiaDaemonGRPCTLS" . }}"
             - name: GAIA_START_BLOCK_HEIGHT
               value: "{{ .Values.gaiaStartBlockHeight }}"
             {{- if not .Values.litecoinDaemon.enabled }}

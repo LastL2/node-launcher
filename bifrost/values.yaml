@@ -79,8 +79,15 @@ terraDaemon:
 
 gaiaDaemon:
   enabled: false
-  mainnet: http://gaia-daemon:26657
-  stagenet: http://gaia-daemon:26657
+  mainnet:
+    rpc: http://gaia-daemon:26657
+    grpc: gaia-daemon:9090
+    grpcTLS: false
+  stagenet:
+    rpc: http://gaia-daemon:26657
+    grpc: gaia-daemon:9090
+    grpcTLS: false
+  testnet: {}
 
 replicaCount: 1
 

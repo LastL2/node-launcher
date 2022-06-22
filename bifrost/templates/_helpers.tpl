@@ -190,7 +190,13 @@ Terra
 Gaia
 */}}
 {{- define "bifrost.gaiaDaemon" -}}
-{{- index .Values.gaiaDaemon (include "bifrost.net" .) -}}
+{{- index (index .Values.gaiaDaemon (include "bifrost.net" .)) "rpc" -}}
+{{- end -}}
+{{- define "bifrost.gaiaDaemonGRPC" -}}
+{{- index (index .Values.gaiaDaemon (include "bifrost.net" .)) "grpc" -}}
+{{- end -}}
+{{- define "bifrost.gaiaDaemonGRPCTLS" -}}
+{{- index (index .Values.gaiaDaemon (include "bifrost.net" .)) "grpcTLS" -}}
 {{- end -}}
 
 {{/*
