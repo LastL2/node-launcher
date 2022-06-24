@@ -25,8 +25,5 @@ ethereum-daemon:
 dogecoin-daemon:
   enabled: true
 
-terra-daemon:
-  enabled: true
-
 gaia-daemon:
   enabled: true
