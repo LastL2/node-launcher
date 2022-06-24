@@ -6,6 +6,8 @@ bifrost:
     enabled: false
   litecoinDaemon:
     enabled: false
+  gaiaDaemon:
+    enabled: false
 
 midgard:
   blockstore:
@@ -29,4 +31,7 @@ ethereum-daemon:
   enabled: true
 
 dogecoin-daemon:
+  enabled: false
+
+gaia-daemon:
   enabled: false

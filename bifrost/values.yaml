@@ -78,7 +78,7 @@ terraDaemon:
   stagenet: http://terra-daemon:26657
 
 gaiaDaemon:
-  enabled: false
+  enabled: true
   mainnet:
     rpc: http://gaia-daemon:26657
     grpc: gaia-daemon:9090
