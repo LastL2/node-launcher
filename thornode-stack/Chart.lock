@@ -29,11 +29,8 @@ dependencies:
 - name: dogecoin-daemon
   repository: file://../dogecoin-daemon
   version: 0.1.0
-- name: terra-daemon
-  repository: file://../terra-daemon
-  version: 0.1.0
 - name: gaia-daemon
   repository: file://../gaia-daemon
   version: 0.1.0
-digest: sha256:46062ef6350191fce5aa5b27a981a8b538f93522907cd801cc0173f47632aa21
-generated: "2022-04-27T10:51:49.774801021-04:00"
+digest: sha256:941f66bd586e60afad9e0062a3dec303f13b928fa0d37792303e406bc223002e
+generated: "2022-06-17T13:04:13.981905543-04:00"

@@ -45,9 +45,6 @@ ethereum-daemon:
 dogecoin-daemon:
   fullnameOverride: dogecoin-daemon
 
-terra-daemon:
-  fullnameOverride: terra-daemon
-
 gaia-daemon:
   fullnameOverride: gaia-daemon
   enabled: false

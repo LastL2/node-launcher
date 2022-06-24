@@ -128,7 +128,7 @@ get_node_info_short() {
 get_node_service() {
   [ "$SERVICE" != "" ] && return
   echo "=> Select THORNode service"
-  menu thornode thornode bifrost midgard gateway binance-daemon dogecoin-daemon terra-daemon gaia-daemon ethereum-daemon bitcoin-daemon litecoin-daemon bitcoin-cash-daemon midgard-timescaledb
+  menu thornode thornode bifrost midgard gateway binance-daemon dogecoin-daemon gaia-daemon ethereum-daemon bitcoin-daemon litecoin-daemon bitcoin-cash-daemon midgard-timescaledb
   SERVICE=$MENU_SELECTED
   echo
 }
@@ -382,8 +382,7 @@ deploy_fullnode() {
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
-    --set dogecoin-daemon.enabled=false,terra-daemon.enabled=false \
-    --set gaia-daemon.enabled=false \
+    --set dogecoin-daemon.enabled=false,gaia-daemon.enabled=false \
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
@@ -396,7 +395,6 @@ deploy_fullnode() {
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
-    --set dogecoin-daemon.enabled=false,terra-daemon.enabled=false \
-    --set gaia-daemon.enabled=false \
+    --set dogecoin-daemon.enabled=false,gaia-daemon.enabled=false \
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
 }

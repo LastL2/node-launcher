@@ -4,8 +4,6 @@ global:
 bifrost:
   dogecoinDaemon:
     enabled: false
-  terraDaemon:
-    enabled: false
   litecoinDaemon:
     enabled: false
 
@@ -31,7 +29,4 @@ ethereum-daemon:
   enabled: true
 
 dogecoin-daemon:
-  enabled: false
-
-terra-daemon:
   enabled: false
