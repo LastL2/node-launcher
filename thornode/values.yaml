@@ -74,7 +74,7 @@ persistence:
   size:
     testnet: 300Gi
     stagenet: 1024Gi
-    mainnet: 1024Gi
+    mainnet: 1.5Ti
   accessMode: ReadWriteOnce
   # existingClaim: your-pvc
   # storageClass: "-"
