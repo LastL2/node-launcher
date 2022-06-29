@@ -3004,3 +3004,138 @@ grafana:
             "uid": "UJyurCTWz",
             "version": 11
           }
+      bifrost_thornode_logs:
+        json: |
+          {
+            "annotations": {
+              "list": [
+                  {
+                    "builtIn": 1,
+                    "datasource": {
+                      "type": "datasource",
+                      "uid": "grafana"
+                    },
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                      "limit": 100,
+                      "matchAny": false,
+                      "tags": [],
+                      "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                  }
+              ]
+            },
+            "editable": true,
+            "fiscalYearStartMonth": 0,
+            "graphTooltip": 0,
+            "id": 33,
+            "iteration": 1655902165674,
+            "links": [],
+            "liveNow": false,
+            "panels": [
+              {
+                "datasource": {
+                  "type": "loki",
+                },
+                "gridPos": {
+                  "h": 12,
+                  "w": 24,
+                  "x": 0,
+                  "y": 0
+                },
+                "id": 2,
+                "options": {
+                  "dedupStrategy": "none",
+                  "enableLogDetails": true,
+                  "prettifyLogMessage": false,
+                  "showCommonLabels": false,
+                  "showLabels": false,
+                  "showTime": true,
+                  "sortOrder": "Descending",
+                  "wrapLogMessage": true
+                },
+                "pluginVersion": "8.2.3",
+                "targets": [
+                  {
+                    "expr": "{app_kubernetes_io_name=\"bifrost\"} |~ \"(?i)$search_text\" != \"leveldb: not found\"",
+                    "refId": "A"
+                  }
+                ],
+                "title": "Bifrost logs",
+                "type": "logs"
+              },
+              {
+                "datasource": {
+                  "type": "loki",
+                },
+                "gridPos": {
+                  "h": 12,
+                  "w": 24,
+                  "x": 0,
+                  "y": 12
+                },
+                "id": 4,
+                "options": {
+                  "dedupStrategy": "none",
+                  "enableLogDetails": true,
+                  "prettifyLogMessage": false,
+                  "showCommonLabels": false,
+                  "showLabels": false,
+                  "showTime": true,
+                  "sortOrder": "Descending",
+                  "wrapLogMessage": true
+                },
+                "targets": [
+                  {
+                    "expr": "{app_kubernetes_io_name=\"thornode\"} |~ \"(?i)$search_text\" ",
+                    "refId": "A"
+                  }
+                ],
+                "title": "Thornode logs",
+                "type": "logs"
+              }
+            ],
+            "refresh": "10s",
+            "schemaVersion": 36,
+            "style": "dark",
+            "tags": [],
+            "templating": {
+              "list": [
+                {
+                  "current": {
+                    "selected": false,
+                    "text": "",
+                    "value": ""
+                  },
+                  "description": "",
+                  "hide": 0,
+                  "label": "Search",
+                  "name": "search_text",
+                  "options": [
+                    {
+                      "selected": true,
+                      "text": "error",
+                      "value": "error"
+                    }
+                  ],
+                  "query": "",
+                  "skipUrlSync": false,
+                  "type": "textbox"
+                }
+              ]
+            },
+            "time": {
+              "from": "now-6h",
+              "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "THORNode / Thornode and Bifrost logs",
+            "uid": "uddVVg27k",
+            "version": 1,
+            "weekStart": ""
+          }
