@@ -16,7 +16,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-recoverNineRealmsSnapshot: true
+recoverNineRealmsSnapshot: false
 
 service:
   type: ClusterIP
