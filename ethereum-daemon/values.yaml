@@ -10,7 +10,7 @@ image:
   eth:
     name: ethereum/client-go
     tag: "" # When tag is empty it defaults to the chart appVersion.
-    hash: 4d5bddf868effdd1e69c5d3c45573afc67f48c318e2da2719f04d339c53614fd
+    hash: 7bd3bf81fc54cca532bf82e339d3f09b0f5045943bbe3a2696f12ca7305c51c7
   prysm:
     name: gcr.io/prysmaticlabs/prysm/beacon-chain
     tag: v2.1.3-rc.2
