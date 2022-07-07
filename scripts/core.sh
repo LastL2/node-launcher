@@ -348,6 +348,10 @@ deploy_genesis() {
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
     --set thornode.type="genesis"
+
+  echo -e "=> Restarting gateway for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
+  kubectl -n "$NAME" rollout restart deploy gateway
 }
 
 deploy_validator() {
@@ -370,6 +374,10 @@ deploy_validator() {
     --set global.net="$NET" \
     --set thornode.type="validator" \
     --set bifrost.peer="$SEED",thornode.seeds="$SEED"
+
+  echo -e "=> Restarting gateway for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
+  kubectl -n "$NAME" rollout restart deploy gateway
 }
 
 deploy_fullnode() {
@@ -397,4 +405,8 @@ deploy_fullnode() {
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
     --set dogecoin-daemon.enabled=false,gaia-daemon.enabled=false \
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
+
+  echo -e "=> Restarting gateway for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+  confirm
+  kubectl -n "$NAME" rollout restart deploy gateway
 }
