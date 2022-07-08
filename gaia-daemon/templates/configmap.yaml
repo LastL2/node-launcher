@@ -56,7 +56,7 @@ data:
     apk add aria2 curl jq lz4
 
     # fetch snapshot url
-    URL=`curl https://quicksync.io/cosmos.json | jq -r '.[] |select(.file=="cosmoshub-4-pruned")|.url'`
+    URL=`curl -L https://quicksync.io/cosmos.json | jq -r '.[] |select(.file=="cosmoshub-4-pruned")|.url'`
 
     # clean stale snapshots
     if ls /root/.gaia/cosmoshub-4-* >/dev/null 2>&1; then
