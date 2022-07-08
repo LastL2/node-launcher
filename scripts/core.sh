@@ -81,7 +81,7 @@ get_node_name() {
 get_discord_channel() {
   [ "$DISCORD_CHANNEL" != "" ] && unset DISCORD_CHANNEL
   echo "=> Select THORNode relay channel: "
-  menu chaosnet chaosnet thornode thornode-chaosnet
+  menu mainnet mainnet devops
   DISCORD_CHANNEL=$MENU_SELECTED
   echo
 }
