@@ -32,5 +32,8 @@ dependencies:
 - name: gaia-daemon
   repository: file://../gaia-daemon
   version: 0.1.0
-digest: sha256:941f66bd586e60afad9e0062a3dec303f13b928fa0d37792303e406bc223002e
-generated: "2022-06-17T13:04:13.981905543-04:00"
+- name: avalanche-daemon
+  repository: file://../avalanche-daemon
+  version: 0.1.0
+digest: sha256:dc208d3c5889f31c4acb64e6a9ed2465200dc165e68a28b0fbe51f14ddf5b074
+generated: "2022-07-08T10:40:48.679911646-04:00"
