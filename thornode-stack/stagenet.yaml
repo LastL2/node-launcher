@@ -27,3 +27,6 @@ dogecoin-daemon:
 
 gaia-daemon:
   enabled: true
+
+avalanche-daemon:
+  enabled: true

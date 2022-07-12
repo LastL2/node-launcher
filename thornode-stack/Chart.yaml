@@ -61,3 +61,8 @@ dependencies:
     repository: file://../gaia-daemon
     version: 0.1.0
     condition: gaia-daemon.enabled
+
+  - name: avalanche-daemon
+    repository: file://../avalanche-daemon
+    version: 0.1.0
+    condition: avalanche-daemon.enabled

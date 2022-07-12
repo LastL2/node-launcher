@@ -48,3 +48,6 @@ dogecoin-daemon:
 gaia-daemon:
   fullnameOverride: gaia-daemon
   enabled: false
+
+avalanche-daemon:
+  fullnameOverride: avalanche-daemon
