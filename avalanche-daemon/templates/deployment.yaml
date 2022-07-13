@@ -34,19 +34,42 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /root/.avalanchego
+            - name: chain-configs
+              mountPath: /root/.avalanchego/configs/chains/C/config.json
+              subPath: C-config.json
           ports:
             - name: rpc
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          startupProbe:
+            periodSeconds: 10
+            timeoutSeconds: 10
+            httpGet:
+              path: /ext/health/liveness
+              port: rpc
+          livenessProbe:
+            periodSeconds: 10
+            timeoutSeconds: 10
+            httpGet:
+              path: /ext/health/liveness
+              port: rpc
           readinessProbe:
+            periodSeconds: 30  # set this higher to avoid noisy access logs during sync
             timeoutSeconds: 10
             httpGet:
               path: /ext/health
               port: rpc
+          command:
+            - ./avalanchego
+            - --http-host=0.0.0.0
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
       volumes:
+        - name: chain-configs
+          configMap:
+            name: {{ include "avalanche-daemon.fullname" . }}-chain-configs
+            defaultMode: 0644
         - name: data
         {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
           persistentVolumeClaim:
