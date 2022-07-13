@@ -89,6 +89,11 @@ gaiaDaemon:
     grpcTLS: false
   testnet: {}
 
+avaxDaemon:
+  enabled: false
+  mainnet: http://avalanche-daemon:9650/ext/bc/C/rpc
+  stagenet: http://avalanche-daemon:9650/ext/bc/C/rpc
+
 replicaCount: 1
 
 strategyType: Recreate

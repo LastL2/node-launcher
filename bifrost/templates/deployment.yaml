@@ -119,6 +119,10 @@ spec:
               value: "{{ include "bifrost.gaiaDaemonGRPCTLS" . }}"
             - name: GAIA_START_BLOCK_HEIGHT
               value: "{{ .Values.gaiaStartBlockHeight }}"
+            - name: AVAX_HOST
+              value: {{ include "bifrost.avaxDaemon" . }}
+            - name: AVAX_START_BLOCK_HEIGHT
+              value: "{{ .Values.avaxStartBlockHeight }}"
             {{- if not .Values.litecoinDaemon.enabled }}
             - name: LTC_DISABLED
               value: "true"
@@ -133,6 +137,10 @@ spec:
             {{- end}}
             {{- if not .Values.gaiaDaemon.enabled }}
             - name: GAIA_DISABLED
+              value: "true"
+            {{- end}}
+            {{- if not .Values.avaxDaemon.enabled }}
+            - name: AVAX_DISABLED
               value: "true"
             {{- end}}
             - name: ETH_HOST
