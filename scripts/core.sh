@@ -309,6 +309,7 @@ create_password() {
 
 display_mnemonic() {
   kubectl get -n "$NAME" secrets/thornode-mnemonic --template="{{.data.mnemonic}}" | base64 --decode
+  echo
 }
 
 display_pods() {
