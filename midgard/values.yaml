@@ -28,7 +28,7 @@ logLevel: info
 image:
   name: registry.gitlab.com/thorchain/midgard
   tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: e0b9fc5902d91ffd095e2342776a3742e23dc6029c839c1eedb6c53ca63bf763
+  hash: 937c5556c673fe2913e2962d6f5859d750ec64194a56a66aae6375e31196d984
 
 timescaleDbImage:
   repository: timescale/timescaledb
@@ -48,7 +48,7 @@ persistence:
   size:
     testnet: 50Gi
     stagenet: 100Gi
-    mainnet: 100Gi
+    mainnet: 200Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
@@ -59,12 +59,10 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -74,8 +72,7 @@ securityContext:
 
 ingress:
   enabled: false
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
