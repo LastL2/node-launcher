@@ -17,9 +17,13 @@ EOF
   exit 1
 fi
 
-# Explicitly enable both checksum and signature checking.
+# Explicitly enable checksum verification.
 export VERIFY_CHECKSUM="true"
-export VERIFY_SIGNATURES="true"
+
+# Explicitly enable signature verification if on Linux (other platforms not supported).
+if [ "$(uname)" == "Linux" ]; then
+  export VERIFY_SIGNATURE="true"
+fi
 
 chmod +x $INSTALLER
 
