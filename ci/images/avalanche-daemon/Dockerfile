@@ -11,8 +11,8 @@
 FROM golang:1.17.9-buster AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends bash=5.0-4 git=1:2.20.1-2+deb10u3 make=4.2.1-1.2 gcc=4:8.3.0-1 musl-dev=1.1.21-2 ca-certificates=20200601~deb10u2 linux-headers-amd64
 
-ARG COMMIT=547bdd34f9d3fa438eeaaf44efa865a9e2806148
-ARG TAG=v1.7.14
+ARG COMMIT=0950acab667e0c16a55e9a9bb72bcbe25c3b88cf
+ARG TAG=v1.7.16
 WORKDIR /build
 RUN git init && \
   git remote add origin https://github.com/ava-labs/avalanchego && \
