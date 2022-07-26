@@ -44,8 +44,10 @@ if [ -n "$HARDFORK_BLOCK_HEIGHT" ]; then
 fi
 
 create_namespace
-create_password
-create_mnemonic
+if [ "$TYPE" != "daemons" ]; then
+  create_password
+  create_mnemonic
+fi
 
 case $TYPE in
   genesis)
@@ -56,5 +58,11 @@ case $TYPE in
     ;;
   fullnode)
     deploy_fullnode
+    ;;
+  daemons)
+    EXTRA_ARGS="$EXTRA_ARGS --set thornode.enabled=false"
+    EXTRA_ARGS="$EXTRA_ARGS --set bifrost.enabled=false"
+    EXTRA_ARGS="$EXTRA_ARGS --set gateway.enabled=false"
+    deploy_validator
     ;;
 esac

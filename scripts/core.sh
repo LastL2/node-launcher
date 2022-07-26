@@ -55,7 +55,7 @@ get_node_net() {
 get_node_type() {
   [ "$TYPE" != "" ] && return
   echo "=> Select THORNode type"
-  menu validator genesis validator fullnode
+  menu validator genesis validator fullnode daemons
   TYPE=$MENU_SELECTED
   echo
 }
@@ -375,6 +375,8 @@ deploy_validator() {
     --set global.net="$NET" \
     --set thornode.type="validator" \
     --set bifrost.peer="$SEED",thornode.seeds="$SEED"
+
+  [ "$TYPE" = "daemons" ] && return
 
   echo -e "=> Restarting gateway for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
