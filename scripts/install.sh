@@ -49,6 +49,12 @@ if [ "$TYPE" != "daemons" ]; then
   create_mnemonic
 fi
 
+# check to ensure required CRDs are created before deploying
+if ! kubectl get crd servicemonitors.monitoring.coreos.com >/dev/null 2>&1; then
+  echo "=> Required ServiceMonitor CRD not found - run 'make tools' before proceeding."
+  exit 1
+fi
+
 case $TYPE in
   genesis)
     deploy_genesis
