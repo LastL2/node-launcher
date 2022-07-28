@@ -263,21 +263,23 @@ make_backup() {
     pod="pod/backup-$service"
   fi
 
-  local date
-  date=$(date +%s)
-  mkdir -p "backups/$service"
+  local seconds
+  local day
+  seconds=$(date +%s)
+  day=$(date +%Y-%m-%d)
+  mkdir -p "backups/$NAME/$service/$day"
   if [ "$service" = "bifrost" ]; then
-    kubectl exec -it -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cf \"$service-$date.tar\" localstate-*.json"
+    kubectl exec -it -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cfz \"$service-$seconds.tar.gz\" localstate-*.json"
   else
-    kubectl exec -it -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cf \"$service-$date.tar\" config/"
+    kubectl exec -it -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cfz \"$service-$seconds.tar.gz\" config/"
   fi
-  kubectl exec -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cf - \"$service-$date.tar\"" | tar xf - -C "$PWD/backups/$service"
+  kubectl exec -n "$NAME" "$pod" -c "$service" -- sh -c "cd /root/.thornode && tar cfz - \"$service-$seconds.tar.gz\"" | tar xfz - -C "$PWD/backups/$NAME/$service/$day"
 
   if (kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$service" 2>&1 | grep "No resources found") >/dev/null 2>&1; then
     kubectl delete pod --now=true -n "$NAME" "backup-$service"
   fi
 
-  echo "Backup available in path ./backups/$service"
+  echo "Backup available in path ./backups/$NAME/$service/$day"
 }
 
 create_mnemonic() {
@@ -324,7 +326,12 @@ display_status() {
   local ready
   ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
   if [ "$ready" = "True" ]; then
-    kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh
+    if kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh | tee /dev/tty | grep -E "^STATUS\s+Active" >/dev/null; then
+      if [ -z "$TC_NO_BACKUP" ]; then
+        echo -e "\n=> Detected ${red}active$reset validator THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+        make_backup bifrost
+      fi
+    fi
   else
     echo "THORNode pod is not currently running, status is unavailable"
   fi
