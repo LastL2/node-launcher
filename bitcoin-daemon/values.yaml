@@ -8,8 +8,8 @@ net: mainnet
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: "bitcoin-daemon-22.0"
-  hash: "ac7e331275e6f0d709f14e2a4a6f5da1e6733ac6637c40944c043ab90e23e32a"
+  tag: "bitcoin-daemon-23.0-glibc"
+  hash: "b1b656ec95a0b848f991afbb7406853919d9ee0157a9c758906891e7c48fb5f4"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -31,8 +31,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
-  # fsGroup: 2000
+podSecurityContext:
+  fsGroup: 1000
 
 securityContext: {}
   # capabilities:
