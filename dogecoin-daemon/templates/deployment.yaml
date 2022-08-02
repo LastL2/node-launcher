@@ -60,6 +60,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /home/dogecoin/.dogecoin
+          env:
+            - name: NET
+              value: {{ include "dogecoin-daemon.net" . }}
           ports:
             - name: p2p
               containerPort: {{ include "dogecoin-daemon.p2p" . }}
@@ -72,40 +75,13 @@ spec:
             timeoutSeconds: 5
             periodSeconds: 10
             exec:
-              command:
-                - dogecoin-cli
-                - -rpcuser=thorchain
-                - -rpcpassword=password
-              {{- if eq (include "dogecoin-daemon.net" .) "mocknet" }}
-                - -regtest
-              {{- else if eq (include "dogecoin-daemon.net" .) "testnet" }}
-                - -testnet
-              {{- end }}
-                - ping
+              command: ["/scripts/ping.sh"]
           livenessProbe:
             exec:
-              command:
-                - dogecoin-cli
-                - -rpcuser=thorchain
-                - -rpcpassword=password
-              {{- if eq (include "dogecoin-daemon.net" .) "mocknet" }}
-                - -regtest
-              {{- else if eq (include "dogecoin-daemon.net" .) "testnet" }}
-                - -testnet
-              {{- end }}
-                - ping
+              command: ["/scripts/ping.sh"]
           readinessProbe:
             exec:
-              command:
-                - dogecoin-cli
-                - -rpcuser=thorchain
-                - -rpcpassword=password
-              {{- if eq (include "dogecoin-daemon.net" .) "mocknet" }}
-                - -regtest
-              {{- else if eq (include "dogecoin-daemon.net" .) "testnet" }}
-                - -testnet
-              {{- end }}
-                - ping
+              command: ["/scripts/ping.sh"]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:

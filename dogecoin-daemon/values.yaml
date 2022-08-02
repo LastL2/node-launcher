@@ -8,8 +8,8 @@ net: mainnet
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: "dogecoin-daemon-1.14.5"
-  hash: "39fff4abd54c7bafc6994a4b4a4a2790ae6707a0258244bb3d1188e04138da79"
+  tag: "dogecoin-daemon-1.14.6"
+  hash: "9224a06d97bbb00dd25c4c33e88631301f25a75977f02b093fb077ad22290bb2"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -31,8 +31,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
-  # fsGroup: 2000
+podSecurityContext:
+  fsGroup: 1000
 
 securityContext: {}
   # capabilities:
