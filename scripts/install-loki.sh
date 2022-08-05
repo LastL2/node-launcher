@@ -4,7 +4,7 @@ set -e
 
 source ./scripts/core.sh
 
-if helm status loki >/dev/null 2>&1; then
+if helm -n loki-system status loki >/dev/null 2>&1; then
   helm diff -C 3 upgrade loki grafana/loki-stack --install -n loki-system -f ./loki/values.yaml
   confirm
 fi
