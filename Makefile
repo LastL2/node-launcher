@@ -121,6 +121,9 @@ set-version: ## Send a set-version transaction to your THORNode
 set-ip-address: ## Send a set-ip-address transaction to your THORNode
 	@./scripts/set-ip-address.sh
 
+set-monitoring: ## Enable PagerDuty or Deadmans Snitch monitoring via Prometheus/Grafana re-deploy
+	@./scripts/set-monitoring.sh
+
 relay: ## Send a message that is relayed to a public Discord channel
 	@./scripts/relay.sh
 
