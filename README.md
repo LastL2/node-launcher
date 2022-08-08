@@ -9,9 +9,10 @@ to start the charts with predefined configuration for most environments.
 Once you have your THORNode up and running, please follow instructions [here](https://gitlab.com/thorchain/thornode) for the next steps.
 
 ## Requirements
- *  Running Kubernetes cluster
- *  Kubectl configured, ready and connected to running cluster
- *  Helm 3 (version >=3.2, can be installed using make command below)
+
+- Running Kubernetes cluster
+- Kubectl configured, ready and connected to running cluster
+- Helm 3 (version >=3.2, can be installed using make command below)
 
 ## Running Kubernetes cluster
 
@@ -157,12 +158,12 @@ make resume
 
 Send a message on behalf of your node that will be relayed to a public channel on the dev Discord. This may be used for a number of purposes, including:
 
-* publicly state approval or disapproval for a proposal
-* propose to ban bad nodes
-* alert the community to something suspicious
-* share logs via pastebin
-* explain the reason for `pause` / `resume` the network
-* etc.
+- publicly state approval or disapproval for a proposal
+- propose to ban bad nodes
+- alert the community to something suspicious
+- share logs via pastebin
+- explain the reason for `pause` / `resume` the network
+- etc.
 
 Please do not spam the Discord channels. Attempts to collude or otherwise abuse this privelege may lead to revocation of this feature.
 
@@ -304,7 +305,6 @@ This command will deploy the Kubernetes dashboard chart.
 It can take a while to deploy all the services, usually up to 5 minutes
 depending on resources running your kubernetes cluster.
 
-
 ### Access Dashboard
 
 We have created a make command to automate this task to access the Dashboard from your
@@ -316,14 +316,13 @@ make dashboard
 
 Open http://localhost:8000 in your browser.
 
-
 ### Destroy Kubernetes dashboard
 
 ```bash
 make destroy-dashboard
 ```
 
-### Alerts ###
+### Alerts
 
 A guide for setting up Prometheus alerts can be found in [Alerting.md](./docs/Alerting.md)
 
@@ -332,11 +331,10 @@ A guide for setting up Prometheus alerts can be found in [Alerting.md](./docs/Al
 ### THORNode full stack umbrella chart
 
 - thornode-stack: Umbrella chart packaging all services needed to run
-a fullnode or validator THORNode.
+  a fullnode or validator THORNode.
 
 This should be the only chart used to run THORNode stack unless
 you know what you are doing and want to run each chart separately (not recommended).
-
 
 ### THORNode services:
 
@@ -347,7 +345,7 @@ you know what you are doing and want to run each chart separately (not recommend
 
 ### External services:
 
-- *-daemon: Individual chain fullnode daemons
+- \*-daemon: Individual chain fullnode daemons
 
 ### Tools
 
@@ -355,8 +353,37 @@ you know what you are doing and want to run each chart separately (not recommend
 - loki: Loki stack for logs
 - kubernetes-dashboard: Kubernetes dashboard
 
-### Development ###
+### Development
 
 The image used for CI of this repository is found in [ci/](./ci/).
 
 The node daemon images used in the charts here are built from [ci/images/](./ci/images).
+
+## Troubleshooting
+
+1. Patch failed on forbidden field during `make install` or `make update`.
+
+```
+Error: UPGRADE FAILED: cannot patch "midgard-timescaledb" with kind StatefulSet: StatefulSet.apps "midgard-timescaledb" is invalid: spec: Forbidden: updates to statefulset spec for fields other than 'replicas', 'template', and 'updateStrategy' are forbidden
+```
+
+This is caused when the chart contains a change on a field that cannot be patched. Typically this occurs on volume size changes for the PVC template in a StatefulSet. In order to proceed you must simply delete the existing StatefulSet before re-running `make install` or `make update` - adding `--cascade=orphan` if you do not wish to disrupt the currently running pods:
+
+```bash
+kubectl -n <name> delete statefulsets.apps midgard-timescaledb --cascade=orphan
+```
+
+In most cases the change comes from a default that was updated for good reason and this change should be applied to the existing PVC. If your Kubernetes infrastructure supports resizeable volumes, you can simply edit the existing PVC to the updated size from the original diff output - for example:
+
+```bash
+kubectl -n <name> get pvc                              # show current
+kubectl -n <name> edit pvc data-midgard-timescaledb-0  # edit spec.resources.requests.storage with the new value
+```
+
+If your Kubernetes infrastructure does not support resizeable volumes, after installing or updating you can recreate it by scaling down, deleting the PVC, then scaling back up - for example:
+
+```bash
+kubectl -n <name> scale statefulset midgard-timescaledb --replicas 0
+kubectl -n <name> delete pvc data-midgard-timescaledb-0
+kubectl -n <name> scale statefulset midgard-timescaledb --replicas 1
+```
