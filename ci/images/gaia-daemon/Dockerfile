@@ -2,15 +2,12 @@
 # Build
 ########################################################################################
 
-FROM tendermintdev/rbuilder:latest as build
+FROM golang:1.18-bullseye AS build
 
-USER root
-RUN mkdir /app && chown builder:builder /app
-USER builder
 WORKDIR /app
 
-ARG SRC_COMMIT=cd27aaaf39cc7819b5164e4baf3fd5aad23ec52a
-ARG TAG=v7.0.2
+ARG SRC_COMMIT=d0884c29aac4c1e647b0a82f3df31515d2bd06a3
+ARG TAG=v7.0.3
 RUN git init && \
   git remote add origin https://github.com/cosmos/gaia && \
   git fetch --depth 1 origin $TAG && \
@@ -29,4 +26,3 @@ COPY --from=build /app/build/gaiad /gaiad
 COPY entrypoint.sh /entrypoint.sh
 COPY app.toml /etc/gaia/app.toml
 CMD ["/entrypoint.sh"]
-
