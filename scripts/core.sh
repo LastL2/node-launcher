@@ -327,7 +327,7 @@ display_status() {
   ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
   if [ "$ready" = "True" ]; then
     if kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh | tee /dev/tty | grep -E "^STATUS\s+Active" >/dev/null; then
-      if [ -z "$TC_NO_BACKUP" ]; then
+      if [ "$TC_BACKUP" = "true" ]; then
         echo -e "\n=> Detected ${red}active$reset validator THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
         make_backup bifrost
       fi
