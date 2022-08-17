@@ -23,10 +23,19 @@ get_tags() {
   IMAGE="$1"
 
   TOKEN=$(get_auth_token "$IMAGE")
+  LINK="/v2/$IMAGE/tags/list"
 
-  LIST_URI="https://registry.gitlab.com/v2/$IMAGE/tags/list"
-  curl --silent --get -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" "$LIST_URI" |
-    jq --raw-output '.tags[]'
+  # Iterate on the list until no more 'Link: ...' HTTP header is present in the response.
+  while [ -n "$LINK" ]; do
+    LIST_URI="https://registry.gitlab.com$LINK"
+    RESP=$(curl -i --silent --get -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" "$LIST_URI")
+    LINK=$(printf "%s" "$RESP" | awk '/^[Ll]ink:/ { print $2 }' | sed -e 's/^<//' -e 's/>;$//')
+
+    # Cut off the headers and parse the JSON body.
+    printf "%s" "$RESP" |
+      sed '1,/^\r\{0,1\}$/d' |
+      jq --raw-output '.tags[]'
+  done
 }
 
 get_manifest() {
