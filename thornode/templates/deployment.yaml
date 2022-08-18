@@ -61,79 +61,14 @@ spec:
         image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
         command: ['sh', '-c', "until nc -zv {{ .Values.peerApi }}:1317; do echo waiting for peer thornode; sleep 2; done"]
       {{- end }}
-
-      - name: init-thornode
-        image: {{ include "thornode.image" . }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-          - /kube-scripts/init.sh
-        {{- if eq .Values.type "genesis" }}
-          -  /scripts/genesis.sh
-        {{- else }}
-          -  /scripts/validator.sh
-        {{- end }}
-        volumeMounts:
-          - name: data
-            mountPath: /root/
-          - name: scripts
-            mountPath: /kube-scripts/
-          - name: configs
-            mountPath: /kube-configs/
-        env:
-          - name: EXTERNAL_IP
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "thornode.fullname" . }}-external-ip
-                key: externalIP
-          - name: PEER
-            value: {{ default .Values.peer .Values.global.peer }}
-          - name: CHAIN_ID
-            value: {{ include "thornode.chainID" . }}
-          - name: VALIDATOR
-            {{- if eq .Values.type "fullnode" }}
-            value: "false"
-            {{- else }}
-            value: "true"
-            {{- end }}
-          - name: SEEDS
-            value: {{ .Values.seeds }}
-          - name: PEER_API
-            value: {{ .Values.peerApi }}
-          - name: CONTRACT
-            value: {{ include "thornode.ethRouterContract" . }}
-          - name: BINANCE
-            value: {{ default .Values.binanceDaemon .Values.global.binanceDaemon }}
-          - name: SEED
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: NET
-            value: {{ include "thornode.net" . }}
-          - name: SIGNER_NAME
-            value: {{ .Values.signer.name }}
-          - name: SIGNER_PASSWD
-            {{- if default .Values.signer.passwordSecret .Values.global.passwordSecret }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ default .Values.signer.passwordSecret .Values.global.passwordSecret }}
-                key: password
-            {{- else}}
-            value: {{ .Values.signer.password }}
-            {{- end }}
-          {{- if default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
-          - name: SIGNER_SEED_PHRASE
-            valueFrom:
-              secretKeyRef:
-                name: {{ default .Values.signer.mnemonicSecret .Values.global.mnemonicSecret }}
-                key: mnemonic
-          {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "thornode.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/kube-scripts/entrypoint.sh"]
+          command:
+            -  /scripts/{{ .Values.type }}.sh
           volumeMounts:
             - name: data
               mountPath: /root/
@@ -163,8 +98,6 @@ spec:
               value: "{{ .Values.debug }}"
             - name: HARDFORK_BLOCK_HEIGHT
               value: "{{ .Values.haltHeight }}"
-            - name: THORNODE_API_ENABLE
-              value: "{{ .Values.enableApi }}"
             - name: NET
               value: {{ include "thornode.net" . }}
             - name: SIGNER_NAME
@@ -180,6 +113,12 @@ spec:
               {{- end }}
             - name: CHAIN_ID
               value: {{ include "thornode.chainID" . }}
+              {{- if .Values.statesync.auto }}
+            - name: THOR_AUTO_STATE_SYNC_ENABLED
+              value: "true"
+              {{- end }}
+            - name: THOR_TENDERMINT_LOG_FORMAT
+              value: "json"
           ports:
             - name: api
               containerPort: {{ .Values.service.port.api }}

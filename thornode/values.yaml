@@ -24,14 +24,10 @@ ethRouterContract:
   stagenet: "0x23d040e8816FF628c54D357612420260301cAE85"
 
 statesync:
-  enabled: false
-  seed: false
-  trustHeight: 0
-  trustHash: ""
-  rpcServers: "https://rpc.ninerealms.com:443,https://rpc.thorchain.info:443"
-  peer: ""
-
-enableApi: true
+  # if statesync is used, at the time of writing the initial snapshot restore
+  # will require 32G memory request size - this can be lowered after the node
+  # begins syncing
+  auto: false
 
 debug: false
 chainID:
