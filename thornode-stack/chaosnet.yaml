@@ -5,11 +5,8 @@ global:
 thornode:
   haltHeight:
   statesync:
-    enabled: false
-    seed: false
-    trustHeight: "6500000"
-    trustHash: "707414EE483ECEC2727466FE6B7CB39CC116D3F7EECF1CBF44F16BB5D66483E5"
-    peer: "c3613862c2608b3e861406ad02146f41cf5124e6@statesync-seed.ninerealms.com:27146"
+    auto: false
+    snapshotInterval: 0
 
 midgard:
   blockstore:

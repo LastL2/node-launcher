@@ -133,17 +133,10 @@ data:
 
     # retrieve thornode version
     THORNODE_IMAGE=$(kubectl get deploy thornode -o jsonpath="{.spec.template.spec.containers[0].image}")
-    THORNODE_INIT_IMAGE=$(kubectl get deploy thornode -o jsonpath="{.spec.template.spec.initContainers[?(@.name==\"init-thornode\")].image}")
 
     # sanity checks
-    if [ -z "$THORNODE_IMAGE" ] || [ -z "$THORNODE_INIT_IMAGE" ]; then
+    if [ -z "$THORNODE_IMAGE" ]; then
       echo "unable to retrieve thornode image versions"
-      exit 1
-    fi
-    if [[ "$THORNODE_IMAGE" != "$THORNODE_INIT_IMAGE" ]]; then
-      echo "thornode image and thornode init image are different versions"
-      echo "thornode image: $THORNODE_IMAGE"
-      echo "thornode init image: $THORNODE_INIT_IMAGE"
       exit 1
     fi
 
@@ -158,4 +151,4 @@ data:
     NEW_IMAGE=$(echo $(echo $THORNODE_IMAGE | awk 'BEGIN {FS=OFS="-"} {$NF=""}1')$NET_VERSION)
     echo "updating thornode version $THORNODE_VERSION -> $NET_VERSION"
     echo "new image $NEW_IMAGE"
-    kubectl set image deployment/thornode {{ .Chart.Name }}=$NEW_IMAGE init-thornode=$NEW_IMAGE
+    kubectl set image deployment/thornode {{ .Chart.Name }}=$NEW_IMAGE

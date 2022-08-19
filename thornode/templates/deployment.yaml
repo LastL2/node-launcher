@@ -113,10 +113,10 @@ spec:
               {{- end }}
             - name: CHAIN_ID
               value: {{ include "thornode.chainID" . }}
-              {{- if .Values.statesync.auto }}
             - name: THOR_AUTO_STATE_SYNC_ENABLED
-              value: "true"
-              {{- end }}
+              value: "{{ .Values.statesync.auto }}"
+            - name: THOR_COSMOS_STATE_SYNC_SNAPSHOT_INTERVAL
+              value: "{{ .Values.statesync.snapshotInterval }}"
             - name: THOR_TENDERMINT_LOG_FORMAT
               value: "json"
           ports:

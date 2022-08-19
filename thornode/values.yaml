@@ -28,6 +28,7 @@ statesync:
   # will require 32G memory request size - this can be lowered after the node
   # begins syncing
   auto: false
+  snapshotInterval: 0
 
 debug: false
 chainID:
