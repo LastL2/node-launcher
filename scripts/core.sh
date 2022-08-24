@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source ./scripts/menu.sh
+source ./scripts/votes.sh
 
 # reset=$(tput sgr0)              # normal text
 reset=$'\e[0m'                  # (works better sometimes)
@@ -326,12 +327,44 @@ display_status() {
   local ready
   ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
   if [ "$ready" = "True" ]; then
-    if kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh | tee /dev/tty | grep -E "^STATUS\s+Active" >/dev/null; then
+    local output
+    output=$(kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh | tee /dev/tty)
+
+    if grep -E "^STATUS\s+Active" <<<"$output" >/dev/null; then
+      echo -e "\n=> Detected ${red}active$reset validator THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
+
+      # prompt for missing mimir votes if mainnet
+      if [ "$NET" = "mainnet" ]; then
+        echo "=> Checking for missing mimir votes..."
+        local address
+        address=$(awk '$1 ~ /ADDRESS/ {match($2, /[a-z0-9]+/); print substr($2, RSTART, RLENGTH)}' <<<"$output")
+
+        # get all votes
+        local votes_all
+        votes_all=$(kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- curl -s http://localhost:1317/thorchain/mimir/nodes_all)
+
+        # all keys over threshold vote minus blacklist
+        local remind_votes
+        remind_votes=$(echo "$votes_all" |
+          jq "[.mimirs | group_by(.key)[] | {\"key\": .[0].key, \"votes\": length} | select(.votes>$VOTE_REMINDER_THRESHOLD) | .key] - [$VOTE_REMINDER_BLACKLIST]")
+
+        # all reminder votes the node is missing
+        local missing_votes
+        missing_votes=$(echo "$votes_all" | jq -r "$remind_votes - [.mimirs[] | select(.signer==\"$address\") | .key] | .[]")
+
+        if [ -n "$missing_votes" ]; then
+          echo
+          echo "$red=> Please vote for the following unvoted mimir values:$reset"
+          echo "$missing_votes"
+        fi
+      fi
+
+      # prompt for bifrost keyshare backup
       if [ "$TC_BACKUP" = "true" ]; then
-        echo -e "\n=> Detected ${red}active$reset validator THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
         make_backup bifrost
       fi
     fi
+
   else
     echo "THORNode pod is not currently running, status is unavailable"
   fi
