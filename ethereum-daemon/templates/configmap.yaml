@@ -3,6 +3,13 @@ kind: ConfigMap
 metadata:
   name: {{ include "ethereum-daemon.fullname" . }}-scripts
 data:
+  init-beacon.sh: |
+    #!/bin/sh
+
+    set -euo pipefail
+    apk add openssl
+    openssl rand -hex 32 | tr -d "\n" > /data/jwt.hex
+
   init-beacon-testnet.sh: |
     #!/bin/sh
 

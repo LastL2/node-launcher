@@ -25,8 +25,8 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
 
-      {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
       initContainers:
+      {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
         - name: init-scripts
           image: "{{ .Values.image.scripts.repository }}:{{ .Values.image.scripts.tag }}"
           imagePullPolicy: {{ .Values.image.scripts.pullPolicy }}
@@ -34,10 +34,18 @@ spec:
             - name: entrypoint
               mountPath: /tmp
           command: [ "sh", "-c", "cp /scripts/* /tmp" ]
+      {{- else }}
+        - name: init-beacon
+          image: alpine:{{ .Values.global.images.alpine.tag }}@sha256:{{ .Values.global.images.alpine.hash }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: scripts
+              mountPath: /scripts
+          command:
+            - /scripts/init-beacon.sh
       {{- end }}
-
       {{- if eq (include "ethereum-daemon.net" .) "testnet" }}
-      initContainers:
         - name: init-beacon-testnet
           image: alpine:{{ .Values.global.images.alpine.tag }}@sha256:{{ .Values.global.images.alpine.hash }}
           volumeMounts:
@@ -58,9 +66,9 @@ spec:
           {{- if eq (include "ethereum-daemon.net" .) "mocknet" }}
           command: [ "sh", "-c", "apk add curl && /entrypoint/ethereum-mock.sh" ]
           {{- else if eq (include "ethereum-daemon.net" .) "testnet" }}
-          command: [ "sh", "-c", 'geth --override.terminaltotaldifficulty 50000000000000000 --ropsten --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --eth.requiredblocks 10920274=0xfd652086d220d506ae5b7cb80fde97d2f3f7028d346cc7d9d384a83d3d638532' ]
+          command: [ "sh", "-c", 'geth --override.terminaltotaldifficulty 50000000000000000 --ropsten --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,engine,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --eth.requiredblocks 10920274=0xfd652086d220d506ae5b7cb80fde97d2f3f7028d346cc7d9d384a83d3d638532 --authrpc.vhosts="localhost" --authrpc.jwtsecret="/root/jwt.hex"' ]
           {{- else }} # mainnet / stagenet
-          command: [ "sh", "-c", 'geth --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*"' ]
+          command: [ "sh", "-c", 'geth --syncmode snap --cache 4096 --http --http.addr 0.0.0.0 --http.port 8545 --http.api "eth,net,engine,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --authrpc.vhosts="localhost" --authrpc.jwtsecret="/root/jwt.hex"' ]
           {{- end }}
           volumeMounts:
             - name: entrypoint
@@ -107,17 +115,21 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
-        {{- if eq (include "ethereum-daemon.net" .) "testnet" }}
+        {{- if not (eq (include "ethereum-daemon.net" .) "mocknet") }}
         - name: {{ .Chart.Name }}-beacon
           image: {{ .Values.image.prysm.name }}:{{ .Values.image.prysm.tag }}@sha256:{{ .Values.image.prysm.hash }}
           command:
             - /app/cmd/beacon-chain/beacon-chain
-            - --ropsten
             - --datadir=/data/beacon
-            - --http-web3provider=http://localhost:8551
+            - --execution-endpoint=http://localhost:8551
             - --accept-terms-of-use
+            - --jwt-secret=/data/jwt.hex
+        {{- if eq (include "ethereum-daemon.net" .) "testnet" }}
+            - --ropsten
             - --genesis-state=/data/beacon/genesis.ssz
-            - --jwt-secret=/data/.ethereum/ropsten/geth/jwtsecret
+        {{- else }}
+            - --mainnet
+        {{- end }}
           volumeMounts:
             - name: data
               mountPath: /data
