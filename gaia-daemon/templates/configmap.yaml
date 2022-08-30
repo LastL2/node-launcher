@@ -32,7 +32,7 @@ data:
     # pull genesis if it does not exist
     if [ ! -f "/root/.gaia/config/genesis.json" ]; then
       cd /root/.gaia/config
-      wget https://github.com/cosmos/mainnet/raw/master/genesis.cosmoshub-4.json.gz
+      wget https://github.com/cosmos/mainnet/raw/master/genesis/genesis.cosmoshub-4.json.gz
       gunzip genesis.cosmoshub-4.json.gz
       mv genesis.cosmoshub-4.json genesis.json
     fi
