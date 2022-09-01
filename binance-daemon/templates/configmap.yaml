@@ -56,8 +56,11 @@ data:
 
     HEIGHT=$(($(cat $FILE) - 1))
     if [ "$HEIGHT" -gt "1" ]; then
-      su bnbchaind -c "/node-binary/tools/state_recover $HEIGHT /opt/bnbchaind"
+      su bnbchaind -c "/release/linux/state_recover $HEIGHT /opt/bnbchaind"
     fi
+
+    # some envs inject a security context that can cause permission issues after recover
+    chown -R bnbchaind:bnbchaind /opt/bnbchaind
 
   probe.sh: |
     #!/bin/bash
