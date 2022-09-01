@@ -72,9 +72,9 @@ Bnet
 */}}
 {{- define "binance-daemon.bnet" -}}
 {{- if eq (include "binance-daemon.net" .) "mainnet" -}}
-    prod
+    mainnet
 {{- else if eq (include "binance-daemon.net" .) "stagenet" -}}
-    prod
+    mainnet
 {{- else -}}
     {{ include "binance-daemon.net" . }}
 {{- end -}}
