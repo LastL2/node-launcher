@@ -4,7 +4,7 @@ source ./scripts/core.sh
 
 get_node_info_short
 echo "=> Select a THORNode service to reset"
-menu midgard midgard binance-daemon thornode gaia-daemon avalanche-daemon
+menu midgard midgard binance-daemon thornode gaia-daemon ethereum-daemon avalanche-daemon
 SERVICE=$MENU_SELECTED
 
 if node_exists; then
@@ -47,6 +47,13 @@ case $SERVICE in
     kubectl wait --for=delete pods -l app.kubernetes.io/name=gaia-daemon -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
     kubectl run -n "$NAME" -it reset-gaia --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["sh", "-c", "rm -rf /root/.gaia/data"], "name": "reset-gaia", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/root/.gaia", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "gaia-daemon"}}]}}'
     kubectl scale -n "$NAME" --replicas=1 deploy/gaia-daemon --timeout=5m
+    ;;
+
+  ethereum-daemon)
+    kubectl scale -n "$NAME" --replicas=0 deploy/ethereum-daemon --timeout=5m
+    kubectl wait --for=delete pods -l app.kubernetes.io/name=ethereum-daemon -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
+    kubectl run -n "$NAME" -it reset-ethereum --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["sh", "-c", "rm -rf /root/.ethereum /root/beacon"], "name": "reset-ethereum", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/root", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "ethereum-daemon"}}]}}'
+    kubectl scale -n "$NAME" --replicas=1 deploy/ethereum-daemon --timeout=5m
     ;;
 
   avalanche-daemon)
