@@ -225,10 +225,3 @@ chainID
     {{ .Values.chainID.testnet }}
 {{- end -}}
 {{- end -}}
-
-{{/*
-ethSuggestedFeeVersion
-*/}}
-{{- define "bifrost.ethSuggestedFeeVersion" -}}
-    {{ index .Values.ethSuggestedFeeVersion (include "bifrost.net" .) }}
-{{- end -}}

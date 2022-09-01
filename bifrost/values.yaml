@@ -4,11 +4,6 @@
 
 net: testnet
 
-ethSuggestedFeeVersion:
-  mainnet: 1
-  stagenet: 2
-  testnet: 1
-
 signer:
   name: thorchain
   password: password
