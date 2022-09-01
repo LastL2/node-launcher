@@ -36,4 +36,4 @@ gaia-daemon:
   enabled: true
 
 avalanche-daemon:
-  enabled: false
+  enabled: true
