@@ -24,6 +24,10 @@ statesync:
   auto: false
   snapshotInterval: 0
 
+# provide custom environment variables to override config defaults:
+# https://gitlab.com/thorchain/thornode/-/blob/develop/config/default.yaml
+env: {}
+
 debug: false
 chainID:
   testnet: thorchain-testnet-v2

@@ -169,6 +169,10 @@ spec:
             {{- end }}
             - name: CHAIN_ID
               value: {{ include "bifrost.chainID" . }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           ports:
             - name: p2p
               containerPort: {{ .Values.service.port.p2p }}

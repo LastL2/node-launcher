@@ -15,6 +15,10 @@ peer:
 
 debug: false
 
+# provide custom environment variables to override config defaults:
+# https://gitlab.com/thorchain/thornode/-/blob/develop/config/default.yaml
+env: {}
+
 thorApi: thornode:1317
 chainID:
   testnet: thorchain-testnet-v2
