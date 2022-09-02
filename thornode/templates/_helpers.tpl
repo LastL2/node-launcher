@@ -115,19 +115,6 @@ P2P Port
 {{- end -}}
 
 {{/*
-ETH Router contract
-*/}}
-{{- define "thornode.ethRouterContract" -}}
-{{- if eq (include "thornode.net" .) "mainnet" -}}
-    {{ .Values.ethRouterContract.mainnet}}
-{{- else if eq (include "thornode.net" .) "stagenet" -}}
-    {{ .Values.ethRouterContract.stagenet}}
-{{- else -}}
-    {{ .Values.ethRouterContract.testnet }}
-{{- end -}}
-{{- end -}}
-
-{{/*
 chain id
 */}}
 {{- define "thornode.chainID" -}}

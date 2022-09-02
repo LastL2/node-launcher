@@ -92,8 +92,6 @@ spec:
               value: {{ .Values.seeds }}
             - name: PEER_API
               value: {{ .Values.peerApi }}
-            - name: CONTRACT
-              value: {{ include "thornode.ethRouterContract" . }}
             - name: DEBUG
               value: "{{ .Values.debug }}"
             - name: HARDFORK_BLOCK_HEIGHT

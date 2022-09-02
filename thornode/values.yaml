@@ -18,10 +18,6 @@ signer:
 peer:
 seeds:
 peerApi:
-ethRouterContract:
-  testnet: "0xefA28233838f46a80AaaC8c309077a9ba70D123A"
-  mainnet: "0xC145990E84155416144C532E31f89B840Ca8c2cE"
-  stagenet: "0x23d040e8816FF628c54D357612420260301cAE85"
 
 statesync:
   # if statesync is used, at the time of writing the initial snapshot restore
