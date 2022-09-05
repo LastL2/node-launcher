@@ -19,10 +19,8 @@ peer:
 seeds:
 peerApi:
 
+# See docs/Thornode-Snapshot-Recovery-and-Storage-Management.md for details.
 statesync:
-  # if statesync is used, at the time of writing the initial snapshot restore
-  # will require 32G memory request size - this can be lowered after the node
-  # begins syncing
   auto: false
   snapshotInterval: 0
 

@@ -14,9 +14,16 @@ if ! node_exists; then
   die "No existing THORNode found, make sure this is the correct name"
 fi
 
+PREFIX="thornode"
+echo "=> Select recover type"
+menu pruned pruned archive
+if [ "$MENU_SELECTED" = "pruned" ]; then
+  PREFIX="$PREFIX/pruned"
+fi
+
 HEIGHTS=$(
-  curl -s 'https://storage.googleapis.com/storage/v1/b/public-snapshots-ninerealms/o?delimiter=%2F&prefix=thornode/' |
-    jq -r '.prefixes | map(match("thornode/([0-9]+)/").captures[0].string) | map(tonumber) | sort | reverse | map(tostring) | join(" ")'
+  curl -s "https://storage.googleapis.com/storage/v1/b/public-snapshots-ninerealms/o?delimiter=%2F&prefix=$PREFIX/" |
+    jq -r ".prefixes | map(match(\"$PREFIX/([0-9]+)/\").captures[0].string) | map(tonumber) | sort | reverse | map(tostring) | join(\" \")"
 )
 LATEST_HEIGHT=$(echo "$HEIGHTS" | awk '{print $1}')
 echo "=> Select block height to recover"
@@ -70,11 +77,11 @@ kubectl exec -n "$NAME" -it recover-thornode -- /bin/sh -c 'gcloud config set ac
 # recover nine realms snapshot
 echo "pulling nine realms snapshot..."
 kubectl exec -n "$NAME" -it recover-thornode -- gsutil -m rsync -r -d \
-  "gs://public-snapshots-ninerealms/thornode/$HEIGHT/" /root/.thornode/data/
+  "gs://public-snapshots-ninerealms/$PREFIX/$HEIGHT/" /root/.thornode/data/
 
 echo "repeat sync pass in case of errors..."
 kubectl exec -n "$NAME" -it recover-thornode -- gsutil rsync -r -d \
-  "gs://public-snapshots-ninerealms/thornode/$HEIGHT/" /root/.thornode/data/
+  "gs://public-snapshots-ninerealms/$PREFIX/$HEIGHT/" /root/.thornode/data/
 
 echo "=> ${boldgreen}Proceeding to clean up recovery pod and restart thornode$reset"
 confirm
