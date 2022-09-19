@@ -89,7 +89,7 @@ gaiaDaemon:
   testnet: {}
 
 avaxDaemon:
-  enabled: false
+  enabled: true
   mainnet: http://avalanche-daemon:9650/ext/bc/C/rpc
   stagenet: http://avalanche-daemon:9650/ext/bc/C/rpc
 

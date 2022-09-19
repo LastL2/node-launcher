@@ -8,6 +8,8 @@ bifrost:
     enabled: false
   gaiaDaemon:
     enabled: false
+  avaxDaemon:
+    enabled: false
 
 midgard:
   blockstore:
