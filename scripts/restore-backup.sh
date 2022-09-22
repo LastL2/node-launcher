@@ -18,12 +18,19 @@ if ! kubectl -n "$NAME" get pvc "$SERVICE" >/dev/null 2>&1; then
   exit 0
 fi
 
-FILE=$(find "$PWD/backups/$SERVICE" -maxdepth 1 -type f -exec basename {} \; | sort -r | head -1)
-if [ "$FILE" == "" ]; then
-  warn "No backup file found for service $SERVICE"
+TIMES=$(find "$PWD/backups/$NAME/$SERVICE/" -name "*.tar.gz" | sort -r | awk -F "/" '{ match($NF, /[0-9]+/); print strftime("%F@%R:%S", substr($NF, RSTART, RLENGTH)) " "$0 }')
+
+if [ "$TIMES" == "" ]; then
+  warn "No backups found for service $SERVICE"
   echo
   exit 0
 fi
+
+echo "=> Select the backup time"
+readarray -t TIMES <<<"$TIMES"
+menu "${TIMES[0]}" "${TIMES[@]}"
+
+FILE=$(echo "$MENU_SELECTED" | awk '{ print $2 }')
 
 if [ "$SERVICE" = "bifrost" ]; then
   SPEC="
@@ -82,9 +89,11 @@ if (kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$SERVICE" 2>&1 | grep 
   POD="pod/backup-$SERVICE"
 fi
 
-tar -C "$PWD/backups/$SERVICE" -cf - "$FILE" | kubectl exec -i -n "$NAME" "$POD" -c "$SERVICE" -- tar xf - -C /root/.thornode
+FILE_BASE=$(basename "$FILE")
+FILE_DIR=$(dirname "$FILE")
+tar -C "$FILE_DIR" -cf - "$FILE_BASE" | kubectl exec -i -n "$NAME" "$POD" -c "$SERVICE" -- tar xf - -C /root/.thornode
 
-kubectl exec -it -n "$NAME" "$POD" -c "$SERVICE" -- sh -c "cd /root/.thornode && tar xf \"$FILE\""
+kubectl exec -it -n "$NAME" "$POD" -c "$SERVICE" -- sh -c "cd /root/.thornode && tar xf \"$FILE_BASE\""
 
 if (kubectl get pod -n "$NAME" -l "app.kubernetes.io/name=$SERVICE" 2>&1 | grep "No resources found") >/dev/null 2>&1; then
   kubectl delete pod --now=true -n "$NAME" "backup-$SERVICE"
