@@ -404,8 +404,7 @@ deploy_validator() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.type="validator" \
-    --set bifrost.peer="$SEED",thornode.seeds="$SEED"
+    --set thornode.type="validator"
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
   # shellcheck disable=SC2086
@@ -413,8 +412,7 @@ deploy_validator() {
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.type="validator" \
-    --set bifrost.peer="$SEED",thornode.seeds="$SEED"
+    --set thornode.type="validator"
 
   [ "$TYPE" = "daemons" ] && return
 
@@ -429,7 +427,6 @@ deploy_fullnode() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.seeds="$SEED" \
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
@@ -443,7 +440,6 @@ deploy_fullnode() {
     --create-namespace $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
     --set global.net="$NET" \
-    --set thornode.seeds="$SEED" \
     --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \

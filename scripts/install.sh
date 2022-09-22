@@ -2,10 +2,6 @@
 
 source ./scripts/core.sh
 
-SEED_TESTNET=${SEED_TESTNET:=$(curl -s https://testnet.seed.thorchain.info/ | jq -r '. | join(",")' | sed "s/,/\\\,/g;s/|/,/g")}
-SEED_STAGENET=${SEED_STAGENET:="stagenet-seed.ninerealms.com"}
-SEED_MAINNET=${SEED_MAINNET:=$(curl -s https://seed.thorchain.info/ | jq -r '. | join(",")' | sed "s/,/\\\,/g;s/|/,/g")}
-
 get_node_info
 
 if node_exists; then
@@ -26,15 +22,12 @@ fi
 
 case $NET in
   mainnet)
-    SEED=$SEED_MAINNET
     EXTRA_ARGS="-f ./thornode-stack/chaosnet.yaml"
     ;;
   stagenet)
-    SEED=$SEED_STAGENET
     EXTRA_ARGS="-f ./thornode-stack/stagenet.yaml"
     ;;
   testnet)
-    SEED=$SEED_TESTNET
     EXTRA_ARGS="-f ./thornode-stack/testnet.yaml"
     ;;
 esac

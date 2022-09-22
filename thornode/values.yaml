@@ -16,7 +16,6 @@ signer:
   passwordSecret: ""
 
 peer:
-seeds:
 peerApi:
 
 # See docs/Thornode-Snapshot-Recovery-and-Storage-Management.md for details.

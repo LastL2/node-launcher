@@ -88,8 +88,6 @@ spec:
               {{- end }}
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
-            - name: SEEDS
-              value: {{ .Values.seeds }}
             - name: PEER_API
               value: {{ .Values.peerApi }}
             - name: DEBUG
