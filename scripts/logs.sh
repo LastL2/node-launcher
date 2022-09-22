@@ -9,6 +9,10 @@ case $SERVICE in
   midgard | midgard-timescaledb)
     kubectl logs -f -n "$NAME" sts/"$SERVICE"
     ;;
+  ethereum-daemon)
+    menu ethereum-daemon ethereum-daemon ethereum-daemon-beacon
+    kubectl logs -f -n "$NAME" deploy/ethereum-daemon -c "$MENU_SELECTED"
+    ;;
   *)
     kubectl logs -f -n "$NAME" deploy/"$SERVICE"
     ;;
