@@ -28,5 +28,5 @@ if [ -n "$FAILED" ]; then
     echo "2. Follow the instructions from the brew output to update your PATH so the GNU utilities are default" >/dev/tty
   fi
   echo >/dev/tty
-  exit 1
+  echo FAILED
 fi

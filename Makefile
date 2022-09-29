@@ -5,9 +5,10 @@ SHELL := /bin/bash
 ########################################################################################
 
 CHECK_ENV:=$(shell ./scripts/check-environment.sh)
-ifneq ($(.SHELLSTATUS),0)
+ifneq ($(CHECK_ENV),)
 $(error Check environment dependencies.)
 endif
+
 
 ########################################################################################
 # Targets
