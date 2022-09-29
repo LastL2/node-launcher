@@ -14,6 +14,8 @@ MENU_COLOR_ARROW=${MENU_COLOR_ARROW:-36}
 menu.cursor_on() {
   printf >&2 "\e[?25h"
 }
+# Restore the cursor no matter how the script exits.
+trap menu.cursor_on EXIT
 
 menu.cursor_off() {
   printf >&2 "\e[?25l"

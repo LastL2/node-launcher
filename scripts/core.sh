@@ -143,7 +143,7 @@ create_namespace() {
 }
 
 node_exists() {
-  kubectl get -n "$NAME" deploy/thornode >/dev/null 2>&1 || kubectl get -n "$NAME" deploy/thor-daemon >/dev/null 2>&1
+  kubectl get -n "$NAME" deploy/thornode >/dev/null 2>&1
 }
 
 snapshot_available() {
