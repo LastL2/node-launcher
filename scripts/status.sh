@@ -3,6 +3,6 @@
 source ./scripts/core.sh
 
 TC_BACKUP=${TC_BACKUP:=true}
-get_node_info_short
+get_node_info
 display_status
 echo

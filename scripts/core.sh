@@ -324,11 +324,16 @@ display_password() {
 }
 
 display_status() {
-  local ready
-  ready=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=thornode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-  if [ "$ready" = "True" ]; then
+  APP=thornode
+  if [ "$TYPE" = "validator" ]; then
+    APP=bifrost
+  fi
+
+  local initialized
+  initialized=$(kubectl get pod -n "$NAME" -l app.kubernetes.io/name=$APP -o 'jsonpath={..status.conditions[?(@.type=="Initialized")].status}')
+  if [ "$initialized" = "True" ]; then
     local output
-    output=$(kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- /scripts/node-status.sh | tee /dev/tty)
+    output=$(kubectl exec -it -n "$NAME" deploy/$APP -c $APP -- /scripts/node-status.sh | tee /dev/tty)
 
     if grep -E "^STATUS\s+Active" <<<"$output" >/dev/null; then
       echo -e "\n=> Detected ${red}active$reset validator THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"

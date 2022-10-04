@@ -81,6 +81,9 @@ spec:
                 configMapKeyRef:
                   name: {{ include "bifrost.fullname" . }}-external-ip
                   key: externalIP
+            # VALIDATOR is used by /scripts/node-status.sh to enable chain sync checks.
+            - name: VALIDATOR
+              value: "true"
             - name: NET
               value: {{ include "bifrost.net" . }}
             - name: CHAIN_API
