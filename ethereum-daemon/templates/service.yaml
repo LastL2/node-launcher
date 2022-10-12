@@ -11,5 +11,9 @@ spec:
       targetPort: rpc
       protocol: TCP
       name: rpc
+    - port: 3500
+      targetPort: beacon
+      protocol: TCP
+      name: beacon
   selector:
     {{- include "ethereum-daemon.selectorLabels" . | nindent 4 }}

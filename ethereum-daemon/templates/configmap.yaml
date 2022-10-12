@@ -34,7 +34,7 @@ data:
     fi
 
     # first time we are syncing from scratch
-    if [ "$SYNCING" != "false" ] && [ "$HEIGHT" = "0" ]; then
+    if [ "$HEIGHT" = "0" ]; then
       exit 0
     fi
 

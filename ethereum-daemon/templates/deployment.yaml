@@ -124,12 +124,17 @@ spec:
             - --execution-endpoint=http://localhost:8551
             - --accept-terms-of-use
             - --jwt-secret=/data/jwt.hex
+            - --grpc-gateway-host=0.0.0.0  # used by node status
         {{- if eq (include "ethereum-daemon.net" .) "testnet" }}
             - --ropsten
             - --genesis-state=/data/beacon/genesis.ssz
         {{- else }}
             - --mainnet
         {{- end }}
+          ports:
+            - name: beacon
+              containerPort: 3500
+              protocol: TCP
           volumeMounts:
             - name: data
               mountPath: /data
