@@ -31,6 +31,8 @@ bifrost:
       rpc: http://gaia-daemon.daemons.svc.cluster.local:26657
       grpc: gaia-daemon.daemons.svc.cluster.local:9090
       grpcTLS: false
+  avaxDaemon:
+    mainnet: http://avalanche-daemon.daemons.svc.cluster.local:9650/ext/bc/C/rpc
 
 # disable all daemons in node namespace
 binance-daemon:
