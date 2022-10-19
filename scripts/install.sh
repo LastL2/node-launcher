@@ -2,16 +2,7 @@
 
 source ./scripts/core.sh
 
-get_node_info
-
-if node_exists; then
-  warn "Found an existing THORNode, make sure this is the node you want to update"
-  display_status
-  echo
-fi
-
-echo -e "=> Deploying a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
-confirm
+./scripts/pre-install.sh
 
 if [ "$0" == "./scripts/update.sh" ] && snapshot_available; then
   make_snapshot "thornode"
@@ -34,12 +25,6 @@ esac
 
 if [ -n "$HARDFORK_BLOCK_HEIGHT" ]; then
   EXTRA_ARGS="$EXTRA_ARGS --set thornode.haltHeight=$HARDFORK_BLOCK_HEIGHT"
-fi
-
-create_namespace
-if [ "$TYPE" != "daemons" ]; then
-  create_password
-  create_mnemonic
 fi
 
 # check to ensure required CRDs are created before deploying
