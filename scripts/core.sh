@@ -186,7 +186,7 @@ make_snapshot() {
   fi
 
   cat <<EOF | kubectl -n "$NAME" apply -f -
-    apiVersion: snapshot.storage.k8s.io/v1beta1
+    apiVersion: snapshot.storage.k8s.io/v1
     kind: VolumeSnapshot
     metadata:
       name: $snapshot
