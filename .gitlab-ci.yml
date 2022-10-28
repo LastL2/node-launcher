@@ -35,6 +35,17 @@ lint:
   script:
     - ./scripts/lint.sh
 
+check-thornode-images:
+  image: docker:20.10.12
+  stage: validate
+  services:
+    - docker:20.10.12-dind
+  before_script:
+    - apk add py3-pip jq curl
+    - pip3 install yq
+  script:
+    - ./scripts/check-thornode-images.sh
+
 build:
   image: docker:20.10.12
   stage: build
