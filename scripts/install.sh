@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 source ./scripts/core.sh
-
-./scripts/pre-install.sh
+source ./scripts/pre-install.sh
 
 if [ "$0" == "./scripts/update.sh" ] && snapshot_available; then
   make_snapshot "thornode"
