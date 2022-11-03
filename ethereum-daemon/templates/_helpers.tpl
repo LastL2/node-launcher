@@ -64,7 +64,7 @@ Create the name of the service account to use
 Tag
 */}}
 {{- define "daemon.tag" -}}
-    {{ .Values.image.tag | default .Chart.AppVersion }}
+    {{ .Values.image.eth.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
