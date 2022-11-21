@@ -1,6 +1,6 @@
 global:
-  tag: stagenet-1.98.0
-  hash: cf30c78512dfde17d574c3d6f6c58884e3e4274e43147821e2a9fdfd0d8b7172
+  tag: stagenet-1.100.0
+  hash: e5985516c492f29e0e50af03427feefa2a9c248f7967af0b0a3c2450ea0026df
 
 midgard:
   image:
