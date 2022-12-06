@@ -111,8 +111,11 @@ shell: ## Open a shell for a selected THORNode service
 debug: ## Open a shell for THORNode service mounting volume to debug
 	@./scripts/debug.sh
 
-recover-ninerealms:
+recover-ninerealms: ## Recover THORNode from Nine Realms snapshot
 	@./scripts/recover-ninerealms.sh
+
+rescan-yggdrasil-utxo: ## Rescan Yggdrasil address for UTXO chains
+	@./scripts/rescan-yggdrasil-utxo.sh
 
 watch: ## Watch the THORNode pods in real time
 	@./scripts/watch.sh

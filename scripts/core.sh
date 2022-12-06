@@ -334,6 +334,7 @@ display_status() {
   if [ "$initialized" = "True" ]; then
     local output
     output=$(kubectl exec -it -n "$NAME" deploy/$APP -c $APP -- /scripts/node-status.sh | tee /dev/tty)
+    NODE_ADDRESS=$(awk '$1 ~ /ADDRESS/ {match($2, /[a-z0-9]+/); print substr($2, RSTART, RLENGTH)}' <<<"$output")
 
     if grep -E "^STATUS\s+Active" <<<"$output" >/dev/null; then
       echo -e "\n=> Detected ${red}active$reset validator THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
@@ -341,8 +342,6 @@ display_status() {
       # prompt for missing mimir votes if mainnet
       if [ "$NET" = "mainnet" ]; then
         echo "=> Checking for missing mimir votes..."
-        local address
-        address=$(awk '$1 ~ /ADDRESS/ {match($2, /[a-z0-9]+/); print substr($2, RSTART, RLENGTH)}' <<<"$output")
 
         # get all votes
         local votes_all
@@ -355,7 +354,7 @@ display_status() {
 
         # all reminder votes the node is missing
         local missing_votes
-        missing_votes=$(echo "$votes_all" | jq -r "$remind_votes - [.mimirs[] | select(.signer==\"$address\") | .key] | .[]")
+        missing_votes=$(echo "$votes_all" | jq -r "$remind_votes - [.mimirs[] | select(.signer==\"$NODE_ADDRESS\") | .key] | .[]")
 
         if [ -n "$missing_votes" ]; then
           echo
