@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 source ./scripts/core.sh
 
 get_node_info
@@ -21,27 +23,60 @@ warn "!!! Make sure your got your BOND back before recycling your THORNode !!!"
 confirm
 
 # delete gateway resources
-echo "=> Recycling THORNode - deleting gateway resources..."
+echo -e "$beige=> Recycling THORNode - deleting gateway resources...$reset"
 kubectl -n "$NAME" delete deployment gateway
 kubectl -n "$NAME" delete service gateway
 kubectl -n "$NAME" delete configmap gateway-external-ip
 
 # delete thornode resources
-echo "=> Recycling THORNode - deleting thornode resources..."
+echo -e "$beige=> Recycling THORNode - deleting thornode resources...$reset"
 kubectl -n "$NAME" delete deployment thornode
-kubectl -n "$NAME" delete pvc thornode
 kubectl -n "$NAME" delete configmap thornode-external-ip
 kubectl -n "$NAME" delete secret thornode-password
 kubectl -n "$NAME" delete secret thornode-mnemonic
 
+# delete all key material from thornode while preserving chain data
+echo -e "$beige=> Recycling THORNode - deleting thornode derived keys...$reset"
+IMAGE=alpine:latest@sha256:4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454
+SPEC=$(
+  cat <<EOF
+{
+  "apiVersion": "v1",
+  "spec": {
+    "containers": [
+      {
+        "command": [
+          "rm",
+          "-rf",
+          "/root/.thornode/THORChain-ED25519",
+          "/root/.thornode/data/priv_validator_state.json",
+          "/root/.thornode/keyring-file/",
+          "/root/.thornode/config/node_key.json",
+          "/root/.thornode/config/priv_validator_key.json",
+          "/root/.thornode/config/genesis.json"
+        ],
+        "name": "reset-thornode-keys",
+        "stdin": true,
+        "tty": true,
+        "image": "$IMAGE",
+        "volumeMounts": [{"mountPath": "/root", "name":"data"}]
+      }
+    ],
+    "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "thornode"}}]
+  }
+}
+EOF
+)
+kubectl -n "$NAME" run -it --rm reset-thornode-keys --restart=Never --image="$IMAGE" --overrides="$SPEC"
+
 # delete bifrost resources
-echo "=> Recycling THORNode - deleting bifrost resources..."
+echo -e "$beige=> Recycling THORNode - deleting bifrost resources...$reset"
 kubectl -n "$NAME" delete deployment bifrost
 kubectl -n "$NAME" delete pvc bifrost
 kubectl -n "$NAME" delete configmap bifrost-external-ip
 
 # recreate resources
-echo "=> Recycling THORNode - recreating deleted resources..."
+echo -e "$green=> Recycling THORNode - recreating deleted resources...$reset"
 NET=$NET TYPE=$TYPE NAME=$NAME ./scripts/install.sh
 
-echo "=> Recycle complete."
+echo -e "$green=> Recycle complete.$reset"

@@ -34,7 +34,7 @@ die() {
 }
 
 confirm() {
-  if [ -z "$TC_NO_CONFIRM" ]; then
+  if [ -z "${TC_NO_CONFIRM:-}" ]; then
     echo -n "$boldyellow:: Are you sure? Confirm [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && exit
   fi
   echo
