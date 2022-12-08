@@ -7,8 +7,11 @@ EXE="ulimit -n 65535 && /release/linux/bnbchaind start --home ${BNCHOME}"
 
 # initialize config
 if [ ! -d "${BNCHOME}/config/" ]; then
-  cp -r "/release/${BNET}" "${BNCHOME}/config/"
+  mkidir -p "${BNCHOME}/config/"
 fi
+cp -r "/release/${BNET}/config.toml" "${BNCHOME}/config/"
+cp -r "/release/${BNET}/app.toml" "${BNCHOME}/config/"
+cp -r "/release/${BNET}/genesis.json" "${BNCHOME}/config/"
 chown -R bnbchaind:bnbchaind "${BNCHOME}/config/"
 
 # turn on console logging
