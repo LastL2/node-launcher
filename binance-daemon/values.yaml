@@ -8,8 +8,8 @@ replicaCount: 1
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: "binance-daemon-0.10.3"
-  hash: "cea96bf4de29e2449e8501379a70e423ee8f8dc8f274b8e66f5fae20c7c7306e"
+  tag: "binance-daemon-0.10.3-1"
+  hash: "bddec9efbde39bce06cc6ed547893d6d223da7907321df27aa7c9c443b6485ba"
   mocknet: registry.gitlab.com/thorchain/bepswap/mock-binance # TODO: is this still used?
 
 imagePullSecrets: []
