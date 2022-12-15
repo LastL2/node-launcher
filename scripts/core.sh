@@ -343,18 +343,10 @@ display_status() {
       if [ "$NET" = "mainnet" ]; then
         echo "=> Checking for missing mimir votes..."
 
-        # get all votes
-        local votes_all
-        votes_all=$(kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- curl -s http://localhost:1317/thorchain/mimir/nodes_all)
-
-        # all keys over threshold vote minus blacklist
-        local remind_votes
-        remind_votes=$(echo "$votes_all" |
-          jq "[.mimirs | group_by(.key)[] | {\"key\": .[0].key, \"votes\": length} | select(.votes>$VOTE_REMINDER_THRESHOLD) | .key] - [$VOTE_REMINDER_BLACKLIST]")
-
         # all reminder votes the node is missing
         local missing_votes
-        missing_votes=$(echo "$votes_all" | jq -r "$remind_votes - [.mimirs[] | select(.signer==\"$NODE_ADDRESS\") | .key] | .[]")
+        missing_votes=$(kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- curl -s http://localhost:1317/thorchain/mimir/nodes_all |
+          jq -r "[$VOTE_REMINDERS] - [.mimirs[] | select(.signer==\"$NODE_ADDRESS\") | .key] | .[]")
 
         if [ -n "$missing_votes" ]; then
           echo
