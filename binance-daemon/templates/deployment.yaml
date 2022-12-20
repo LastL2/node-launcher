@@ -39,6 +39,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "binance-daemon.image" . }}
           imagePullPolicy: IfNotPresent
+          command:
+            - /scripts/entrypoint.sh
           volumeMounts:
             - name: data
               mountPath: /opt/bnbchaind
