@@ -111,6 +111,7 @@ data:
 
     # disable snapshots and clear if already recovered
     if [ -f "$PROBE" ] && [ $(cat "$PROBE") -gt "0" ]; then
+      rm -rf /opt/bnbchaind/data/snapshot
       rm -rf /opt/bnbchaind/snapshots
       sed -i "s/state_sync_reactor = true/state_sync_reactor = false/g" "${BNCHOME}/config/config.toml"
     fi
