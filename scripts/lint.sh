@@ -39,12 +39,7 @@ for NET in stagenet chaosnet; do
   check_charts "$NET"
 done
 
-# Lint shell scripts.
-find . -type f -name '*.*sh' | grep -v '^./ci/images/' |
-  while read -r SCRIPT; do
-    shellcheck --external-sources --exclude SC2034 "$SCRIPT"
-    shfmt -i 2 -ci -d "$SCRIPT"
-  done
+./scripts/trunk check --no-fix --upstream origin/master
 
 # Lint the Helm charts.
 find . -type f -name 'Chart.yaml' -printf '%h\n' |
@@ -58,6 +53,3 @@ find . -type f -name 'Chart.yaml' -printf '%h\n' |
 for NET in stagenet chaosnet testnet; do
   helm lint --values thornode-stack/"$NET".yaml thornode-stack/
 done
-
-# TODO: enable yamllint - will be a major whitespace change across the charts.
-# yamllint .
