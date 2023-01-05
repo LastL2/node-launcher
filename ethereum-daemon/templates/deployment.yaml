@@ -84,6 +84,13 @@ spec:
             - name: rpc
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - "killall5 2 && sleep 30" # SIGINT and give 30s for main process to terminate
           startupProbe:
             failureThreshold: 600
             periodSeconds: 10
