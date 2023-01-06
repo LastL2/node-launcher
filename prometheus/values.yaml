@@ -64,7 +64,6 @@ additionalPrometheusRulesMap:
 #            {{ end }}
 #           {{ end }}
 
-
 # PagerDuty and Dead Man's Snitch configuration. See README.Alerting.md
 
 # alertmanager:
@@ -90,7 +89,6 @@ additionalPrometheusRulesMap:
 #        pagerduty_configs:
 #        - service_key: "XXX Insert PagerDuty Integration Key here XXX"
 #          send_resolved: true
-
 
 # PagerDuty, Dead Man's Snitch, and Slack configuration. See README.Alerting.md
 
@@ -145,8 +143,6 @@ additionalPrometheusRulesMap:
 #             {{ end }}
 #            {{ end }}
 
-
-
 grafana:
   # image:
   #   tag: 7.5.3
@@ -181,22 +177,22 @@ grafana:
     datasources.yaml:
       apiVersion: 1
       datasources:
-      - name: Loki
-        type: loki
-        url: http://loki.loki-system:3100
+        - name: Loki
+          type: loki
+          url: http://loki.loki-system:3100
 
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
-      - name: 'default'
-        orgId: 1
-        folder: ''
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/default
+        - name: "default"
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
   dashboards:
     default:
       thorchain:
@@ -3039,7 +3035,7 @@ grafana:
             "panels": [
               {
                 "datasource": {
-                  "type": "loki",
+                  "type": "loki"
                 },
                 "gridPos": {
                   "h": 12,
@@ -3070,7 +3066,7 @@ grafana:
               },
               {
                 "datasource": {
-                  "type": "loki",
+                  "type": "loki"
                 },
                 "gridPos": {
                   "h": 12,
@@ -3137,5 +3133,540 @@ grafana:
             "title": "THORNode / Thornode and Bifrost logs",
             "uid": "uddVVg27k",
             "version": 1,
+            "weekStart": ""
+          }
+      node_slash:
+        json: |
+          {
+            "annotations": {
+              "list": [
+                {
+                  "builtIn": 1,
+                  "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                  },
+                  "enable": true,
+                  "hide": true,
+                  "iconColor": "rgba(0, 211, 255, 1)",
+                  "name": "Annotations & Alerts",
+                  "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [],
+                    "type": "dashboard"
+                  },
+                  "type": "dashboard"
+                }
+              ]
+            },
+            "editable": true,
+            "fiscalYearStartMonth": 0,
+            "graphTooltip": 2,
+            "id": 29,
+            "links": [],
+            "liveNow": false,
+            "panels": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "7CGZFBmVk"
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "color": {
+                      "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                      "mode": "percentage",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 50
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 8,
+                  "w": 4,
+                  "x": 0,
+                  "y": 0
+                },
+                "id": 5,
+                "options": {
+                  "colorMode": "value",
+                  "graphMode": "area",
+                  "justifyMode": "auto",
+                  "orientation": "horizontal",
+                  "reduceOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ],
+                    "fields": "/^Value$/",
+                    "values": true
+                  },
+                  "textMode": "auto"
+                },
+                "pluginVersion": "9.2.4",
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "7CGZFBmVk"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "round(sum(increase(thornode_point_slash{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__range]))-sum(increase(thornode_point_slash_refund{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__range])),1)>0",
+                    "format": "table",
+                    "hide": false,
+                    "instant": true,
+                    "interval": "",
+                    "legendFormat": "{{chain}}: {{reason}}",
+                    "range": false,
+                    "refId": "A"
+                  }
+                ],
+                "title": "Slash Points",
+                "transformations": [
+                  {
+                    "id": "sortBy",
+                    "options": {
+                      "fields": {},
+                      "sort": [
+                        {
+                          "desc": true,
+                          "field": "Value"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "type": "stat"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "7CGZFBmVk"
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "color": {
+                      "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                      "mode": "percentage",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 50
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 8,
+                  "w": 10,
+                  "x": 4,
+                  "y": 0
+                },
+                "id": 6,
+                "options": {
+                  "displayMode": "basic",
+                  "minVizHeight": 10,
+                  "minVizWidth": 0,
+                  "orientation": "horizontal",
+                  "reduceOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ],
+                    "fields": "/^Value$/",
+                    "values": true
+                  },
+                  "showUnfilled": true
+                },
+                "pluginVersion": "9.2.4",
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "7CGZFBmVk"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "round(sum(increase(thornode_point_slash{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__range])) by (chain)-sum(increase(thornode_point_slash_refund{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__range])) by (chain),1)>0",
+                    "format": "table",
+                    "hide": false,
+                    "instant": true,
+                    "interval": "",
+                    "legendFormat": "{{chain}}: {{reason}}",
+                    "range": false,
+                    "refId": "A"
+                  }
+                ],
+                "title": "Slash Points by Chain",
+                "transformations": [
+                  {
+                    "id": "sortBy",
+                    "options": {
+                      "fields": {},
+                      "sort": [
+                        {
+                          "desc": true,
+                          "field": "Value"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "type": "bargauge"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "7CGZFBmVk"
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "color": {
+                      "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                      "mode": "percentage",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 50
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 8,
+                  "w": 10,
+                  "x": 14,
+                  "y": 0
+                },
+                "id": 4,
+                "options": {
+                  "displayMode": "basic",
+                  "minVizHeight": 10,
+                  "minVizWidth": 0,
+                  "orientation": "horizontal",
+                  "reduceOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ],
+                    "fields": "/^Value$/",
+                    "values": true
+                  },
+                  "showUnfilled": true
+                },
+                "pluginVersion": "9.2.4",
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "7CGZFBmVk"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "round(sum(increase(thornode_point_slash{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__range])) by (reason)-sum(increase(thornode_point_slash_refund{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__range])) by (reason),1)>0",
+                    "format": "table",
+                    "hide": false,
+                    "instant": true,
+                    "interval": "",
+                    "legendFormat": "{{chain}}: {{reason}}",
+                    "range": false,
+                    "refId": "A"
+                  }
+                ],
+                "title": "Slash Points by Reason",
+                "transformations": [
+                  {
+                    "id": "sortBy",
+                    "options": {
+                      "fields": {},
+                      "sort": [
+                        {
+                          "desc": true,
+                          "field": "Value"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "type": "bargauge"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "7CGZFBmVk"
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "color": {
+                      "mode": "palette-classic"
+                    },
+                    "custom": {
+                      "axisCenteredZero": false,
+                      "axisColorMode": "text",
+                      "axisLabel": "",
+                      "axisPlacement": "auto",
+                      "barAlignment": 0,
+                      "drawStyle": "bars",
+                      "fillOpacity": 100,
+                      "gradientMode": "none",
+                      "hideFrom": {
+                        "legend": false,
+                        "tooltip": false,
+                        "viz": false
+                      },
+                      "lineInterpolation": "linear",
+                      "lineWidth": 0,
+                      "pointSize": 5,
+                      "scaleDistribution": {
+                        "type": "linear"
+                      },
+                      "showPoints": "auto",
+                      "spanNulls": false,
+                      "stacking": {
+                        "group": "A",
+                        "mode": "normal"
+                      },
+                      "thresholdsStyle": {
+                        "mode": "off"
+                      }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 80
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 7,
+                  "w": 12,
+                  "x": 0,
+                  "y": 8
+                },
+                "id": 2,
+                "interval": "30m",
+                "options": {
+                  "legend": {
+                    "calcs": [
+                      "sum"
+                    ],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                  },
+                  "tooltip": {
+                    "mode": "multi",
+                    "sort": "none"
+                  }
+                },
+                "pluginVersion": "8.1.0",
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "7CGZFBmVk"
+                    },
+                    "editorMode": "code",
+                    "expr": "round(sum(increase(thornode_point_slash{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__interval])) by (chain) - sum(increase(thornode_point_slash_refund{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__interval])) by (chain), 1) > 1",
+                    "interval": "",
+                    "legendFormat": "{{chain}}",
+                    "range": true,
+                    "refId": "A"
+                  }
+                ],
+                "title": "Slash Points by Chain",
+                "transformations": [
+                  {
+                    "id": "renameByRegex",
+                    "options": {
+                      "regex": "thor.{35}(.*)",
+                      "renamePattern": "thor...$1"
+                    }
+                  }
+                ],
+                "type": "timeseries"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "7CGZFBmVk"
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "color": {
+                      "mode": "palette-classic"
+                    },
+                    "custom": {
+                      "axisCenteredZero": false,
+                      "axisColorMode": "text",
+                      "axisLabel": "",
+                      "axisPlacement": "auto",
+                      "barAlignment": 0,
+                      "drawStyle": "bars",
+                      "fillOpacity": 100,
+                      "gradientMode": "none",
+                      "hideFrom": {
+                        "legend": false,
+                        "tooltip": false,
+                        "viz": false
+                      },
+                      "lineInterpolation": "linear",
+                      "lineWidth": 0,
+                      "pointSize": 5,
+                      "scaleDistribution": {
+                        "type": "linear"
+                      },
+                      "showPoints": "auto",
+                      "spanNulls": false,
+                      "stacking": {
+                        "group": "A",
+                        "mode": "normal"
+                      },
+                      "thresholdsStyle": {
+                        "mode": "off"
+                      }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 80
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 7,
+                  "w": 12,
+                  "x": 12,
+                  "y": 8
+                },
+                "id": 7,
+                "interval": "30m",
+                "options": {
+                  "legend": {
+                    "calcs": [
+                      "sum"
+                    ],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                  },
+                  "tooltip": {
+                    "mode": "multi",
+                    "sort": "none"
+                  }
+                },
+                "pluginVersion": "8.1.0",
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "7CGZFBmVk"
+                    },
+                    "editorMode": "code",
+                    "expr": "round(sum(increase(thornode_point_slash{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__interval])) by (reason) - sum(increase(thornode_point_slash_refund{namespace=\"thornode\",pod=\"thornode-0\",cluster=\"prod\",address=~\".*$address.*\"}[$__interval])) by (reason), 1) > 1",
+                    "interval": "",
+                    "legendFormat": "{{reason}}",
+                    "range": true,
+                    "refId": "A"
+                  }
+                ],
+                "title": "Slash Points by Reason",
+                "transformations": [
+                  {
+                    "id": "renameByRegex",
+                    "options": {
+                      "regex": "thor.{35}(.*)",
+                      "renamePattern": "thor...$1"
+                    }
+                  }
+                ],
+                "type": "timeseries"
+              }
+            ],
+            "refresh": false,
+            "schemaVersion": 37,
+            "style": "dark",
+            "tags": [],
+            "templating": {
+              "list": [
+                {
+                  "current": {
+                    "selected": false,
+                    "text": "",
+                    "value": ""
+                  },
+                  "hide": 0,
+                  "name": "address",
+                  "options": [
+                    {
+                      "selected": true,
+                      "text": "",
+                      "value": ""
+                    }
+                  ],
+                  "query": "",
+                  "skipUrlSync": false,
+                  "type": "textbox"
+                }
+              ]
+            },
+            "time": {
+              "from": "now-12h",
+              "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "THORNode / Node Slash",
+            "uid": "5XvM_nWVkx",
+            "version": 2,
             "weekStart": ""
           }
