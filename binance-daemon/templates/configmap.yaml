@@ -74,6 +74,9 @@ data:
       exit 1
     fi
 
+    PULLING_SNAPSHOT=$(echo "$STATUS" | jq '.result.sync_info.index_height == "0"')
+    [[ "$PULLING_SNAPSHOT" == "true" ]] && exit 0
+
     OLD=$(cat $FILE)
     echo "$STATUS" | jq -r ".result.sync_info.index_height" >$FILE
     CURRENT=$(cat $FILE)
