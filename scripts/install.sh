@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 
 source ./scripts/core.sh
-source ./scripts/pre-install.sh
 
-if [ "$0" == "./scripts/update.sh" ] && snapshot_available; then
-  make_snapshot "thornode"
-  if [ "$TYPE" != "fullnode" ]; then
-    make_snapshot "bifrost"
-  fi
-fi
+get_node_net
 
 case $NET in
   mainnet)
@@ -24,6 +18,15 @@ esac
 
 if [ -n "$HARDFORK_BLOCK_HEIGHT" ]; then
   EXTRA_ARGS="$EXTRA_ARGS --set thornode.haltHeight=$HARDFORK_BLOCK_HEIGHT"
+fi
+
+source ./scripts/pre-install.sh
+
+if [ "$0" == "./scripts/update.sh" ] && snapshot_available; then
+  make_snapshot "thornode"
+  if [ "$TYPE" != "fullnode" ]; then
+    make_snapshot "bifrost"
+  fi
 fi
 
 # check to ensure required CRDs are created before deploying

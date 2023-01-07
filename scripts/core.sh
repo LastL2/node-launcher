@@ -283,15 +283,26 @@ make_backup() {
   echo "Backup available in path ./backups/$NAME/$service/$day"
 }
 
+get_thornode_image() {
+  [ -z "$EXTRA_ARGS" ] && die "Cannot determine thornode image"
+  # shellcheck disable=SC2086
+  helm template ./thornode-stack $EXTRA_ARGS 2>&1 | grep 'image:.*thorchain/thornode' | head -n1 | awk '{print $2}'
+}
+
 create_mnemonic() {
   local mnemonic
-  if ! kubectl get -n "$NAME" secrets/thornode-mnemonic >/dev/null 2>&1; then
-    echo "=> Generating THORNode Mnemonic phrase"
-    mnemonic=$(kubectl run -n "$NAME" -it --rm mnemonic --image=registry.gitlab.com/thorchain/thornode --restart=Never --command -- generate | grep MASTER_MNEMONIC | cut -d '=' -f 2 | tr -d '\r')
-    [ "$mnemonic" = "" ] && die "Mnemonic generation failed. Please try again."
-    kubectl -n "$NAME" create secret generic thornode-mnemonic --from-literal=mnemonic="$mnemonic"
-    echo
-  fi
+  local image
+  # Do nothing if mnemonic already exists.
+  kubectl -n "$NAME" get secrets/thornode-mnemonic >/dev/null 2>&1 && return
+  image=$(get_thornode_image)
+  echo "=> Generating THORNode Mnemonic phrase using image $image"
+  kubectl -n "$NAME" run mnemonic --image="$image" --restart=Never --command -- /bin/sh -c 'tail -F /dev/null'
+  kubectl wait --for=condition=ready pods mnemonic -n "$NAME" --timeout=5m >/dev/null 2>&1
+  mnemonic=$(kubectl exec -n "$NAME" -it mnemonic -- generate | grep MASTER_MNEMONIC | cut -d '=' -f 2 | tr -d '\r')
+  [ "$mnemonic" = "" ] && die "Mnemonic generation failed. Please try again."
+  kubectl -n "$NAME" create secret generic thornode-mnemonic --from-literal=mnemonic="$mnemonic"
+  kubectl -n "$NAME" delete pod --now=true mnemonic
+  echo
 }
 
 create_password() {

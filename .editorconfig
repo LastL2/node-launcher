@@ -18,6 +18,7 @@ charset = utf-8
 [*.{py,sh}]
 indent_style = space
 indent_size = 2
+switch_case_indent = true
 
 # Tab indentation (no size specified)
 [Makefile]
