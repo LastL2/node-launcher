@@ -7,6 +7,10 @@ version: 0.2.0
 appVersion: 0.2.0
 
 dependencies:
+  - name: common
+    repository: file://../common
+    version: 0.1.0
+
   - name: gateway
     repository: file://../gateway
     version: 0.1.0

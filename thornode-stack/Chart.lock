@@ -1,4 +1,7 @@
 dependencies:
+- name: common
+  repository: file://../common
+  version: 0.1.0
 - name: gateway
   repository: file://../gateway
   version: 0.1.0
@@ -35,5 +38,5 @@ dependencies:
 - name: avalanche-daemon
   repository: file://../avalanche-daemon
   version: 0.1.0
-digest: sha256:dc208d3c5889f31c4acb64e6a9ed2465200dc165e68a28b0fbe51f14ddf5b074
-generated: "2022-07-08T10:40:48.679911646-04:00"
+digest: sha256:6957582c878092ccecb45c5066ccf8b04672b0d075c57c44572c2b3e67909df6
+generated: "2022-12-18T00:03:46.067338083Z"
