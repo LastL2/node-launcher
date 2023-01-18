@@ -4,18 +4,6 @@ source ./scripts/core.sh
 
 get_node_net
 
-case $NET in
-  mainnet)
-    EXTRA_ARGS="-f ./thornode-stack/chaosnet.yaml"
-    ;;
-  stagenet)
-    EXTRA_ARGS="-f ./thornode-stack/stagenet.yaml"
-    ;;
-  testnet)
-    EXTRA_ARGS="-f ./thornode-stack/testnet.yaml"
-    ;;
-esac
-
 if [ -n "$HARDFORK_BLOCK_HEIGHT" ]; then
   EXTRA_ARGS="$EXTRA_ARGS --set thornode.haltHeight=$HARDFORK_BLOCK_HEIGHT"
 fi

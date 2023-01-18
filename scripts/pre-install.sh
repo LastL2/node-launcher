@@ -2,6 +2,18 @@
 
 source ./scripts/core.sh
 
+case $NET in
+  mainnet)
+    EXTRA_ARGS="-f ./thornode-stack/chaosnet.yaml"
+    ;;
+  stagenet)
+    EXTRA_ARGS="-f ./thornode-stack/stagenet.yaml"
+    ;;
+  testnet)
+    EXTRA_ARGS="-f ./thornode-stack/testnet.yaml"
+    ;;
+esac
+
 get_node_info
 
 if node_exists; then
