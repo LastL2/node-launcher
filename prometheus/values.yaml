@@ -3057,7 +3057,7 @@ grafana:
                 "pluginVersion": "8.2.3",
                 "targets": [
                   {
-                    "expr": "{app_kubernetes_io_name=\"bifrost\"} |~ \"(?i)$search_text\" != \"leveldb: not found\"",
+                    "expr": "{container=\"bifrost\"} |~ \"(?i)$search_text\" != \"leveldb: not found\"",
                     "refId": "A"
                   }
                 ],
@@ -3087,7 +3087,7 @@ grafana:
                 },
                 "targets": [
                   {
-                    "expr": "{app_kubernetes_io_name=\"thornode\"} |~ \"(?i)$search_text\" ",
+                    "expr": "{container=\"thornode\"} |~ \"(?i)$search_text\" ",
                     "refId": "A"
                   }
                 ],
