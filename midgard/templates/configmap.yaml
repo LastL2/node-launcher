@@ -17,15 +17,7 @@ data:
       "thorchain": {
         "tendermint_url": "http://{{ include "midgard.thorDaemon" . }}/websocket",
         "thornode_url": "http://{{ .Values.thorApi }}/thorchain",
-        "last_chain_backoff": "7s",
-        "proxied_whitelisted_endpoints": [
-          "inbound_addresses",
-          "constants",
-          "lastblock",
-          "mimir",
-          "nodes",
-          "queue"
-        ]
+        "last_chain_backoff": "7s"
       },
       "timescale": {
         "host": "HOST_TIMESCALEDB",
