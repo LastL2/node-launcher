@@ -6,8 +6,8 @@ FROM golang:1.18-bullseye AS build
 
 WORKDIR /app
 
-ARG SRC_COMMIT=5db8fcc9a229730f5115bed82d0f85b6db7184b4
-ARG TAG=v7.1.0
+ARG SRC_COMMIT=f9507c7e79f258aaa9a2265ca7d94e53988ffe16
+ARG TAG=v8.0.0
 RUN git init && \
   git remote add origin https://github.com/cosmos/gaia && \
   git fetch --depth 1 origin $TAG && \
