@@ -38,5 +38,8 @@ dependencies:
 - name: avalanche-daemon
   repository: file://../avalanche-daemon
   version: 0.1.0
-digest: sha256:6957582c878092ccecb45c5066ccf8b04672b0d075c57c44572c2b3e67909df6
-generated: "2022-12-18T00:03:46.067338083Z"
+- name: binance-smart-daemon
+  repository: file://../binance-smart-daemon
+  version: 0.1.0
+digest: sha256:24ce3d2f24f88cdc6b546cae9303050c506b8b6c929eeec13dab4743c63cfec2
+generated: "2022-12-20T16:20:12.73230267-05:00"
