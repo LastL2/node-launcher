@@ -39,6 +39,7 @@ data:
     mkdir -p geth
     mv server/data-seed/geth/chaindata geth/chaindata
     mv server/data-seed/geth/triecache geth/triecache
+    chown -R 1000:1000 geth
 
   probe.sh: |
     #!/bin/sh
