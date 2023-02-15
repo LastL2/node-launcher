@@ -156,12 +156,6 @@ pause: ## Send a pause-chain transaction to your THORNode
 resume: ## Send a resume-chain transaction to your THORNode
 	@./scripts/resume.sh
 
-telegram-bot: ## Deploy Telegram bot to monitor THORNode
-	@./scripts/telegram-bot.sh
-
-destroy-telegram-bot: ## Uninstall Telegram bot to monitor THORNode
-	@./scripts/destroy-telegram-bot.sh
-
 destroy-tools: destroy-prometheus destroy-loki destroy-dashboard ## Uninstall Prometheus/Grafana, Loki, Kubernetes dashboard
 
 install-loki: repos ## Install/Update Loki logs management stack
@@ -218,6 +212,6 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 lint: ## Run linters (development)
 	./scripts/lint.sh
 
-.PHONY: help helm repo pull tools install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-loki destroy-prometheus destroy-metrics prometheus grafana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume telegram-bot destroy-telegram-bot lint
+.PHONY: help helm repo pull tools install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-loki destroy-prometheus destroy-metrics prometheus grafana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume lint
 
 .EXPORT_ALL_VARIABLES:
