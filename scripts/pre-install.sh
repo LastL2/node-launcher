@@ -2,6 +2,8 @@
 
 source ./scripts/core.sh
 
+get_node_info
+
 case $NET in
   mainnet)
     EXTRA_ARGS="-f ./thornode-stack/chaosnet.yaml"
@@ -13,8 +15,6 @@ case $NET in
     EXTRA_ARGS="-f ./thornode-stack/testnet.yaml"
     ;;
 esac
-
-get_node_info
 
 if node_exists; then
   warn "Found an existing THORNode, make sure this is the node you want to update"
