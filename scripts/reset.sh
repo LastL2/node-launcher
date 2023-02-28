@@ -4,7 +4,7 @@ source ./scripts/core.sh
 
 get_node_info_short
 echo "=> Select a THORNode service to reset"
-menu midgard midgard binance-daemon thornode gaia-daemon ethereum-daemon-execution ethereum-daemon-beacon avalanche-daemon
+menu midgard midgard binance-daemon thornode gaia-daemon ethereum-daemon-execution ethereum-daemon-beacon avalanche-daemon litecoin-daemon
 SERVICE=$MENU_SELECTED
 
 if node_exists; then
@@ -68,5 +68,12 @@ case $SERVICE in
     kubectl wait --for=delete pods -l app.kubernetes.io/name=avalanche-daemon -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
     kubectl run -n "$NAME" -it reset-avalanche --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["sh", "-c", "rm -rf /root/.avalanchego/db"], "name": "reset-avalanche", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/root/.avalanchego", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "avalanche-daemon"}}]}}'
     kubectl scale -n "$NAME" --replicas=1 deploy/avalanche-daemon --timeout=5m
+    ;;
+
+  litecoin-daemon)
+    kubectl scale -n "$NAME" --replicas=0 deploy/litecoin-daemon --timeout=5m
+    kubectl wait --for=delete pods -l app.kubernetes.io/name=litecoin-daemon -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
+    kubectl run -n "$NAME" -it reset-litecoin --rm --restart=Never --image=busybox --overrides='{"apiVersion": "v1", "spec": {"containers": [{"command": ["sh", "-c", "rm -rf /home/litecoin/.litecoin/*"], "name": "reset-litecoin", "stdin": true, "stdinOnce": true, "tty": true, "image": "busybox", "volumeMounts": [{"mountPath": "/home/litecoin/.litecoin", "name":"data"}]}], "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "litecoin-daemon"}}]}}'
+    kubectl scale -n "$NAME" --replicas=1 deploy/litecoin-daemon --timeout=5m
     ;;
 esac
