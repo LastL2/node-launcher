@@ -35,7 +35,7 @@ lint:
   script:
     - ./scripts/lint.sh
 
-check-thornode-images:
+check-image-digests:
   image: docker:20.10.12
   stage: validate
   services:
@@ -45,6 +45,8 @@ check-thornode-images:
     - pip3 install yq
   script:
     - ./scripts/check-thornode-images.sh
+    - ./scripts/check-node-launcher-images.sh
+    - ./scripts/check-midgard-images.sh
 
 build:
   image: docker:20.10.12

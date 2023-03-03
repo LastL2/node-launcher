@@ -1,12 +1,31 @@
 #!/bin/sh
 
+. ./scripts/gitlab.sh
+
+# get auth for container registry
+REGISTRY=thorchain/thornode
+TOKEN=$(gitlab_registry_token $REGISTRY)
+
 # check <values-file> <network>
 check() {
+  echo "Checking thornode $2..."
+
   VALUES_FILE="$1"
   EXPECTED_NETWORK="$2"
 
-  IMAGE=$(yq -r '"registry.gitlab.com/thorchain/thornode:"+.global.tag+"@sha256:"+.global.hash' "$VALUES_FILE")
+  TAG=$(yq -r '.global.tag' "$VALUES_FILE")
+  HASH=$(yq -r '.global.hash' "$VALUES_FILE")
+  IMAGE="registry.gitlab.com/thorchain/thornode:${TAG}@sha256:${HASH}"
   VERSION=$(yq -r '.global.tag|split("-")[-1]' "$VALUES_FILE")
+
+  # verify the tag matches the digest
+  DIGEST=$(gitlab_registry_digest $REGISTRY "$TAG" "$TOKEN")
+  if [ "sha256:$HASH" != "$DIGEST" ]; then
+    echo "Error: $IMAGE"
+    echo "Digest mismatch: $HASH != $DIGEST"
+    exit 1
+  fi
+
   IMAGE_VERSION_LONG=$(docker run --rm "$IMAGE" thornode version --long)
 
   IMAGE_VERSION=$(echo "$IMAGE_VERSION_LONG" | yq -r '.version')
