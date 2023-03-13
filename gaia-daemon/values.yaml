@@ -8,8 +8,8 @@ replicaCount: 1
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: gaia-daemon-8.0.1
-  hash: "6d9e4097406a301bf3368aece4b8063da91c76540241b79fec14e4c4278240d0"
+  tag: gaia-daemon-9.0.1
+  hash: "9db337c5ff4fc3e0f18f45f6c84caf23efca91a2b6eefd035b605202a9480609"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -31,20 +31,17 @@ service:
 
 ingress:
   enabled: false
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # cert-manager.io/cluster-issuer: letsencrypt-production
-  hosts:
-    []
+  hosts: []
     # - host: midgard.example.com
     #   paths:
     #   - path: /
     #     backend:
     #       serviceName: gateway
     #       servicePort: midgard
-  tls:
-    []
+  tls: []
     # - secretName: midgard-tls
     #   hosts:
     #     - midgard.example.com
@@ -68,8 +65,7 @@ serviceAccount:
 podSecurityContext:
   fsGroup: 1000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
