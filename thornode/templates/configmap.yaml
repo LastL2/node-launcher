@@ -59,7 +59,7 @@ data:
   mimir.sh: |
     #!/bin/sh
 
-    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain mimir "$1" "$2" --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --gas-adjustment 2 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC"
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain mimir --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --gas-adjustment 2 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC" -- "$1" "$2"
 
   ban.sh: |
     #!/bin/sh
