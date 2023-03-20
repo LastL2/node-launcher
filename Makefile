@@ -117,6 +117,9 @@ recover-ninerealms: ## Recover THORNode from Nine Realms snapshot
 rescan-yggdrasil-utxo: ## Rescan Yggdrasil address for UTXO chains
 	@./scripts/rescan-yggdrasil-utxo.sh
 
+rescan-asgard-utxo: ## Rescan Asgard address for UTXO chains
+	@./scripts/rescan-asgard-utxo.sh
+
 watch: ## Watch the THORNode pods in real time
 	@./scripts/watch.sh
 
