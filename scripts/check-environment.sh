@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 check_gnu() {
   $1 --version 2>/dev/null | head -n 1 | grep -q "GNU" && return
