@@ -19,7 +19,7 @@ net: mainnet
 blockstore:
   enabled: false
   remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/v2/
-  size: 50Gi
+  size: 100Gi
 
 replicaCount: 1
 
