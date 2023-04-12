@@ -13,13 +13,13 @@ FROM golang:1.19.6-buster AS builder
 # trunk-ignore(hadolint/DL3008)
 RUN apt-get update && apt-get install -y --no-install-recommends bash=5.0-4 make=4.2.1-1.2 gcc=4:8.3.0-1 musl-dev=1.1.21-2 ca-certificates=20200601~deb10u2 linux-headers-amd64
 
-
-ARG COMMIT=7d73b59cb4838d304387ea680b9cc4053b72620c
-ARG TAG=v1.9.16
+COPY version /version
+ARG COMMIT=535456298046b5c2fbcb95ce36702422b6980c66
 WORKDIR /build
-RUN git init && \
+RUN TAG="v$(cat /version)" && \
+  git init && \
   git remote add origin https://github.com/ava-labs/avalanchego && \
-  git fetch --depth 1 origin $TAG && \
+  git fetch --depth 1 origin "$TAG" && \
   git checkout $COMMIT && \
   ./scripts/build.sh
 
