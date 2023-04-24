@@ -5,12 +5,12 @@
 FROM golang:1.18-bullseye AS build
 
 WORKDIR /app
+COPY version /version
 
-ARG SRC_COMMIT=77661358725be2d1592d1ddcc516951276782649
-ARG TAG=v9.0.2
+ARG SRC_COMMIT=05b6b87d3c9121e933eab437772ea56f33ae268f
 RUN git init && \
   git remote add origin https://github.com/cosmos/gaia && \
-  git fetch --depth 1 origin $TAG && \
+  git fetch --depth 1 origin "v$(cat /version)" && \
   git checkout $SRC_COMMIT && \
   make build
 
