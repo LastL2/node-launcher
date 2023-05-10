@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 source ./scripts/menu.sh
-source ./scripts/votes.sh
 
 # reset=$(tput sgr0)              # normal text
 reset=$'\e[0m'                  # (works better sometimes)
@@ -357,7 +356,7 @@ display_status() {
         # all reminder votes the node is missing
         local missing_votes
         missing_votes=$(kubectl exec -it -n "$NAME" deploy/thornode -c thornode -- curl -s http://localhost:1317/thorchain/mimir/nodes_all |
-          jq -r "[$VOTE_REMINDERS] - [.mimirs[] | select(.signer==\"$NODE_ADDRESS\") | .key] | .[]")
+          jq -r "$(curl -s https://api.ninerealms.com/thorchain/votes | jq -c) - [.mimirs[] | select(.signer==\"$NODE_ADDRESS\") | .key] | .[]")
 
         if [ -n "$missing_votes" ]; then
           echo
