@@ -17,7 +17,8 @@ debug: false
 
 # provide custom environment variables to override config defaults:
 # https://gitlab.com/thorchain/thornode/-/blob/develop/config/default.yaml
-env: {}
+env:
+  BTC_START_BLOCK_HEIGHT: "788640"
 
 thorApi: thornode:1317
 chainID:

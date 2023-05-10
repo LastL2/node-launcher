@@ -92,40 +92,24 @@ spec:
               value: {{ include "bifrost.thorDaemon" . }}
             - name: BINANCE_HOST
               value: {{ include "bifrost.binanceDaemon" . }}
-            - name: BINANCE_START_BLOCK_HEIGHT
-              value: "{{ .Values.binanceStartBlockHeight }}"
             - name: BTC_HOST
               value: {{ include "bifrost.bitcoinDaemon" . }}
-            - name: BTC_START_BLOCK_HEIGHT
-              value: "{{ .Values.bitcoinStartBlockHeight }}"
             - name: LTC_HOST
               value: {{ include "bifrost.litecoinDaemon" . }}
-            - name: LTC_START_BLOCK_HEIGHT
-              value: "{{ .Values.litecoinStartBlockHeight }}"
             - name: BCH_HOST
               value: {{ include "bifrost.bitcoinCashDaemon" . }}
-            - name: BCH_START_BLOCK_HEIGHT
-              value: "{{ .Values.bitcoinCashStartBlockHeight }}"
             - name: DOGE_HOST
               value: {{ include "bifrost.dogecoinDaemon" . }}
-            - name: DOGE_START_BLOCK_HEIGHT
-              value: "{{ .Values.dogecoinStartBlockHeight }}"
             - name: TERRA_HOST
               value: {{ include "bifrost.terraDaemon" . }}
-            - name: TERRA_START_BLOCK_HEIGHT
-              value: "{{ .Values.terraStartBlockHeight }}"
             - name: GAIA_HOST
               value: {{ include "bifrost.gaiaDaemon" . }}
             - name: GAIA_GRPC_HOST
               value: {{ include "bifrost.gaiaDaemonGRPC" . }}
             - name: GAIA_GRPC_TLS
               value: "{{ include "bifrost.gaiaDaemonGRPCTLS" . }}"
-            - name: GAIA_START_BLOCK_HEIGHT
-              value: "{{ .Values.gaiaStartBlockHeight }}"
             - name: AVAX_HOST
               value: {{ include "bifrost.avaxDaemon" . }}
-            - name: AVAX_START_BLOCK_HEIGHT
-              value: "{{ .Values.avaxStartBlockHeight }}"
             {{- if not .Values.litecoinDaemon.enabled }}
             - name: LTC_DISABLED
               value: "true"
@@ -148,8 +132,6 @@ spec:
             {{- end}}
             - name: ETH_HOST
               value: {{ include "bifrost.ethereumDaemon" . }}
-            - name: ETH_START_BLOCK_HEIGHT
-              value: "{{ .Values.ethereumStartBlockHeight }}"
             - name: PEER
               value: {{ default .Values.peer .Values.global.peer }}
             - name: SIGNER_NAME
