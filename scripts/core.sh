@@ -285,7 +285,10 @@ make_backup() {
 get_thornode_image() {
   [ -z "$EXTRA_ARGS" ] && die "Cannot determine thornode image"
   # shellcheck disable=SC2086
-  helm template ./thornode-stack $EXTRA_ARGS 2>&1 | grep 'image:.*thorchain/thornode' | head -n1 | awk '{print $2}'
+  (
+    set -eo pipefail
+    helm template ./thornode-stack $EXTRA_ARGS | grep 'image:.*thorchain/thornode' | head -n1 | awk '{print $2}'
+  )
 }
 
 create_mnemonic() {

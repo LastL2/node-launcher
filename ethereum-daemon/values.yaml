@@ -4,6 +4,14 @@
 
 net: mainnet
 
+# Leveraging a checkpoint for the beacon chain will use less disk space and reduce sync
+# time for the beacon chain to a few minutes (geth may still take hours or days). One
+# provider list is found at https://eth-clients.github.io/checkpoint-sync-endpoints -
+# you may select one from there or another source if desired. If you leverage a sync
+# checkpoint it is important to note that the provider becomes a trusted party and
+# should be verified by running `make verify-ethereum` after beacon sync shows 100%.
+beaconCheckpointSyncUrl: ""
+
 replicaCount: 1
 
 image:

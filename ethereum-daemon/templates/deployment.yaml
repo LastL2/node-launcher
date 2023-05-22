@@ -133,6 +133,7 @@ spec:
             - --accept-terms-of-use
             - --jwt-secret=/data/jwt.hex
             - --grpc-gateway-host=0.0.0.0  # used by node status
+            - --checkpoint-sync-url={{ .Values.beaconCheckpointSyncUrl }}
         {{- if eq (include "ethereum-daemon.net" .) "testnet" }}
             - --ropsten
             - --genesis-state=/data/beacon/genesis.ssz

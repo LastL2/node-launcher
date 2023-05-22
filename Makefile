@@ -215,6 +215,9 @@ dashboard: ## Access Kubernetes Dashboard UI through port-forward locally
 lint: ## Run linters (development)
 	./scripts/lint.sh
 
-.PHONY: help helm repo pull tools install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-loki destroy-prometheus destroy-metrics prometheus grafana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume lint
+verify-ethereum: ## Verify Ethereum finalized slot state root
+	@./scripts/verify-ethereum.sh
+
+.PHONY: help helm repo pull tools install-loki install-prometheus install-metrics install-dashboard export-state hard-fork destroy-tools destroy-loki destroy-prometheus destroy-metrics prometheus grafana dashboard alert-manager mnemonic update-dependencies reset restart pods deploy update destroy status shell watch logs set-node-keys set-ip-address set-version pause resume lint verify-ethereum
 
 .EXPORT_ALL_VARIABLES:
