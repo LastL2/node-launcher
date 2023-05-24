@@ -14,7 +14,7 @@ FROM golang:1.19.6-buster AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends bash=5.0-4 make=4.2.1-1.2 gcc=4:8.3.0-1 musl-dev=1.1.21-2 ca-certificates=20200601~deb10u2 linux-headers-amd64
 
 COPY version /version
-ARG COMMIT=ef6a2a2f7facd8fbefd5fb2ac9c4908c2bcae3e2
+ARG COMMIT=f7307d5fd015e75d6b40d26713c5fb6576dc6ffb
 WORKDIR /build
 RUN TAG="v$(cat /version)" && \
   git init && \
