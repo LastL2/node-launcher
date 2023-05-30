@@ -14,12 +14,7 @@ if ! node_exists; then
   die "No existing THORNode found, make sure this is the correct name"
 fi
 
-PREFIX="thornode"
-echo "=> Select recover type"
-menu pruned pruned archive
-if [ "$MENU_SELECTED" = "pruned" ]; then
-  PREFIX="$PREFIX/pruned"
-fi
+PREFIX="thornode/pruned"
 
 HEIGHTS=$(
   curl -s "https://storage.googleapis.com/storage/v1/b/public-snapshots-ninerealms/o?delimiter=%2F&prefix=$PREFIX/" |
