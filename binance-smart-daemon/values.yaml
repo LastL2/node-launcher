@@ -8,8 +8,8 @@ replicaCount: 1
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: "binance-smart-daemon-1.2.3"
-  hash: "661252750f6ef6791253aaae416725918a196682bd6cd414b6c10236cbc872c5"
+  tag: "binance-smart-daemon-1.2.4"
+  hash: "4d9a5673f43fe80fae0513732f0cb5b17ef6820ef65b07d6834eb96292a9e180"
 
 imagePullSecrets: []
 nameOverride: ""
