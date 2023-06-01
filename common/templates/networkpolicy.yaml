@@ -9,7 +9,7 @@ spec:
     matchLabels:
       network-policy: deny-all-egress
   policyTypes:
-  - Egress
+    - Egress
 ---
 # Block all outbound connections to cluster-internal addresses.
 apiVersion: networking.k8s.io/v1
@@ -21,26 +21,23 @@ spec:
     matchLabels:
       network-policy: external-egress-only
   policyTypes:
-  - Egress
+    - Egress
   egress:
-  - to: # Allow connection to all IPs except the private ranges
-    - ipBlock:
-        cidr: 0.0.0.0/0
-        except:
-          - 10.0.0.0/8
-          - 172.16.0.0/12
-          - 192.168.0.0/16
-  - to: # Still allow access to kube-dns
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: kube-system
-    ports:
-    - protocol: UDP
-      port: 53
-  - to: # Still allow access to istio
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: istio-system
-    ports:
-      - protocol: TCP
-        port: 15012
+    - to: # Allow connection to all IPs except the private ranges
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+    - to: # Still allow access to dns
+      ports:
+        - protocol: UDP
+          port: 53
+    - to: # Still allow access to istio
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+      ports:
+        - protocol: TCP
+          port: 15012
