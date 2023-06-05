@@ -21,19 +21,13 @@ data:
     # install dependencies
     apk add aria2 curl jq lz4
 
-    # get latest snapshot
-    LATEST=$(
-      curl -sL --fail -m 20 https://download.bsc-snapshot.workers.dev/ |
-      jq -r '[.objects[]|select(.key|test("geth-[0-9]+\\.tar\\.lz4$"))]|sort_by(.key)[-1]|.key'
-    )
-    echo "Pulling snapshot: $LATEST"
-
     # download snapshot
-    aria2c -c -o $LATEST -s14 -x14 -k100M "https://download.bsc-snapshot.workers.dev/$LATEST"
+    aria2c -c -s14 -x14 -k100M "{{ .Values.snapshotURL }}"
 
     # decompress snapshot
-    echo "Decompressing $LATEST.tar.lz4..."
-    lz4 -d $LATEST | tar xf -
+    FILE=$(basename {{ .Values.snapshotURL }})
+    echo "Decompressing $FILE..."
+    lz4 -d $FILE | tar xf -
 
     # move data into place
     mkdir -p geth

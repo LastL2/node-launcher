@@ -39,4 +39,4 @@ avalanche-daemon:
   enabled: true
 
 binance-smart-daemon:
-  enabled: false
+  enabled: true

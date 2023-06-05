@@ -15,6 +15,11 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# There is no API that provides the manually updated link in repo. If installing a new
+# node update this from the link in: https://github.com/bnb-chain/bsc-snapshots. The PVC
+# size must also be adjusted to be at least double the size of the snapshot.
+snapshotURL: https://pub-c0627345c16f47ab858c9469133073a8.r2.dev/geth-20230528.tar.lz4
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -57,7 +62,7 @@ ingress:
 
 persistence:
   enabled: true
-  size: 4Ti
+  size: 4.5Ti
   accessMode: ReadWriteOnce
   # storageClass: "-"
   #
@@ -67,8 +72,9 @@ resources:
     # cpu: 12
     # memory: 64Gi
   requests:
-    cpu: 6
-    memory: 48Gi
+    # NOTE: Usage is dependent on how many Bifrosts leverage the daemon, nodes using shared daemons may require more.
+    cpu: 7
+    memory: 30Gi
 
 nodeSelector: {}
 
