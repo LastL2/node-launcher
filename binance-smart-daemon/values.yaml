@@ -30,8 +30,7 @@ serviceAccount:
 podSecurityContext:
   fsGroup: 1000
 
-securityContext:
-  fsGroup: 1000
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
