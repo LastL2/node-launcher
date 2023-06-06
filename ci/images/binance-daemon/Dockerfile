@@ -8,7 +8,7 @@ ENV BNCHOME=/opt/bnbchaind
 
 WORKDIR /release
 RUN VERSION="$(cat /version)" && \
-  apt-get update && apt-get install -y --no-install-recommends curl=7.81.0-1ubuntu1.10 jq=1.6-2.1ubuntu3 ca-certificates=20211016ubuntu0.22.04.1 unzip=6.0-26ubuntu3.1 && \
+  apt-get update && apt-get install -y --no-install-recommends curl=7.81.0-1ubuntu1.10 jq=1.6-2.1ubuntu3 ca-certificates=20230311ubuntu0.22.04.1 unzip=6.0-26ubuntu3.1 && \
   rm -rf /var/lib/apt/lists/* && \
   curl -LO "https://github.com/bnb-chain/node/releases/download/v${VERSION}/linux_binary.zip" && \
   curl -LO "https://github.com/bnb-chain/node/releases/download/v${VERSION}/mainnet_config.zip" && \
