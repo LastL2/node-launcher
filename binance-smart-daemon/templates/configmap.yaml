@@ -11,7 +11,7 @@ data:
     # work in data mount
     cd /data
 
-    # clenaup snapshot and exit if already started
+    # cleanup snapshot and exit if already started
     if [ -d geth/chaindata ]; then
       rm -f *.lz4
       rm -rf server
@@ -34,6 +34,10 @@ data:
     mv server/data-seed/geth/chaindata geth/chaindata
     mv server/data-seed/geth/triecache geth/triecache
     chown -R 1000:1000 geth
+
+    # cleanup snapshot
+    rm -f *.lz4
+    rm -rf server
 
   probe.sh: |
     #!/bin/sh
