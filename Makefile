@@ -54,16 +54,16 @@ password: ## Retrieve and display current password for backup from your THORNode
 pods: ## Get THORNode Kubernetes pods
 	@./scripts/pods.sh
 
-pre-install: pull update-dependencies ## Pre deploy steps for a THORNode (secret creation)
+pre-install: update-dependencies ## Pre deploy steps for a THORNode (secret creation)
 	@./scripts/pre-install.sh
 
-install: pull update-dependencies ## Deploy a THORNode
+install: update-dependencies ## Deploy a THORNode
 	@./scripts/install.sh
 
-recycle: pull update-dependencies ## Destroy and recreate a THORNode recycling existing daemons to avoid re-sync
+recycle: update-dependencies ## Destroy and recreate a THORNode recycling existing daemons to avoid re-sync
 	@./scripts/recycle.sh
 
-update: pull update-dependencies ## Update a THORNode to latest version
+update: update-dependencies ## Update a THORNode to latest version
 	@./scripts/update.sh
 
 status: ## Display current status of your THORNode
