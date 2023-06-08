@@ -440,7 +440,7 @@ deploy_fullnode() {
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
     --set dogecoin-daemon.enabled=false,gaia-daemon.enabled=false \
-    --set avalanche-daemon.enabled=false \
+    --set avalanche-daemon.enabled=false,binance-smart-daemon.enabled=false \
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
@@ -453,7 +453,7 @@ deploy_fullnode() {
     --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
     --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
     --set dogecoin-daemon.enabled=false,gaia-daemon.enabled=false \
-    --set avalanche-daemon.enabled=false \
+    --set avalanche-daemon.enabled=false,binance-smart-daemon.enabled=false \
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
 
   echo -e "=> Restarting gateway for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
