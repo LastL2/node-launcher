@@ -18,6 +18,7 @@ debug: false
 # provide custom environment variables to override config defaults:
 # https://gitlab.com/thorchain/thornode/-/blob/develop/config/default.yaml
 env:
+  BIFROST_CHAINS_BTC_SCANNER_LEVELDB_COMPACTION_TABLE_SIZE_MULTIPLIER: "1"
   BSC_HOST: http://binance-smart-daemon:8545
 
 thorApi: thornode:1317
