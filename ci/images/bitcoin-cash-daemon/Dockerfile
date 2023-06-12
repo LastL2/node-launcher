@@ -1,19 +1,21 @@
 FROM debian:11-slim as installer
 
-ENV BITCOIN_VERSION=26.0.0
-ENV BITCOIN_URL=https://github.com/bitcoin-cash-node/bitcoin-cash-node/releases/download/v$BITCOIN_VERSION/bitcoin-cash-node-$BITCOIN_VERSION-x86_64-linux-gnu.tar.gz
-ENV BITCOIN_SHA256=e32e05fd63161f6f1fe717fca789448d2ee48e2017d3d4c6686b4222fe69497e
-
 WORKDIR /work
 
 RUN apt-get update \
   && apt-get -y install --no-install-recommends wget ca-certificates gnupg
 
-RUN set -ex \
-	&& wget -qO bitcoin.tar.gz "$BITCOIN_URL" \
-	&& echo "$BITCOIN_SHA256  bitcoin.tar.gz" | sha256sum -c - \
-  && mkdir -p /work/bitcoin \
-	&& tar -xzvf bitcoin.tar.gz -C /work/bitcoin --strip-components=1 --exclude=*-qt
+ENV BITCOIN_SHA256=68cb24d57898d5b47a1162a9683d0b0e36c6701b5a16b93edc94bbd82113c04b
+COPY version /version
+
+# trunk-ignore(hadolint/DL4006): sh does not support -o pipefail
+RUN set -ex && \
+  BITCOIN_URL=https://github.com/bitcoin-cash-node/bitcoin-cash-node/releases/download/v$(cat /version)/bitcoin-cash-node-$(cat /version)-x86_64-linux-gnu.tar.gz && \
+  wget -qO bitcoin.tar.gz "$BITCOIN_URL" && \
+  echo "$BITCOIN_SHA256  bitcoin.tar.gz" | sha256sum -c - && \
+  mkdir -p /work/bitcoin && \
+  tar -xzvf bitcoin.tar.gz -C /work/bitcoin --strip-components=1 --exclude=*-qt
+
 
 FROM debian:11-slim
 
