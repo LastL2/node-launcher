@@ -63,7 +63,7 @@ install: update-dependencies ## Deploy a THORNode
 recycle: update-dependencies ## Destroy and recreate a THORNode recycling existing daemons to avoid re-sync
 	@./scripts/recycle.sh
 
-update: update-dependencies ## Update a THORNode to latest version
+update: pull update-dependencies ## Update a THORNode to latest version
 	@./scripts/update.sh
 
 status: ## Display current status of your THORNode
