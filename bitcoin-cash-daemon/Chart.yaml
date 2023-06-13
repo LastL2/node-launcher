@@ -4,4 +4,4 @@ description: Bitcoin Cash Core Daemon component
 type: application
 version: 0.1.0
 
-appVersion: 23.0.0
+appVersion: 26.1.0
