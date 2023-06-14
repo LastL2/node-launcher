@@ -19,6 +19,9 @@ debug: false
 # https://gitlab.com/thorchain/thornode/-/blob/develop/config/default.yaml
 env:
   BIFROST_CHAINS_BTC_SCANNER_LEVELDB_COMPACTION_TABLE_SIZE_MULTIPLIER: "1"
+  BIFROST_CHAINS_DOGE_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
+  BIFROST_CHAINS_LTC_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
+  BIFROST_CHAINS_BCH_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
   BSC_HOST: http://binance-smart-daemon:8545
 
 thorApi: thornode:1317
@@ -152,7 +155,7 @@ securityContext: {}
 
 resources:
   requests:
-    cpu: 2
+    cpu: 4
     memory: 3Gi
   limits:
     memory: 16Gi
