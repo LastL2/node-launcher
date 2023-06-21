@@ -63,6 +63,7 @@ spec:
           command:
             - ./avalanchego
             - --http-host=0.0.0.0
+            - --http-allowed-hosts=*
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
