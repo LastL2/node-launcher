@@ -7,7 +7,7 @@ FROM golang:1.20-bullseye AS build
 WORKDIR /app
 COPY version /version
 
-ARG SRC_COMMIT=11129428f7c76d49f41279c1d7ca468e32bf1e0a
+ARG SRC_COMMIT=a51294bd988919b4f9a5ce2ad8892f90c85149af
 RUN git init && \
   git remote add origin https://github.com/cosmos/gaia && \
   git fetch --depth 1 origin "v$(cat /version)" && \
