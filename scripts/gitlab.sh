@@ -17,13 +17,14 @@ gitlab_registry_digest() {
       curl -I -s \
         -H "Authorization: Bearer ${token}" \
         "https://registry.gitlab.com/v2/${registry}/manifests/${tag}" |
-        awk -F'[[:space:]]' '/Docker-Content-Digest/ { print $2 }'
+        awk -F'[[:space:]]' '/docker-content-digest/ { print $2 }'
     )
 
     if [ -n "${DIGEST}" ]; then
       break
     fi
     sleep 5
+    echo "retrying ${tag}..." >/dev/stderr
   done
 
   echo "${DIGEST}"
