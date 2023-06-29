@@ -367,11 +367,6 @@ display_status() {
           echo "$missing_votes"
         fi
       fi
-
-      # prompt for bifrost keyshare backup
-      if [ "$TC_BACKUP" = "true" ]; then
-        make_backup bifrost
-      fi
     fi
 
   else
