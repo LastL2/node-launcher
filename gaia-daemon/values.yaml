@@ -8,8 +8,8 @@ replicaCount: 1
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: gaia-daemon-10.0.1
-  hash: 3922e47d879c0d88f5ac097c4c569e7fe558791d3ba712dfb567b67e61a97e58
+  tag: gaia-daemon-10.0.2
+  hash: fb82bce7ae8d88e45e2198a7f15b00be1d7007b3516a26a4dd9343680a938901
 
 imagePullSecrets: []
 nameOverride: ""
