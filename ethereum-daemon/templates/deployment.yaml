@@ -91,7 +91,7 @@ spec:
                 command:
                   - sh
                   - -c
-                  - "killall5 2 && sleep 120" # SIGINT and give 120s for main process to terminate
+                  - "killall5 2 && sleep 300" # SIGINT and give 5m for main process to terminate
           startupProbe:
             failureThreshold: 600
             periodSeconds: 10
