@@ -8,7 +8,7 @@ Some node operators may desire to run multiple validators within the same cluste
 NAME=daemons TYPE=daemons NET=mainnet make install
 ```
 
-2. On a separate branch, add the following to the values to `thornode-stack/chaosnet.yaml`
+2. On a separate branch, add the following to the values to `thornode-stack/mainnet.yaml`
 
 ```yaml
 # point bifrost at shared daemons

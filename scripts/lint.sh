@@ -9,9 +9,6 @@ get_image_versions() {
     helm dependency build
     popd
   ) &>/dev/null
-  if [ "$CONF" == "chaosnet" ]; then
-    NET="mainnet"
-  fi
   helm template --values thornode-stack/"$CONF".yaml \
     --set "global.net=$NET" \
     --set "midgard.enabled=true" thornode-stack/ |
@@ -35,7 +32,7 @@ EOF
   fi
 }
 
-for NET in stagenet chaosnet; do
+for NET in stagenet mainnet; do
   check_charts "$NET"
 done
 
@@ -50,6 +47,6 @@ find . -type f -name 'Chart.yaml' -printf '%h\n' |
   done
 
 # Check thornode-stack with the various net configs.
-for NET in stagenet chaosnet testnet; do
+for NET in stagenet mainnet testnet; do
   helm lint --values thornode-stack/"$NET".yaml thornode-stack/
 done

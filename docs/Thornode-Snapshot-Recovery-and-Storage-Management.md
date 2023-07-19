@@ -28,7 +28,7 @@ make restart # select midgard
 
 Nine Realms runs statesync peers which are configured as the defaults in Thornode [here](https://gitlab.com/thorchain/thornode/-/blob/d2bd7c61635c606d10a3f7b8bdbacdd280794d04/config/default.yaml#L135) and both RPC servers used for verification [here](https://gitlab.com/thorchain/thornode/-/blob/d2bd7c61635c606d10a3f7b8bdbacdd280794d04/config/default.yaml#L177). These defaults are used when auto statesync is enabled, and we hope that over time other parties in the community will run public RPC nodes and StateSync peers to extend these defaults. These defaults are provide for mainnet only, and must be overwritten via the environment variables `THOR_AUTO_STATE_SYNC_PEERS` and `THOR_TENDERMINT_STATE_SYNC_RPC_SERVERS` respectively if used on a different network.
 
-It's important to note that in order to recover via network statesync, at the time of writing this will require significant memory (at the time of writing `80Gi`), so your cluster must be configured with nodes of sufficient size. Assuming that prerequisite is in place, you can enable auto statesync by setting the following overrides in `thornode-stack/chaosnet.yaml`:
+It's important to note that in order to recover via network statesync, at the time of writing this will require significant memory (at the time of writing `80Gi`), so your cluster must be configured with nodes of sufficient size. Assuming that prerequisite is in place, you can enable auto statesync by setting the following overrides in `thornode-stack/mainnet.yaml`:
 
 ```yaml
 thornode:
@@ -45,7 +45,7 @@ thornode:
 
 ### Hosting a StateSync Peer
 
-If you would like to run a statesync peer to aid in the decentralization of the network, you can set the following in `thornode-stack/chaosnet.yaml`:
+If you would like to run a statesync peer to aid in the decentralization of the network, you can set the following in `thornode-stack/mainnet.yaml`:
 
 ```yaml
 thornode:
@@ -61,7 +61,7 @@ Once you're running a statesync peer creating valid snapshots, submit a pull req
 
 Nine Realms provides monthly (at the time of writing) full snapshots from an archive node. These snapshots contain the full block history and state for the current fork, and at the time of writing are 1.3Tb in size. This approach is only recommended if you require the entire chain history for your application.
 
-If you require the full history for your application, check the current full chain size at https://dashboards.ninerealms.com/#thornode on the chart labeled "Thornode Archive Node Storage Usage" and set the disk size for your install to at least 150% of this size in by setting the following override in `thornode-stack/chaosnet.yaml`:
+If you require the full history for your application, check the current full chain size at https://dashboards.ninerealms.com/#thornode on the chart labeled "Thornode Archive Node Storage Usage" and set the disk size for your install to at least 150% of this size in by setting the following override in `thornode-stack/mainnet.yaml`:
 
 ```yaml
 thornode:

@@ -61,7 +61,7 @@ ingress:
 
 persistence:
   enabled: true
-  size: 4.5Ti
+  size: 6Ti
   accessMode: ReadWriteOnce
   # storageClass: "-"
   #

@@ -43,7 +43,7 @@ check() {
   fi
 
   IMAGE_COMMIT=$(echo "$IMAGE_VERSION_LONG" | yq -r '.commit')
-  if [ "$IMAGE_NETWORK" = "chaosnet-multichain" ]; then
+  if [ "$IMAGE_NETWORK" = "mainnet" ]; then
     # check that the tag explicitly matches the image commit
     REPO_COMMIT=$(curl -s "https://gitlab.com/api/v4/projects/13422983/repository/commits/v$VERSION" | jq -r .id)
     if [ "$IMAGE_COMMIT" != "$REPO_COMMIT" ]; then
@@ -68,5 +68,5 @@ check() {
   echo
 }
 
-check thornode-stack/chaosnet.yaml chaosnet-multichain
+check thornode-stack/mainnet.yaml mainnet
 check thornode-stack/stagenet.yaml stagenet

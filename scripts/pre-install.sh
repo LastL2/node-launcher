@@ -6,7 +6,7 @@ get_node_info
 
 case $NET in
   mainnet)
-    EXTRA_ARGS="-f ./thornode-stack/chaosnet.yaml"
+    EXTRA_ARGS="-f ./thornode-stack/mainnet.yaml"
     ;;
   stagenet)
     EXTRA_ARGS="-f ./thornode-stack/stagenet.yaml"

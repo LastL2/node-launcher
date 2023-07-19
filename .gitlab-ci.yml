@@ -9,7 +9,7 @@ stages:
 variables:
   SCAN_KUBERNETES_MANIFESTS: "true"
   KUBESEC_HELM_CHARTS_PATH: ./thornode-stack
-  KUBESEC_HELM_OPTIONS: --dependency-update --values thornode-stack/values.yaml --values thornode-stack/chaosnet.yaml
+  KUBESEC_HELM_OPTIONS: --dependency-update --values thornode-stack/values.yaml --values thornode-stack/mainnet.yaml
 
 ########################################################################################
 # Gitlab Jobs
