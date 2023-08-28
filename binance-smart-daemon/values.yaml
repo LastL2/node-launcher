@@ -18,7 +18,7 @@ fullnameOverride: ""
 # There is no API that provides the manually updated link in repo. If installing a new
 # node update this from the link in: https://github.com/bnb-chain/bsc-snapshots. The PVC
 # size must also be adjusted to be at least double the size of the snapshot.
-snapshotURL: https://snapshots.48.club/geth.full.30982623.tar.zst
+snapshotURL: https://snapshots.48.club/geth.full.31158596.tar.zst
 
 serviceAccount:
   # Specifies whether a service account should be created
