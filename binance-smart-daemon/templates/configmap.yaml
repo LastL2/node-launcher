@@ -19,7 +19,7 @@ data:
     fi
 
     # install dependencies
-    apk add aria2 curl jq lz4
+    apk add aria2 curl jq lz4 zstd
 
     # download snapshot
     aria2c -c -s14 -x14 -k100M "{{ .Values.snapshotURL }}"
@@ -27,13 +27,14 @@ data:
     # decompress snapshot
     FILE=$(basename {{ .Values.snapshotURL }})
     echo "Decompressing $FILE..."
-    lz4 -d $FILE | tar xf -
+    zstd -cd $FILE | tar xvf -
 
     # move data into place
     mkdir -p geth
-    mv server/data-seed/geth/chaindata geth/chaindata
-    mv server/data-seed/geth/triecache geth/triecache
+    mv geth.full/geth/chaindata geth/chaindata
+    mv geth.full/geth/triecache geth/triecache
     chown -R 1000:1000 geth
+    chmod -R +x geth/
 
     # cleanup snapshot
     rm -f *.lz4
