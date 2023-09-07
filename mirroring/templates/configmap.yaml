@@ -9,10 +9,11 @@ data:
     https://gitlab.com/thorchain/devops/node-launcher
     https://gitlab.com/thorchain/devops/cluster-launcher
     https://gitlab.com/thorchain/ethereum/eth-router
-    https://gitlab.com/thorchain/heimdall
     https://gitlab.com/thorchain/midgard
     https://gitlab.com/thorchain/tss/go-tss
+    https://gitlab.com/thorchain/tss/tss-lib
     https://github.com/thorchain/asgardex-electron
+    https://github.com/asgardex/asgardex-desktop
 
   entrypoint.sh: |
     #!/usr/bin/env bash
