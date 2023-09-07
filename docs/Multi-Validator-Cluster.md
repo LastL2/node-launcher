@@ -34,8 +34,19 @@ bifrost:
   avaxDaemon:
     mainnet: http://avalanche-daemon.daemons.svc.cluster.local:9650/ext/bc/C/rpc
 
+  # NOTE: This is the new format for overrides. There is plan to update the
+  # config above to follow the new convention after refactoring of the Bifrost
+  # config in the `thornode` repo.
+  env:
+    BSC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
+    BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
+    BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
+
 # disable all daemons in node namespace
 binance-daemon:
+  enabled: false
+
+binance-smart-daemon:
   enabled: false
 
 bitcoin-daemon:
