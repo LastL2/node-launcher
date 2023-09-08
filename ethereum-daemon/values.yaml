@@ -21,8 +21,8 @@ image:
     hash: c1073ae2b743088641877ec0ea6ce3996386d04f3e0d36152550e9164e9c36a2
   prysm:
     name: gcr.io/prysmaticlabs/prysm/beacon-chain
-    tag: v4.0.7
-    hash: a010137d82c1c58c1a3f5e7cb845ee3a43aac1ecaaf6edf70c3e083c58abfe3b
+    tag: v4.0.8
+    hash: d55b75669e5557df71e12e6d0826b485e084dedba64999566f6b4fea3eb8cb99
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
