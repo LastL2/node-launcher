@@ -12,13 +12,22 @@ net: mainnet
 # should be verified by running `make verify-ethereum` after beacon sync shows 100%.
 beaconCheckpointSyncUrl: ""
 
+# Following the release of Geth v1.13 it is recommended that all new nodes start the
+# daemon with this enabled. We are currently setting the default value to false, since
+# enabling this on an existing node will trigger a re-sync of the state, but in time we
+# intend to make this default and remove the flag. The new storage mechanism will
+# improve pruning functionality and avoid the "Head state missing, repairing chain..."
+# logs which occasionally cause significant downtime after unclean shutdown. More
+# information available in: https://blog.ethereum.org/2023/09/12/geth-v1-13-0.
+stateSchemePath: false
+
 replicaCount: 1
 
 image:
   eth:
     name: ethereum/client-go
     tag: "" # When tag is empty it defaults to the chart appVersion.
-    hash: c1073ae2b743088641877ec0ea6ce3996386d04f3e0d36152550e9164e9c36a2
+    hash: 1821feb8aef9db4b6f48f121d1162544d0bb4df08742287fab960aee05c077e8
   prysm:
     name: gcr.io/prysmaticlabs/prysm/beacon-chain
     tag: v4.0.8
