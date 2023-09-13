@@ -63,7 +63,7 @@ spec:
             containerPort: {{ include "gaia-daemon.grpc" . }}
             protocol: TCP
         startupProbe:
-          failureThreshold: 60
+          failureThreshold: 180
           periodSeconds: 30
           timeoutSeconds: 10
           exec:
