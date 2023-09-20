@@ -8,10 +8,10 @@
 # README.md
 # go.mod
 # ============= Compilation Stage ================
-FROM golang:1.19.12-bullseye AS builder
+FROM golang:1.20.8-bullseye AS builder
 
 COPY version /version
-ARG COMMIT=b820b46ee8d51ab1ae05da3294ff941e6f901137
+ARG COMMIT=73ae39bded4f1c8bf8aa58c20f93ce7456a612e9
 WORKDIR /build
 RUN TAG="v$(cat /version)" && \
   git init && \
