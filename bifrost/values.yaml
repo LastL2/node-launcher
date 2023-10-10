@@ -22,11 +22,15 @@ env:
   BIFROST_CHAINS_DOGE_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
   BIFROST_CHAINS_LTC_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
   BIFROST_CHAINS_BCH_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
+
   # enable binance smart chain
   BSC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_DISABLED: "false"
   BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon:8545
+
+  # enable DOGE client V2 by default
+  BIFROST_CHAINS_DOGE_UTXO_CLIENT_V2: "true"
 
 thorApi: thornode:1317
 chainID:
