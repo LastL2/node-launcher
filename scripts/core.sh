@@ -33,7 +33,7 @@ die() {
 }
 
 confirm() {
-  if [ -z "${TC_NO_CONFIRM:-}" ]; then
+  if [ -z "${TC_NO_CONFIRM-}" ]; then
     echo -n "$boldyellow:: Are you sure? Confirm [y/n]: $reset" && read -r ans && [ "${ans:-N}" != y ] && exit
   fi
   echo
@@ -88,7 +88,16 @@ get_discord_channel() {
 
 get_discord_message() {
   [ "$DISCORD_MESSAGE" != "" ] && unset DISCORD_MESSAGE
-  read -r -p "=> Enter THORNode relay messge: " discord_message
+  if [[ -z ${EDITOR} ]]; then
+    # If EDITOR is not set, use read command
+    read -r -p "=> Enter THORNode relay message: " discord_message
+  else
+    # If EDITOR is set, use an editor
+    TMPFILE=$(mktemp)
+    ${EDITOR} "${TMPFILE}"
+    discord_message=$(<"${TMPFILE}")
+    rm "${TMPFILE}"
+  fi
   DISCORD_MESSAGE=${discord_message:-$DISCORD_MESSAGE}
   echo
 }

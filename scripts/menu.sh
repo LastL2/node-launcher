@@ -63,7 +63,7 @@ menu.select() {
 }
 
 menu() {
-  MENU_SELECTED=${1:-}
+  MENU_SELECTED=${1-}
   MENU_COUNT=$(($# - 1))
   MENU_OPTIONS=("${@:2}")
 
@@ -78,7 +78,7 @@ menu() {
     case "$key1" in
       "$ESCAPE_SEQ")
         read -rsn 1 -t 1 key2
-        if [[ "$key2" == "[" ]]; then
+        if [[ $key2 == "[" ]]; then
           read -rsn 1 -t 1 key3
           case "$key3" in
             "$ARROW_UP")
