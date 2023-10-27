@@ -72,6 +72,7 @@ spec:
               {{- end }}
                 - ping
           livenessProbe:
+            failureThreshold: 90
             exec:
               command:
                 - litecoin-cli
@@ -84,6 +85,7 @@ spec:
               {{- end }}
                 - ping
           readinessProbe:
+            failureThreshold: 15
             exec:
               command:
                 - litecoin-cli

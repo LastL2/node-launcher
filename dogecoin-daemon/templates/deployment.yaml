@@ -78,9 +78,11 @@ spec:
             exec:
               command: ["/scripts/ping.sh"]
           livenessProbe:
+            failureThreshold: 90
             exec:
               command: ["/scripts/ping.sh"]
           readinessProbe:
+            failureThreshold: 15
             exec:
               command: ["/scripts/ping.sh"]
           resources:
