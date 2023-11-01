@@ -21,7 +21,7 @@ check_charts() {
   # Check for k8s definitions that aren't using explicit hashes.
   UNCHAINED=$(get_image_versions "$NET" | grep -v sha256 || true)
 
-  if [ "$(printf "%s" "$UNCHAINED" | wc -l)" -ne 0 ]; then
+  if [ -n "$UNCHAINED" ]; then
     cat <<EOF
 [ERR] Some container images are specified without an explicit hash in config $NET:
 
