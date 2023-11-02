@@ -26,6 +26,10 @@ lint:
       paths:
         # Golang templates in the YAML files cause panic.
         - "**/*.yaml"
+    - linters:
+        - yamllint
+      paths:
+        - midgard/templates/configmap.yaml
 runtimes:
   enabled:
     - python@3.10.8
