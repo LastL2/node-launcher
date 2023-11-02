@@ -13,8 +13,6 @@ RUN TAG="v$(cat /version)" && \
   unzip mainnet.zip -d config && \
   rm mainnet.zip && \
   sed -i '/\[Node\.LogConfig\]/,$ d' config/config.toml && \
-  sed -i 's/localhost/0.0.0.0/g' config/config.toml && \
-  sed -i '/HTTPModules/c\HTTPModules = ["eth","net","engine","web3","miner","personal","txpool","debug"]' config/config.toml && \
   chmod +x geth_linux && \
   mv geth_linux /usr/local/bin/geth && \
   chown -R bsc:bsc /home/bsc

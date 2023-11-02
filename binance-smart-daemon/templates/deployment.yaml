@@ -45,7 +45,7 @@ spec:
           command:
             - sh
             - -c
-            - geth --http --http.port {{ .Values.service.port }} --http.corsdomain "*" --http.vhosts="*" --config=config/config.toml --datadir=data
+            - geth --http --http.addr 0.0.0.0 --http.port {{ .Values.service.port }} --http.api "eth,net,engine,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --config=config/config.toml --datadir=data
           volumeMounts:
             - name: scripts
               mountPath: /scripts
