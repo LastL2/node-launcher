@@ -25,12 +25,14 @@ data:
     apk add aria2 curl jq lz4 zstd
 
     # download snapshot
-    aria2c -c -s14 -x14 -k100M "{{ .Values.snapshotURL }}"
+    snapshotMD=https://raw.githubusercontent.com/48Club/bsc-snapshots/main/README.md
+    snapshotURL=$(curl -sL "$snapshotMD" | grep -Eo 'https:\/\/[a-zA-Z0-9.\/]+geth\.full\.[a-zA-Z0-9.]+')
+    aria2c --continue --split=14 --max-connection-per-server=14 \
+        --min-split-size=100M --out=snapshot.tar.zst "$snapshotURL"
 
     # decompress snapshot
-    FILE=$(basename {{ .Values.snapshotURL }})
-    echo "Decompressing $FILE..."
-    zstd -cd $FILE | tar xvf -
+    echo "Decompressing snapshot..."
+    zstd -cd snapshot.tar.zst | tar xvf -
 
     # move data into place
     mkdir -p geth
