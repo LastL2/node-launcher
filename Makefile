@@ -111,6 +111,9 @@ shell: ## Open a shell for a selected THORNode service
 debug: ## Open a shell for THORNode service mounting volume to debug
 	@./scripts/debug.sh
 
+restore-external-snapshot: ## Restore THORNode from external snapshot.
+	@./scripts/restore-external-snapshot.sh
+
 recover-ninerealms: ## Recover THORNode from Nine Realms snapshot
 	@./scripts/recover-ninerealms.sh
 
