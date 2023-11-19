@@ -67,7 +67,7 @@ resources:
     # memory: 64Gi
   requests:
     # NOTE: Usage is dependent on how many Bifrosts leverage the daemon, nodes using shared daemons may require more.
-    cpu: 7
+    cpu: 14
     memory: 30Gi
 
 nodeSelector: {}
