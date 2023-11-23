@@ -11,7 +11,7 @@
 FROM golang:1.20.10-bullseye AS builder
 
 COPY version /version
-ARG COMMIT=2d8222da82114088a2a99d8d69f40846f1ea6208
+ARG COMMIT=62df19c3c90b67a27618c339a3e29cc182d34863
 WORKDIR /build
 RUN TAG="v$(cat /version)" && \
   git init && \
