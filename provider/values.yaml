@@ -1,8 +1,8 @@
 thornodeSnapshot:
   image:
-    name: TBD
-    tag: TBD
-    hash: TBD
+    name: registry.gitlab.com/thorchain/devops/node-launcher
+    tag: thornode-snapshot-0.1.0
+    hash: abb576e5087c0ae528f1bac0027c75dc6544d70c14b1aa2b3e69fa3c4f4df826
   env:
     # there must be at least 2 used for statesync rpc servers
     THORNODE_RPC_SERVERS: https://rpc-v1.ninerealms.com:443,https://rpc-v1.ninerealms.com:443

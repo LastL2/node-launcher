@@ -20,11 +20,13 @@ PROVIDER=${provider:-${PROVIDER}}
 echo
 
 # get all available snapshot heights
+MINIO_IMAGE="minio/minio:RELEASE.2023-10-25T06-33-25Z@sha256:858ee1ca619396ea1b77cc12a36b857a6b57cb4f5d53128b1224365ee1da7305"
 HEIGHTS=$(
-  docker run --rm --entrypoint sh minio/minio -c "
+  docker run --rm --entrypoint sh "${MINIO_IMAGE}" -c "
     mc config host add minio ${PROVIDER} '' '' >/dev/null;
     mc ls minio/snapshots/thornode --json |
-      jq -r '(.key|gsub(\".tar.gz\"; \"\"))'"
+      jq -r '(.key|gsub(\".tar.gz\"; \"\"))' |
+      sort -nr"
 )
 readarray -t HEIGHTS <<<"${HEIGHTS}"
 
