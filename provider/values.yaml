@@ -1,0 +1,47 @@
+thornodeSnapshot:
+  image:
+    name: TBD
+    tag: TBD
+    hash: TBD
+  env:
+    # there must be at least 2 used for statesync rpc servers
+    THORNODE_RPC_SERVERS: https://rpc-v1.ninerealms.com:443,https://rpc-v1.ninerealms.com:443
+
+    # the PVC size must be at least 2x the current snapshot size
+    PVC_SIZE: 300Gi
+
+    # state sync pod requires high memory - this increases over the course of the fork
+    STATE_SYNC_CPU: "2"
+    STATE_SYNC_MEMORY: "128Gi"
+
+    # ignore NoSchedule taints on tolerations (allows special node pool for statesync)
+    # STATE_SYNC_TOLERATIONS: "xl"
+
+    # set these if you have a service mesh with sidecar proxies that require manual exit
+    # READY_ENDPOINT: http://localhost:15000/ready
+    # QUIT_ENDPOINT: http://localhost:15020/quitquitquit
+
+  # contain mappings for environment variable to the secret key in the "provider" secret
+  secretEnv:
+  # DISCORD_WEBHOOK_MAINNET_INFO: discord-webhook-mainnet-info
+
+  # default to mon/thurs schedule
+  schedule: 0 10 * * 1,4
+
+  # default to 6 hour timeout
+  activeDeadlineSeconds: 21600
+
+minio:
+  image:
+    name: minio/minio
+    tag: RELEASE.2023-10-25T06-33-25Z
+    hash: 858ee1ca619396ea1b77cc12a36b857a6b57cb4f5d53128b1224365ee1da7305
+
+  pvc:
+    size: 2Ti
+
+  nginx:
+    image:
+      name: nginx
+      tag: 1.25.2-alpine
+      hash: 4c93a3bd8bf95412889dd84213570102176b6052d88bb828eaf449c56aca55ef

@@ -22,14 +22,11 @@ lint:
     - prettier@3.0.3
   ignore:
     - linters:
+        - yamllint
         - prettier
       paths:
         # Golang templates in the YAML files cause panic.
-        - "**/*.yaml"
-    - linters:
-        - yamllint
-      paths:
-        - midgard/templates/configmap.yaml
+        - "**/templates/*.yaml"
 runtimes:
   enabled:
     - python@3.10.8
