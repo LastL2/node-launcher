@@ -8,8 +8,8 @@ replicaCount: 1
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: "avalanche-daemon-1.10.16"
-  hash: 0a912241d85408ef9000fa71fd0557e315b459c5804df4da370622e594795480
+  tag: "avalanche-daemon-1.10.17"
+  hash: 3d592504204623e8e12461731cc9ecb9c02a0b09554c722d4066f194680cf2a0
 
 imagePullSecrets: []
 nameOverride: ""
@@ -22,10 +22,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -39,17 +41,20 @@ service:
 
 ingress:
   enabled: false
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # cert-manager.io/cluster-issuer: letsencrypt-production
-  hosts: []
+  hosts:
+    []
     # - host: midgard.example.com
     #   paths:
     #   - path: /
     #     backend:
     #       serviceName: gateway
     #       servicePort: midgard
-  tls: []
+  tls:
+    []
     # - secretName: midgard-tls
     #   hosts:
     #     - midgard.example.com
