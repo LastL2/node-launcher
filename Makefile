@@ -114,9 +114,6 @@ debug: ## Open a shell for THORNode service mounting volume to debug
 restore-external-snapshot: ## Restore THORNode from external snapshot.
 	@./scripts/restore-external-snapshot.sh
 
-recover-ninerealms: ## Recover THORNode from Nine Realms snapshot
-	@./scripts/recover-ninerealms.sh
-
 rescan-yggdrasil-utxo: ## Rescan Yggdrasil address for UTXO chains
 	@./scripts/rescan-yggdrasil-utxo.sh
 
