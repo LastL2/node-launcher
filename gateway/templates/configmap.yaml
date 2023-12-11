@@ -109,7 +109,7 @@ data:
           location = /p2pid {
             proxy_pass http://bifrost:{{ .Values.service.port.bifrost.api }};
           }
-          location = /status/p2p {
+          location ~ ^/status/(p2p|scanner|signing)$ {
             proxy_cache_valid any 1m;
             add_header X-Cache-Status $upstream_cache_status always;
             proxy_pass http://bifrost:{{ .Values.service.port.bifrost.api }};
