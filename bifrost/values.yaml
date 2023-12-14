@@ -29,9 +29,6 @@ env:
   BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon:8545
 
-  # force BSC scanner forward
-  BIFROST_CHAINS_BSC_BLOCK_SCANNER_START_BLOCK_HEIGHT: "34268000"
-
   # enable DOGE/BCH client V2 by default
   BIFROST_CHAINS_DOGE_UTXO_CLIENT_V2: "true"
   BIFROST_CHAINS_BCH_UTXO_CLIENT_V2: "true"
