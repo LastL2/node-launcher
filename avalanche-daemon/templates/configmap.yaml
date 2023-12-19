@@ -5,5 +5,16 @@ metadata:
 data:
   C-config.json: |
     {
-      "state-sync-enabled": true
+      "state-sync-enabled": true,
+      "eth-apis": [
+        "public-eth",
+        "public-eth-filter",
+        "net",
+        "web3",
+        "internal-public-eth",
+        "internal-public-blockchain",
+        "internal-public-transaction-pool",
+        "internal-public-account",
+        "internal-public-tx-pool"
+      ]
     }
