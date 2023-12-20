@@ -16,5 +16,6 @@ data:
         "internal-public-transaction-pool",
         "internal-public-account",
         "internal-public-tx-pool"
-      ]
+      ],
+      "local-txs-enabled": true
     }
