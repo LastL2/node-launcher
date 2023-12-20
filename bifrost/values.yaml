@@ -29,9 +29,10 @@ env:
   BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon:8545
 
-  # enable DOGE/BCH client V2 by default
+  # enable DOGE/BCH/LTC client V2 by default
   BIFROST_CHAINS_DOGE_UTXO_CLIENT_V2: "true"
   BIFROST_CHAINS_BCH_UTXO_CLIENT_V2: "true"
+  BIFROST_CHAINS_LTC_UTXO_CLIENT_V2: "true"
 
 thorApi: thornode:1317
 chainID:
