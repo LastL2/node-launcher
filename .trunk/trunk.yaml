@@ -4,14 +4,13 @@ cli:
 plugins:
   sources:
     - id: trunk
-      ref: v1.3.0
+      ref: v1.4.0
       uri: https://github.com/trunk-io/plugins
 lint:
   enabled:
     - gofmt@1.20.4
     - golangci-lint@1.55.2
     - osv-scanner@1.5.0
-    - terrascan@1.18.5
     - checkov@3.1.9
     - trivy@0.48.0
     - trufflehog@3.63.2

@@ -32,8 +32,15 @@ secret_detection:
 lint:
   image: registry.gitlab.com/thorchain/devops/node-launcher@sha256:2b2d9db334392528e56bfbd83395ee5e8ca4a5017acab155c257364c07faa576
   stage: validate
+  artifacts:
+    when: on_failure
+    name: $CI_JOB_NAME-$CI_COMMIT_REF_NAME
+    paths:
+      - ./trunk-out/
   script:
     - ./scripts/lint.sh
+  after_script:
+    - cp -rL .trunk/out trunk-out
 
 check-image-digests:
   image: docker:20.10.12
