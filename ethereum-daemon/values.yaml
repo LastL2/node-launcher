@@ -27,11 +27,11 @@ image:
   eth:
     name: ethereum/client-go
     tag: "" # When tag is empty it defaults to the chart appVersion.
-    hash: eba056242c1381aef2a15ef4090d534a5f38f4d9d97fee1126950993453ef5c3
+    hash: 704b9156e17fb7c5dd09bfdd4dadc04c10b908cdca32b1726639750914a7ddb8
   prysm:
     name: gcr.io/prysmaticlabs/prysm/beacon-chain
-    tag: v4.1.0
-    hash: a84112d5e0d0baa9c07f6b31016588ab0a73d3c8ea8a999d9dbe3182d437a4fb
+    tag: v4.1.1
+    hash: f61868aac9b60bff5d7b369392d8ae4abae206d384c44c41fe89cdbe189d446f
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
@@ -48,10 +48,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -65,17 +67,20 @@ service:
 
 ingress:
   enabled: false
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # cert-manager.io/cluster-issuer: letsencrypt-production
-  hosts: []
+  hosts:
+    []
     # - host: midgard.example.com
     #   paths:
     #   - path: /
     #     backend:
     #       serviceName: gateway
     #       servicePort: midgard
-  tls: []
+  tls:
+    []
     # - secretName: midgard-tls
     #   hosts:
     #     - midgard.example.com
