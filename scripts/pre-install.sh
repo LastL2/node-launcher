@@ -11,9 +11,6 @@ case $NET in
   stagenet)
     EXTRA_ARGS="-f ./thornode-stack/stagenet.yaml"
     ;;
-  testnet)
-    EXTRA_ARGS="-f ./thornode-stack/testnet.yaml"
-    ;;
 esac
 
 if node_exists; then

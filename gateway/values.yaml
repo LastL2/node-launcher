@@ -40,9 +40,6 @@ service:
     stagenet:
       p2p: 27146
       rpc: 27147
-    testnet:
-      p2p: 26656
-      rpc: 26657
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -53,25 +50,30 @@ serviceAccount:
 
 ingress:
   enabled: false
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # cert-manager.io/cluster-issuer: letsencrypt-production
-  hosts: []
+  hosts:
+    []
     # - host: midgard.example.com
     #   paths:
     #   - path: /
     #     backend:
     #       serviceName: gateway
     #       servicePort: midgard
-  tls: []
+  tls:
+    []
     # - secretName: midgard-tls
     #   hosts:
     #     - midgard.example.com
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL

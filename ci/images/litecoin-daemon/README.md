@@ -39,8 +39,7 @@ You can optionally create a service using `docker-compose`:
 ```yml
 litecoin-core:
   image: uphold/litecoin-core
-  command:
-    -printtoconsole
+  command: -printtoconsole
     -regtest=1
 ```
 
@@ -171,13 +170,3 @@ curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params"
 
 - JSON-RPC/REST: 9332
 - P2P: 9333
-
-#### Testnet
-
-- JSON-RPC: 19332
-- P2P: 19333
-
-#### Regtest
-
-- JSON-RPC/REST: 19332
-- P2P: 19444

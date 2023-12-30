@@ -78,7 +78,7 @@ RPC Port
 {{- else if eq (include "gateway.net" .) "stagenet" -}}
     {{ .Values.service.port.stagenet.rpc}}
 {{- else -}}
-    {{ .Values.service.port.testnet.rpc }}
+    {{ .Values.service.port.mainnet.rpc}}
 {{- end -}}
 {{- end -}}
 
@@ -91,6 +91,6 @@ P2P Port
 {{- else if eq (include "gateway.net" .) "stagenet" -}}
     {{ .Values.service.port.stagenet.p2p}}
 {{- else -}}
-    {{ .Values.service.port.testnet.p2p }}
+    {{ .Values.service.port.mainnet.p2p}}
 {{- end -}}
 {{- end -}}

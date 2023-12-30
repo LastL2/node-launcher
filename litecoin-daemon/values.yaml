@@ -18,7 +18,6 @@ fullnameOverride: ""
 persistence:
   enabled: true
   size:
-    testnet: 50Gi
     stagenet: 200Gi
     mainnet: 200Gi
   accessMode: ReadWriteOnce
@@ -31,10 +30,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -51,26 +52,23 @@ service:
     stagenet:
       p2p: 9333
       rpc: 9332
-    testnet:
-      p2p: 19333
-      rpc: 19332
-    regtest:
-      p2p: 19444
-      rpc: 19443
 
 ingress:
   enabled: false
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # cert-manager.io/cluster-issuer: letsencrypt-production
-  hosts: []
+  hosts:
+    []
     # - host: midgard.example.com
     #   paths:
     #   - path: /
     #     backend:
     #       serviceName: gateway
     #       servicePort: midgard
-  tls: []
+  tls:
+    []
     # - secretName: midgard-tls
     #   hosts:
     #     - midgard.example.com

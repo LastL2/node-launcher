@@ -78,11 +78,7 @@ Tag
 Image
 */}}
 {{- define "bifrost.image" -}}
-{{- if or (eq (include "bifrost.net" .) "mocknet") (eq (include "bifrost.net" .) "testnet") -}}
-{{- .Values.image.repository -}}:{{ include "bifrost.tag" . }}
-{{- else -}}
 {{- .Values.image.repository -}}:{{ include "bifrost.tag" . }}@sha256:{{ coalesce .Values.global.hash .Values.image.hash }}
-{{- end -}}
 {{- end -}}
 
 {{/*
@@ -94,7 +90,7 @@ Thor daemon
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.thorDaemon.stagenet }}
 {{- else -}}
-    {{ .Values.thorDaemon.testnet }}
+    {{ .Values.thorDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 
@@ -107,7 +103,7 @@ Binance daemon
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.binanceDaemon.stagenet }}
 {{- else -}}
-    {{ default .Values.binanceDaemon.testnet .Values.global.binanceDaemon }}
+    {{ .Values.binanceDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 
@@ -119,10 +115,8 @@ Bitcoin
     {{ .Values.bitcoinDaemon.mainnet }}
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.bitcoinDaemon.stagenet }}
-{{- else if eq (include "bifrost.net" .) "testnet" -}}
-    {{ .Values.bitcoinDaemon.testnet }}
 {{- else -}}
-    {{ .Values.bitcoinDaemon.mocknet }}
+    {{ .Values.bitcoinDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 
@@ -134,10 +128,8 @@ Bitcoin Cash
     {{ .Values.bitcoinCashDaemon.mainnet }}
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.bitcoinCashDaemon.stagenet }}
-{{- else if eq (include "bifrost.net" .) "testnet" -}}
-    {{ .Values.bitcoinCashDaemon.testnet }}
 {{- else -}}
-    {{ .Values.bitcoinCashDaemon.mocknet }}
+    {{ .Values.bitcoinCashDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 
@@ -149,10 +141,8 @@ Litecoin
     {{ .Values.litecoinDaemon.mainnet }}
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.litecoinDaemon.stagenet }}
-{{- else if eq (include "bifrost.net" .) "testnet" -}}
-    {{ .Values.litecoinDaemon.testnet }}
 {{- else -}}
-    {{ .Values.litecoinDaemon.mocknet }}
+    {{ .Values.litecoinDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 
@@ -164,10 +154,8 @@ Dogecoin
     {{ .Values.dogecoinDaemon.mainnet }}
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.dogecoinDaemon.stagenet }}
-{{- else if eq (include "bifrost.net" .) "testnet" -}}
-    {{ .Values.dogecoinDaemon.testnet }}
 {{- else -}}
-    {{ .Values.dogecoinDaemon.mocknet }}
+    {{ .Values.dogecoinDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 
@@ -179,10 +167,8 @@ Terra
     {{ .Values.terraDaemon.mainnet }}
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.terraDaemon.stagenet }}
-{{- else if eq (include "bifrost.net" .) "testnet" -}}
-    {{ .Values.terraDaemon.testnet }}
 {{- else -}}
-    {{ .Values.terraDaemon.mocknet }}
+    {{ .Values.terraDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 
@@ -222,6 +208,6 @@ chainID
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
     {{ .Values.chainID.stagenet }}
 {{- else -}}
-    {{ .Values.chainID.testnet }}
+    {{ .Values.chainID.mainnet }}
 {{- end -}}
 {{- end -}}

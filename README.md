@@ -57,10 +57,8 @@ You can install those tools separately using the sections below.
 It is important to deploy the tools first before deploying the THORNode services as
 some services will have metrics configuration that would fail and stop the THORNode deployment.
 
-You have multiple choices available to deploy different configurations of THORNode.
-You can deploy a mainnet or testnet node.
 The commands deploy the umbrella chart `thornode-stack` in the background in the Kubernetes
-namespace `thornode` (or `thornode-testnet` for testnet) by default.
+namespace `thornode`.
 
 ```bash
 make install

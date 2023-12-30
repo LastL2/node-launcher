@@ -41,8 +41,7 @@ You can optionally create a service using `docker-compose`:
 ```yml
 bitcoin-cash:
   image: bitcoin-cash
-  command:
-    -printtoconsole
+  command: -printtoconsole
     -regtest=1
 ```
 
@@ -86,7 +85,7 @@ In the background, `bitcoin-cli` read the information automatically from `/home/
 
 #### Using rpcauth for remote authentication
 
-Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon. You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official [`rpcauth.py`](https://github.com/bitcoin/bitcoin/blob/master/share/rpcauth/rpcauth.py)  script to generate this line for you, including a random password that is printed to the console.
+Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon. You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official [`rpcauth.py`](https://github.com/bitcoin/bitcoin/blob/master/share/rpcauth/rpcauth.py) script to generate this line for you, including a random password that is printed to the console.
 
 _Note: This is a Python 3 script. use `[...] | python3 - <username>` when executing on macOS._
 
@@ -174,17 +173,6 @@ curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params"
 
 - JSON-RPC/REST: 8332
 - P2P: 8333
-
-#### Testnet
-
-- Testnet JSON-RPC: 18332
-- P2P: 18333
-
-#### Regtest
-
-- JSON-RPC/REST: 18443 (_since 0.16+_, otherwise _18332_)
-- P2P: 18444
-
 
 ## Docker
 

@@ -83,6 +83,6 @@ Thor daemon
 {{- else if eq (include "midgard.net" .) "stagenet" -}}
     {{ .Values.thorDaemon.stagenet }}
 {{- else -}}
-    {{ .Values.thorDaemon.testnet }}
+    {{ .Values.thorDaemon.mainnet }}
 {{- end -}}
 {{- end -}}

@@ -12,10 +12,8 @@ RUN VERSION="$(cat /version)" && \
   rm -rf /var/lib/apt/lists/* && \
   curl -LO "https://github.com/bnb-chain/node/releases/download/v${VERSION}/linux_binary.zip" && \
   curl -LO "https://github.com/bnb-chain/node/releases/download/v${VERSION}/mainnet_config.zip" && \
-  curl -LO "https://github.com/bnb-chain/node/releases/download/v${VERSION}/testnet_config.zip" && \
   unzip linux_binary.zip && \
   unzip mainnet_config.zip && mv asset/mainnet . && \
-  unzip testnet_config.zip && mv asset/testnet . && \
   chmod 755 linux/* && \
   rmdir asset && rm ./*.zip
 

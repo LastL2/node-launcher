@@ -41,13 +41,13 @@ confirm() {
 
 get_node_net() {
   if [ "$NET" != "" ]; then
-    if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ] && [ "$NET" != "stagenet" ]; then
-      die "Error NET variable=$NET. NET variable should be either 'mainnet', 'testnet', or 'stagenet'."
+    if [ "$NET" != "mainnet" ] && [ "$NET" != "stagenet" ]; then
+      die "Error NET variable=$NET. NET variable should be either 'mainnet' or 'stagenet'."
     fi
     return
   fi
   echo "=> Select net"
-  menu mainnet mainnet testnet stagenet
+  menu mainnet mainnet stagenet
   NET=$MENU_SELECTED
   echo
 }
@@ -68,9 +68,6 @@ get_node_name() {
       ;;
     "stagenet")
       NAME=thornode-stagenet
-      ;;
-    "testnet")
-      NAME=thornode-testnet
       ;;
   esac
   read -r -p "=> Enter THORNode name [$NAME]: " name
@@ -317,7 +314,6 @@ create_mnemonic() {
 }
 
 create_password() {
-  [ "$NET" = "testnet" ] && return
   local pwd
   local pwdconf
   if ! kubectl get -n "$NAME" secrets/thornode-password >/dev/null 2>&1; then

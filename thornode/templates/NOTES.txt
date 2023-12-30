@@ -8,5 +8,3 @@
   Mainnet:
   curl http://$NODE_IP:27147
 
-  Testnet / Mocknet:
-  curl http://$NODE_IP:26567

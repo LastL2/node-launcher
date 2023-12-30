@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-net: testnet
+net: mainnet
 type: validator
 
 autoupdate:
@@ -29,7 +29,6 @@ env: {}
 
 debug: false
 chainID:
-  testnet: thorchain-testnet-v2
   mainnet: thorchain-mainnet-v1
   stagenet: thorchain-stagenet-v2
 
@@ -42,8 +41,8 @@ strategyType: Recreate
 image:
   repository: registry.gitlab.com/thorchain/thornode
   pullPolicy: IfNotPresent
-  tag: testnet
-  hash: "" # Not used for mocknet/testnet
+  tag: mainnet
+  hash: placeholder
 
 imagePullSecrets: []
 nameOverride: ""
@@ -53,9 +52,6 @@ service:
   type: ClusterIP
   port:
     api: 1317
-    testnet:
-      p2p: 26656
-      rpc: 26657
     stagenet:
       p2p: 27146
       rpc: 27147
@@ -66,7 +62,6 @@ service:
 persistence:
   enabled: true
   size:
-    testnet: 300Gi
     stagenet: 1024Gi
     mainnet: 1.5Ti
   accessMode: ReadWriteOnce
@@ -84,10 +79,12 @@ serviceAccount:
 
 priorityClassName: ""
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
