@@ -31,7 +31,7 @@ spec:
           image: alpine:{{ .Values.global.images.alpine.tag }}@sha256:{{ .Values.global.images.alpine.hash }}
           volumeMounts:
             - name: data
-              mountPath: /data
+              mountPath: /home/bsc/data
             - name: scripts
               mountPath: /scripts
           command:
@@ -43,9 +43,10 @@ spec:
           image: {{ .Values.image.name }}:{{ include "daemon.tag" . }}@sha256:{{ .Values.image.hash }}
           imagePullPolicy: IfNotPresent
           command:
-            - sh
-            - -c
-            - geth --http --http.addr 0.0.0.0 --http.port {{ .Values.service.port }} --http.api "eth,net,engine,web3,miner,personal,txpool,debug" --http.corsdomain "*" --http.vhosts="*" --config=config/config.toml --datadir=data --history.transactions=0 --cache=24000 --cache.blocklogs=8000 --triesInMemory=1024
+            - /scripts/entrypoint.sh
+          env:
+            - name: PORT
+              value: "{{ .Values.service.port }}"
           volumeMounts:
             - name: scripts
               mountPath: /scripts

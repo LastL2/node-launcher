@@ -3,21 +3,48 @@ kind: ConfigMap
 metadata:
   name: {{ include "binance-smart-daemon.fullname" . }}-scripts
 data:
+  entrypoint.sh: |
+    #!/bin/bash
+
+    args=()
+    args+=('--http')
+    args+=('--http.addr=0.0.0.0')
+    args+=('--http.port='"$PORT")
+    args+=('--http.api=eth,net,engine,web3,miner,personal,txpool,debug')
+    args+=('--http.corsdomain=*')
+    args+=('--http.vhosts=*')
+    args+=('--datadir=data')
+    args+=('--config=config/config.toml')
+    args+=('--history.transactions=0')
+    args+=('--cache=24000')
+    args+=('--cache.blocklogs=8000')
+    args+=('--triesInMemory=1024')
+    args+=('--syncmode=full')
+    args+=('--pruneancient')
+    args+=('--tries-verify-mode=local')
+
+    # add config if snapshot uses pebble db engine
+    cat /home/bsc/data/geth/chaindata/OPTIONS-* | grep pebble && args+=('--db.engine=pebble')
+
+    echo "${args[@]}"
+    geth "${args[@]}"
+
   init.sh: |
     #!/bin/sh
 
     set -euo pipefail
 
     # work in data mount
-    cd /data
+    cd /home/bsc/data
 
     # cleanup snapshot and exit if already started
     if [ -d geth/chaindata ]; then
       rm -f *.lz4
       rm -f *.zst
       rm -rf server
-      chown -R 1000:1000 geth
-      chmod -R +x geth
+      rm -rf geth.full
+      chown -R 1000:1000 /home/bsc/data/geth
+      chmod -R +x /home/bsc/data/geth
       exit 0
     fi
 
@@ -32,17 +59,15 @@ data:
 
     # decompress snapshot
     echo "Decompressing snapshot..."
-    zstd -cd snapshot.tar.zst | tar xvf -
-
-    # move data into place
-    mkdir -p geth
-    mv geth.full/geth/chaindata geth/chaindata
-    mv geth.full/geth/triecache geth/triecache
+    zstd -cd snapshot.tar.zst | tar xvf - --strip-components=1
 
     # cleanup snapshot
     rm -f *.lz4
     rm -f *.zst
     rm -rf server
+    rm -rf geth.full
+    chown -R 1000:1000 /home/bsc/data/geth
+    chmod -R +x /home/bsc/data/geth
 
   probe.sh: |
     #!/bin/sh
