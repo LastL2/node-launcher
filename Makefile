@@ -106,7 +106,7 @@ shell: ## Open a shell for a selected THORNode service
 	@./scripts/shell.sh
 
 debug: ## Open a shell for THORNode service mounting volume to debug
-	@./scripts/debug.sh
+	@./scripts/debug-custom.sh
 
 restore-external-snapshot: ## Restore THORNode from external snapshot.
 	@./scripts/restore-external-snapshot.sh
