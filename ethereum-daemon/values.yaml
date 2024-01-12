@@ -27,11 +27,11 @@ image:
   eth:
     name: ethereum/client-go
     tag: "" # When tag is empty it defaults to the chart appVersion.
-    hash: 704b9156e17fb7c5dd09bfdd4dadc04c10b908cdca32b1726639750914a7ddb8
+    hash: 35f5b4675aeebc07fde20f1513ead0ff885e08abcb9c5773c61e6e9d6bbf54b9
   prysm:
     name: gcr.io/prysmaticlabs/prysm/beacon-chain
-    tag: v4.1.1
-    hash: f61868aac9b60bff5d7b369392d8ae4abae206d384c44c41fe89cdbe189d446f
+    tag: v4.2.0
+    hash: 49d8e97533ec857200a0c1f940f140b98824707ea9f37b4cf29b50e45740affc
   scripts:
     repository: registry.gitlab.com/thorchain/thornode
     pullPolicy: IfNotPresent
