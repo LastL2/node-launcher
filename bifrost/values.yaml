@@ -29,10 +29,12 @@ env:
   BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon:8545
 
-  # enable DOGE/BCH/LTC client V2 by default
+  # enable utxo client V2 for all chains by default
+  # TODO: remove entirely after v1.128 when deprecated v1 client is removed
   BIFROST_CHAINS_DOGE_UTXO_CLIENT_V2: "true"
   BIFROST_CHAINS_BCH_UTXO_CLIENT_V2: "true"
   BIFROST_CHAINS_LTC_UTXO_CLIENT_V2: "true"
+  BIFROST_CHAINS_BTC_UTXO_CLIENT_V2: "true"
 
 thorApi: thornode:1317
 chainID:
