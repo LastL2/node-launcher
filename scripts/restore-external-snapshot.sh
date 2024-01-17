@@ -2,6 +2,12 @@
 
 set -e
 
+# check the xmllint command is available
+if ! command -v xmllint >/dev/null 2>&1; then
+  echo "=> xmllint command not found, please install libxml2 and/or libxml2-utils"
+  exit 1
+fi
+
 NET=mainnet
 
 source ./scripts/core.sh
@@ -20,13 +26,13 @@ PROVIDER=${provider:-${PROVIDER}}
 echo
 
 # get all available snapshot heights
-MINIO_IMAGE="minio/minio:RELEASE.2023-10-25T06-33-25Z@sha256:858ee1ca619396ea1b77cc12a36b857a6b57cb4f5d53128b1224365ee1da7305"
 HEIGHTS=$(
-  docker run --rm --entrypoint sh "${MINIO_IMAGE}" -c "
-    mc config host add minio ${PROVIDER} '' '' >/dev/null;
-    mc ls minio/snapshots/thornode --json |
-      jq -r '(.key|gsub(\".tar.gz\"; \"\"))' |
-      sort -nr"
+  set -o pipefail
+  curl -s "${PROVIDER}/snapshots?prefix=thornode" |
+    xmllint --xpath '//*[local-name()="Contents"]/*[local-name()="Key"]/text()' - |
+    grep -oE '[0-9]+' |
+    sort -nr |
+    head -n 10
 )
 readarray -t HEIGHTS <<<"${HEIGHTS}"
 
