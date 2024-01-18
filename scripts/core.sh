@@ -384,7 +384,6 @@ deploy_genesis() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   [ "$NET" = "stagenet" ] && args="--set global.passwordSecret=thornode-password"
-  # shellcheck disable=SC2086
   helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
@@ -392,7 +391,6 @@ deploy_genesis() {
     --set thornode.type="genesis"
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
-  # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
@@ -408,7 +406,6 @@ deploy_validator() {
   local args
   [ "$NET" = "mainnet" ] && args="--set global.passwordSecret=thornode-password"
   [ "$NET" = "stagenet" ] && args="--set global.passwordSecret=thornode-password"
-  # shellcheck disable=SC2086
   helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
@@ -416,7 +413,6 @@ deploy_validator() {
     --set thornode.type="validator"
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
-  # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
@@ -431,7 +427,6 @@ deploy_validator() {
 }
 
 deploy_fullnode() {
-  # shellcheck disable=SC2086
   helm diff upgrade -C 3 --install "$NAME" ./thornode-stack -n "$NAME" \
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \
@@ -444,7 +439,6 @@ deploy_fullnode() {
     --set thornode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
   echo -e "=> Changes for a $boldgreen$TYPE$reset THORNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
-  # shellcheck disable=SC2086
   helm upgrade --install "$NAME" ./thornode-stack -n "$NAME" \
     --create-namespace $EXTRA_ARGS \
     --set global.mnemonicSecret=thornode-mnemonic \

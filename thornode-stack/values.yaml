@@ -8,8 +8,8 @@ global:
       tag: latest
       hash: 4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454
     alpineK8s:
-      tag: 1.18.2
-      hash: 768491682ca99e14498ddb62973a95a664a0525ca18e7ad0eaab2621d3124f5b
+      tag: 1.25.16
+      hash: 7480dd21404b26776642a286395db36310a83f8f93ae3393692d5c1e15a5e16a
     busybox:
       tag: latest
       hash: caa382c432891547782ce7140fb3b7304613d3b0438834dce1cad68896ab110a

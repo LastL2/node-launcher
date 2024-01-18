@@ -43,5 +43,5 @@ minio:
   nginx:
     image:
       name: nginx
-      tag: 1.25.2-alpine
-      hash: 4c93a3bd8bf95412889dd84213570102176b6052d88bb828eaf449c56aca55ef
+      tag: 1.25.3-alpine
+      hash: 2d2a2257c6e9d2e5b50d4fbeb436d8d2b55631c2a89935a425b417eb95212686
