@@ -34,25 +34,28 @@ if [[ ${MENU_SELECTED} == "alpine" ]]; then
 fi
 IMAGE="${MENU_SELECTED}"
 
-SPEC="
+SPEC=$(
+  cat <<EOF
 {
-  \"apiVersion\": \"v1\",
-  \"spec\": {
-    \"containers\": [
+  "apiVersion": "v1",
+  "spec": {
+    "containers": [
       {
-        \"command\": [
-          \"sh\"
+        "command": [
+          "sh"
         ],
-        \"name\": \"debug-${DEPLOY}\",
-        \"stdin\": true,
-        \"tty\": true,
-        \"image\": \"${IMAGE}\",
-        \"volumeMounts\": [${VOLUMEMOUNT}]
+        "name": "debug-${DEPLOY}",
+        "stdin": true,
+        "tty": true,
+        "image": "${IMAGE}",
+        "volumeMounts": [${VOLUMEMOUNT}]
       }
     ],
-    \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"${DEPLOY}\"}}]
+    "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "${DEPLOY}"}}]
   }
-}"
+}
+EOF
+)
 
 printf "Volume mounted at: %s\n" "${MOUNTPATH}"
 

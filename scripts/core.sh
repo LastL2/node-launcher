@@ -212,48 +212,54 @@ make_backup() {
   service=$1
 
   if [ "$service" = "bifrost" ]; then
-    spec="
+    spec=$(
+      cat <<EOF
     {
-      \"apiVersion\": \"v1\",
-      \"spec\": {
-        \"containers\": [
+      "apiVersion": "v1",
+      "spec": {
+        "containers": [
           {
-            \"command\": [
-              \"sh\",
-              \"-c\",
-              \"sleep 300\"
+            "command": [
+              "sh",
+              "-c",
+              "sleep 300"
             ],
-            \"name\": \"$service\",
-            \"image\": \"busybox:1.33\",
-            \"volumeMounts\": [
-              {\"mountPath\": \"/root/.thornode\", \"name\": \"data\", \"subPath\": \"thornode\"},
-              {\"mountPath\": \"/var/data/bifrost\", \"name\": \"data\", \"subPath\": \"data\"}
+            "name": "$service",
+            "image": "busybox:1.33",
+            "volumeMounts": [
+              {"mountPath": "/root/.thornode", "name": "data", "subPath": "thornode"},
+              {"mountPath": "/var/data/bifrost", "name": "data", "subPath": "data"}
             ]
           }
         ],
-        \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"$service\"}}]
+        "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "$service"}}]
       }
-    }"
+    }
+EOF
+    )
   else
-    spec="
+    spec=$(
+      cat <<EOF
     {
-      \"apiVersion\": \"v1\",
-      \"spec\": {
-        \"containers\": [
+      "apiVersion": "v1",
+      "spec": {
+        "containers": [
           {
-            \"command\": [
-              \"sh\",
-              \"-c\",
-              \"sleep 300\"
+            "command": [
+              "sh",
+              "-c",
+              "sleep 300"
             ],
-            \"name\": \"$service\",
-            \"image\": \"busybox:1.33\",
-            \"volumeMounts\": [{\"mountPath\": \"/root\", \"name\":\"data\"}]
+            "name": "$service",
+            "image": "busybox:1.33",
+            "volumeMounts": [{"mountPath": "/root", "name":"data"}]
           }
         ],
-        \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"$service\"}}]
+        "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "$service"}}]
       }
-    }"
+    }
+EOF
+    )
 
   fi
 

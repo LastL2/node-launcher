@@ -4,9 +4,7 @@ source ./scripts/core.sh
 
 get_node_info_short
 
-if ! node_exists; then
-  die "No existing THORNode found, make sure this is the correct name"
-fi
+node_exists || die "No existing THORNode found, make sure this is the correct name"
 
 if [ "$SERVICE" = "" ]; then
   echo "=> Select a THORNode service to restore a backup from"
@@ -35,49 +33,54 @@ menu "${TIMES[0]}" "${TIMES[@]}"
 FILE=$(echo "$MENU_SELECTED" | awk '{ print $2 }')
 
 if [ "$SERVICE" = "bifrost" ]; then
-  SPEC="
+  SPEC=$(
+    cat <<EOF
   {
-    \"apiVersion\": \"v1\",
-    \"spec\": {
-      \"containers\": [
+    "apiVersion": "v1",
+    "spec": {
+      "containers": [
         {
-          \"command\": [
-            \"sh\",
-            \"-c\",
-            \"sleep 300\"
+          "command": [
+            "sh",
+            "-c",
+            "sleep 300"
           ],
-          \"name\": \"$SERVICE\",
-          \"image\": \"busybox:1.33\",
-          \"volumeMounts\": [
-            {\"mountPath\": \"/root/.thornode\", \"name\": \"data\", \"subPath\": \"thornode\"},
-            {\"mountPath\": \"/var/data/bifrost\", \"name\": \"data\", \"subPath\": \"data\"}
+          "name": "$SERVICE",
+          "image": "busybox:1.33",
+          "volumeMounts": [
+            {"mountPath": "/root/.thornode", "name": "data", "subPath": "thornode"},
+            {"mountPath": "/var/data/bifrost", "name": "data", "subPath": "data"}
           ]
         }
       ],
-      \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"$SERVICE\"}}]
+      "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "$SERVICE"}}]
     }
   }"
+EOF
+  )
 else
-  SPEC="
+  SPEC=$(
+    cat <<EOF
   {
-    \"apiVersion\": \"v1\",
-    \"spec\": {
-      \"containers\": [
+    "apiVersion": "v1",
+    "spec": {
+      "containers": [
         {
-          \"command\": [
-            \"sh\",
-            \"-c\",
-            \"sleep 300\"
+          "command": [
+            "sh",
+            "-c",
+            "sleep 300"
           ],
-          \"name\": \"$SERVICE\",
-          \"image\": \"busybox:1.33\",
-          \"volumeMounts\": [{\"mountPath\": \"/root\", \"name\":\"data\"}]
+          "name": "$SERVICE",
+          "image": "busybox:1.33",
+          "volumeMounts": [{"mountPath": "/root", "name":"data"}]
         }
       ],
-      \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"$SERVICE\"}}]
+      "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "$SERVICE"}}]
     }
-  }"
-
+  }
+EOF
+  )
 fi
 
 echo

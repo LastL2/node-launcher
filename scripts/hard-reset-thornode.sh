@@ -19,27 +19,30 @@ warn "Destructive command, be careful, your service data volume data will be wip
 confirm
 
 IMAGE=$(kubectl -n "$NAME" get deploy/thornode -o jsonpath='{$.spec.template.spec.containers[:1].image}')
-SPEC="
+SPEC=$(
+  cat <<EOF
 {
-  \"apiVersion\": \"v1\",
-  \"spec\": {
-    \"containers\": [
+  "apiVersion": "v1",
+  "spec": {
+    "containers": [
       {
-        \"command\": [
-          \"sh\",
-          \"-c\",
-          \"thornode unsafe-reset-all\"
+        "command": [
+          "sh",
+          "-c",
+          "thornode unsafe-reset-all"
         ],
-        \"name\": \"debug-thornode\",
-        \"stdin\": true,
-        \"tty\": true,
-        \"image\": \"$IMAGE\",
-        \"volumeMounts\": [{\"mountPath\": \"/root\", \"name\":\"data\"}]
+        "name": "debug-thornode",
+        "stdin": true,
+        "tty": true,
+        "image": "$IMAGE",
+        "volumeMounts": [{"mountPath": "/root", "name":"data"}]
       }
     ],
-    \"volumes\": [{\"name\": \"data\", \"persistentVolumeClaim\": {\"claimName\": \"thornode\"}}]
+    "volumes": [{"name": "data", "persistentVolumeClaim": {"claimName": "thornode"}}]
   }
-}"
+}
+EOF
+)
 
 kubectl scale -n "$NAME" --replicas=0 deploy/thornode --timeout=5m
 kubectl wait --for=delete pods -l app.kubernetes.io/name=thornode -n "$NAME" --timeout=5m >/dev/null 2>&1 || true
