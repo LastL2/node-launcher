@@ -19,11 +19,11 @@ RUN git init && \
 # pull and verify binaries
 COPY version /version
 WORKDIR /work
-RUN VERSION="$(cat /version)" && \
+RUN VERSION="$(sed 's/-.*//' /version)" && \
   wget --progress=dot:giga "https://bitcoincore.org/bin/bitcoin-core-${VERSION}/bitcoin-${VERSION}-x86_64-linux-gnu.tar.gz" && \
   wget --progress=dot:giga "https://bitcoincore.org/bin/bitcoin-core-${VERSION}/SHA256SUMS" && \
   wget --progress=dot:giga "https://bitcoincore.org/bin/bitcoin-core-${VERSION}/SHA256SUMS.asc"
-RUN VERSION="$(cat /version)" && \
+RUN VERSION="$(sed 's/-.*//' /version)" && \
   gpg --verify SHA256SUMS.asc SHA256SUMS && \
   grep "bitcoin-${VERSION}-x86_64-linux-gnu.tar.gz" SHA256SUMS | sha256sum -c && \
   mkdir bitcoin && \
