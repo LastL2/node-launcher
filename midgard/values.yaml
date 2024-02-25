@@ -27,7 +27,7 @@ logLevel: info
 image:
   name: registry.gitlab.com/thorchain/midgard
   tag: "" # When tag is empty it defaults to the chart appVersion.
-  hash: ea4a45245671d2041f1d6998753cfe77f254db40abff9315421a040476c2080a
+  hash: 2b3c2983c621068460d576c79e8c29c9c03c1f1a10b5135bf78eb6e827fc50ff
 
 timescaleDbImage:
   repository: timescale/timescaledb
