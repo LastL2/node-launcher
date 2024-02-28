@@ -8,8 +8,8 @@ replicaCount: 1
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: "avalanche-daemon-1.10.19"
-  hash: 301ffc05caea56aece89dd55e2d3a44507244d3708e73ee2daa28369b8747121
+  tag: "avalanche-daemon-1.11.1"
+  hash: c038a9907748e68b5bf87d2274d45362a55a722f5ee485bd77dd23f646e25883
 
 imagePullSecrets: []
 nameOverride: ""
