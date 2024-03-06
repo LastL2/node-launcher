@@ -4,4 +4,4 @@ description: gaia Node daemon component
 type: application
 version: 0.1.0
 
-appVersion: v13.0.0
+appVersion: v14.2.0
