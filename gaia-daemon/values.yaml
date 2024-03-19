@@ -8,8 +8,8 @@ replicaCount: 1
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: gaia-daemon-14.2.0
-  hash: f65100b76d0a5c9f43974c642072ddeb635d52478df492ae21600893248feaec
+  tag: gaia-daemon-15.1.0
+  hash: 1a9c09c4549f08ba4685c42df14e04768078cfbf62cc4b63ba784e9861a1ec0f
 
 imagePullSecrets: []
 nameOverride: ""
@@ -82,7 +82,7 @@ resources:
     memory: 16Gi
   limits:
     # cpu: 2
-    memory: 16Gi
+    memory: 24Gi
 
 nodeSelector: {}
 
