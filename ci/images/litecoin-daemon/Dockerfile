@@ -1,6 +1,5 @@
 FROM alpine:3.12.1
 
-ENV LITECOIN_VERSION=0.21.2.2
 ENV GLIBC_VERSION=2.28-r0
 ENV LITECOIN_DATA=/home/litecoin/.litecoin
 
@@ -19,9 +18,11 @@ RUN apk update \
 COPY davidburkett38-key.pgp .
 RUN gpg --no-tty --import davidburkett38-key.pgp
 
-RUN wget https://download.litecoin.org/litecoin-${LITECOIN_VERSION}/linux/litecoin-${LITECOIN_VERSION}-x86_64-linux-gnu.tar.gz \
-	&& wget https://download.litecoin.org/litecoin-${LITECOIN_VERSION}/linux/litecoin-${LITECOIN_VERSION}-x86_64-linux-gnu.tar.gz.asc \
-	&& gpg --verify litecoin-${LITECOIN_VERSION}-x86_64-linux-gnu.tar.gz.asc \
+COPY version /version
+RUN VERSION="$(sed 's/-.*//' /version)" && \
+  wget https://download.litecoin.org/litecoin-${VERSION}/linux/litecoin-${VERSION}-x86_64-linux-gnu.tar.gz \
+	&& wget https://download.litecoin.org/litecoin-${VERSION}/linux/litecoin-${VERSION}-x86_64-linux-gnu.tar.gz.asc \
+	&& gpg --verify litecoin-${VERSION}-x86_64-linux-gnu.tar.gz.asc \
 	&& tar --strip=2 -xzf *.tar.gz -C /usr/local/bin \
 	&& rm *.tar.gz
 
