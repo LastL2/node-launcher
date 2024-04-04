@@ -18,8 +18,8 @@ fullnameOverride: ""
 persistence:
   enabled: true
   size:
-    stagenet: 200Gi
-    mainnet: 200Gi
+    stagenet: 300Gi
+    mainnet: 300Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
 
