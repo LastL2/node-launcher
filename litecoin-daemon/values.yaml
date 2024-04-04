@@ -8,8 +8,8 @@ net: mainnet
 
 image:
   name: registry.gitlab.com/thorchain/devops/node-launcher
-  tag: "litecoin-daemon-0.21.2.2"
-  hash: "a9eacb8aa9359d342e660c8f697d40b1b4ba13cd055dfb186590aa9e0c0efcea"
+  tag: "litecoin-daemon-0.21.3"
+  hash: "c1b50abe892771456bc4dcbc1f3617eb84fb89970c38d29880d9b0e2c2f8460a"
 
 imagePullSecrets: []
 nameOverride: ""
