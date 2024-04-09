@@ -49,7 +49,6 @@ spec:
           - /entrypoint.sh
           - --minimum-gas-prices=0.001uatom
           - --grpc.address=0.0.0.0:9090
-          - --halt-height=19939000
         volumeMounts:
           - name: data
             mountPath: /root/.gaia
