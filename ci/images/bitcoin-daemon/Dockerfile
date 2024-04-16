@@ -12,7 +12,7 @@ RUN apt-get update && \
 WORKDIR /keys
 RUN git init && \
   git remote add origin https://github.com/bitcoin-core/guix.sigs.git && \
-  git fetch --depth 1 origin 58855302952d984f58bed8232032d144465c35e9 && \
+  git fetch --depth 1 origin ca2147e5f8e360bc42b7eff57f4759afe723e59a && \
   git checkout FETCH_HEAD && \
   for file in builder-keys/*; do gpg --import "$file"; done
 
