@@ -1,3 +1,4 @@
+{{- if .Values.thornodeSnapshot.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -68,3 +69,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: thornode-snapshot
+{{- end }}

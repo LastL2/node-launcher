@@ -1,4 +1,4 @@
----
+{{- if .Values.minio.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -86,3 +86,4 @@ data:
         }
       }
     }
+{{- end }}
