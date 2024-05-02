@@ -11,6 +11,10 @@ image:
   tag: gaia-daemon-15.2.0
   hash: 9330fb2701307c3263da7943e174869c11d1ef30eb94008a8406904563a053b7
 
+flags:
+# Manually pass known good peers from somewhere like: https://polkachu.com/live_peers/cosmos
+# - --p2p.persistent_peers=648742a99b2714a442506bd5dbefe74c40346fbd@18.225.13.106:26656,...
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

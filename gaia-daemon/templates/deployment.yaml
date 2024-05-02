@@ -49,6 +49,9 @@ spec:
           - /entrypoint.sh
           - --minimum-gas-prices=0.001uatom
           - --grpc.address=0.0.0.0:9090
+          {{- range $flag := .Values.flags }}
+          - {{ $flag }}
+          {{- end }}
         volumeMounts:
           - name: data
             mountPath: /root/.gaia
