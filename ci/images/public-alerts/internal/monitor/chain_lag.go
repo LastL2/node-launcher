@@ -25,6 +25,10 @@ func (clm *ChainLagMonitor) Name() string {
 	return "ChainLagMonitor"
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////
+
 func max(slice []int) int {
 	max := slice[0]
 	for _, v := range slice {
@@ -35,34 +39,26 @@ func max(slice []int) int {
 	return max
 }
 
-func (clm *ChainLagMonitor) Check() ([]notify.Alert, error) {
-
-	alerts, err := checkChainLag()
-	return alerts, err
-
-}
-
-func checkChainLag() ([]notify.Alert, error) {
-	// checks chain lag by comparing the heights of all nodes
-	log.Logger.Info().Msg("[Info] Checking chain lag...")
-	cfg := config.Get()
-
-	maxChainLag := cfg.ChainLagMonitor.MaxChainLag
-
-	var nodes []openapi.Node
-
-	// TODO: abstract http requests into a common function, thornode utility
-	resp, err := http.Get(fmt.Sprintf("%s/thorchain/nodes", cfg.Endpoints.ThornodeAPI))
+func fetchNodes(apiURL string) ([]openapi.Node, error) {
+	resp, err := http.Get(apiURL)
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %w", err)
 	}
 	defer resp.Body.Close()
 
+	var nodes []openapi.Node
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(&nodes); err != nil {
 		return nil, fmt.Errorf("error decoding JSON: %w", err)
 	}
+	return nodes, nil
+}
 
+////////////////////////////////////////////////////////////////////////////////
+// Calculate Chain Lag
+////////////////////////////////////////////////////////////////////////////////
+
+func calculateChainLag(nodes []openapi.Node, maxChainLag map[string]int) ([]string, map[string]int) {
 	chainHeights := make(map[string][]int)
 	activeNodes := 0
 	for _, node := range nodes {
@@ -75,11 +71,10 @@ func checkChainLag() ([]notify.Alert, error) {
 		activeNodes++
 	}
 
-	// check the difference between the highest and lowest node for each chain
 	var msgs []string
+	newLagCounts := make(map[string]int)
 	for chain, heights := range chainHeights {
 		maxLag, ok := maxChainLag[chain]
-
 		if !ok {
 			continue
 		}
@@ -93,34 +88,49 @@ func checkChainLag() ([]notify.Alert, error) {
 		}
 
 		if lagCount > activeNodes/4 {
-			lastLag := lastChainLag[chain]
-			if lastLag < 3 { // must fail 3 checks in a row
-				lastChainLag[chain]++
-				continue
-			}
 
+			msgs = append(msgs, fmt.Sprintf("[%s] Lagging by over %d blocks on %d nodes.", chain, maxLag, lagCount))
 			log.Warn().
 				Str("chain", chain).
 				Int("maxLag", maxLag).
 				Int("lagCount", lagCount).
-				Msg("Lagging by over maxLag blocks on lagCount nodes.")
-
-			msgs = append(msgs, fmt.Sprintf("[%s] Lagging by over %d blocks on %d nodes.", chain, maxLag, lagCount))
+				Msgf("Lagging by over %d blocks on %d nodes.", maxLag, lagCount)
+			newLagCounts[chain]++
 		} else {
-			lastChainLag[chain] = 0
+			newLagCounts[chain] = 0
 		}
+	}
+	return msgs, newLagCounts
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Check
+////////////////////////////////////////////////////////////////////////////////
+
+func (clm *ChainLagMonitor) Check() ([]notify.Alert, error) {
+
+	log.Info().Msg("Checking Chain Lag...")
+	cfg := config.Get()
+	nodes, err := fetchNodes(fmt.Sprintf("%s/thorchain/nodes", cfg.Endpoints.ThornodeAPI))
+	if err != nil {
+		return nil, err
+	}
+
+	msgs, newLagCounts := calculateChainLag(nodes, cfg.ChainLagMonitor.MaxChainLag)
+
+	// Update global state
+	for chain, count := range newLagCounts {
+		lastChainLag[chain] = count
 	}
 
 	if len(msgs) > 0 && time.Since(lastAlert) > time.Hour {
 		msg := "```" + fmt.Sprintln(strings.Join(msgs, "\n")) + "```"
 		lastAlert = time.Now()
 
-		// return alerts, can add more based on severity
 		alerts := []notify.Alert{
-			{Webhooks: config.Get().Webhooks.Activity, Message: msg},
+			{Webhooks: cfg.Webhooks.Activity, Message: msg},
 		}
 		return alerts, nil
-
 	}
 	return nil, nil
 }

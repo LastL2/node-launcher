@@ -35,11 +35,11 @@ go test ./test
 
 ### Monitors
 
-Monitors are independent scripts that poll for info and trigger notifiers if conditions are met.
+Monitors are independent scripts that poll for info and raise Alerts if conditions are met.
 
-### Notifiers
+### Notify
 
-Notifiers are simple interface to send messages to various platforms like discord and slack using webhooks.
+Alerts are routed to appropriate notifer like slack or discord via webhook. A single alert can be sent to multiple comms channels like slack AND discord.
 
 ### cmd/alert
 

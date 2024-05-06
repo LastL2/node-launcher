@@ -15,7 +15,6 @@ type Monitor interface {
 }
 
 // Spawn starts a monitor in a goroutine
-// Spawn starts a monitor in a goroutine
 func Spawn(m Monitor, alertQueue chan<- notify.Alert, interval time.Duration) {
 	go func() {
 		// Create a ticker that sends ticks at the specified poll frequency

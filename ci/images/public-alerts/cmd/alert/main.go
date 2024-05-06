@@ -34,6 +34,10 @@ func main() {
 	// poll every 5 mins
 	monitor.Spawn(chainLagMonitor, alertQueue, 5*time.Minute)
 
+	// Solvency Monitor
+	solvencyMonitor := &monitor.SolvencyMonitor{}
+	// poll every 5 mins
+	monitor.Spawn(solvencyMonitor, alertQueue, 5*time.Minute)
 	// Spawn more monitors as needed...
 
 	for alert := range alertQueue {

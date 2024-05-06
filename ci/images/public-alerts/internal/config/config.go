@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
@@ -50,6 +51,33 @@ func NewChainLagMonitorConfig() ChainLagMonitorConfig {
 	}
 }
 
+// ///////////////////////
+// SolvencyMonitorConfig
+// ///////////////////////
+
+type SolvencyMonitorConfig struct {
+	AlertWindowThreshold  int
+	AlertPercentThreshold float64
+	AlertUSDThreshold     float64
+	AlertCooldownSeconds  int
+}
+
+func (s SolvencyMonitorConfig) Validate() error {
+	// TODO: Implement validation
+
+	return nil
+}
+
+// NewSolvencyMonitorConfig creates a new SolvencyMonitorConfig with default settings.
+func NewSolvencyMonitorConfig() SolvencyMonitorConfig {
+	return SolvencyMonitorConfig{
+		AlertWindowThreshold:  60,
+		AlertPercentThreshold: 0.02,
+		AlertUSDThreshold:     5000,
+		AlertCooldownSeconds:  60 * 60 * 12, // 12 hours
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Configuration
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +90,9 @@ type Webhooks struct {
 
 type Config struct {
 	Endpoints struct {
-		ThornodeAPI string `mapstructure:"thornodeapi"`
+		ThornodeAPI   string `mapstructure:"thornode_api"`
+		NineRealmsAPI string `mapstructure:"ninerealms_api"`
+		MidgardAPI    string `mapstructure:"midgard_api"`
 	} `mapstructure:"endpoints"`
 	Webhooks struct {
 		Activity Webhooks `mapstructure:"activity"`
@@ -73,38 +103,35 @@ type Config struct {
 	} `mapstructure:"webhooks"`
 	// each monitor can have its own configuration params
 	ChainLagMonitor ChainLagMonitorConfig
+	SolvencyMonitor SolvencyMonitorConfig
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Helpers
-////////////////////////////////////////////////////////////////////////////////
-
-// Try to bind an environment variable to a viper key.
-func ensureBindEnv(key, envVar string) {
-	if err := viper.BindEnv(key, envVar); err != nil {
-		log.Fatal().Err(err).Msgf("Failed to bind environment variable for %s", key)
-	}
-}
-
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 // Init
-////////////////////////////////////////////////////////////////////////////////
-
+// //////////////////////////////////////////////////////////////////////////////
 var config Config
 
 func init() {
-	viper.AutomaticEnv()
-	viper.SetDefault("endpoints.thornodeapi", "https://thornode.ninerealms.com")
-	viper.SetEnvPrefix("public_alert") // Prefix for environment variables
 
-	// Use the newly named utility function to bind environment variables
-	ensureBindEnv("endpoints.thornodeapi", "PUBLIC_ALERT_ENDPOINTS_THORNODE_API")
-	ensureBindEnv("webhooks.activity.slack", "PUBLIC_ALERT_WEBHOOKS_ACTIVITY_SLACK")
-	ensureBindEnv("webhooks.errors.slack", "PUBLIC_ALERT_WEBHOOKS_ERRORS_SLACK")
-	ensureBindEnv("webhooks.activity.discord", "PUBLIC_ALERT_WEBHOOKS_ACTIVITY_DISCORD")
+	assert := func(err error) {
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to bind environment variable")
+		}
+	}
+
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
 	// Initialize ChainLagMonitor with hardcoded values
 	config.ChainLagMonitor = NewChainLagMonitorConfig()
+	config.SolvencyMonitor = NewSolvencyMonitorConfig()
+
+	assert(viper.BindEnv("endpoints.thornode_api", "ENDPOINTS_THORNODE_API"))
+	assert(viper.BindEnv("endpoints.ninerealms_api", "ENDPOINTS_NINEREALMS_API"))
+	assert(viper.BindEnv("endpoints.midgard_api", "ENDPOINTS_MIDGARD_API"))
+	assert(viper.BindEnv("webhooks.activity.slack", "WEBHOOKS_ACTIVITY_SLACK"))
+	assert(viper.BindEnv("webhooks.activity.discord", "WEBHOOKS_ACTIVITY_DISCORD"))
+	assert(viper.BindEnv("webhooks.errors.slack", "WEBHOOKS_ERRORS_SLACK"))
 
 	// Unmarshal the configuration into the config struct
 	if err := viper.Unmarshal(&config); err != nil {
