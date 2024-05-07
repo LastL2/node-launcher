@@ -36,6 +36,10 @@ env:
   BIFROST_CHAINS_LTC_UTXO_CLIENT_V2: "true"
   BIFROST_CHAINS_BTC_UTXO_CLIENT_V2: "true"
 
+  # force AVAX and BSC scanner heights backward to re-scan transactions lacking consensus
+  BIFROST_CHAINS_AVAX_BLOCK_SCANNER_START_BLOCK_HEIGHT: "45121900"
+  BIFROST_CHAINS_BSC_BLOCK_SCANNER_START_BLOCK_HEIGHT: "38499900"
+
 thorApi: thornode:1317
 chainID:
   mainnet: thorchain-mainnet-v1
