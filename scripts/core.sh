@@ -120,6 +120,14 @@ get_node_address() {
   echo
 }
 
+get_txids() {
+  if [[ -z ${TXIDS} ]]; then
+    echo "=> Enter the TXID(s) to observe (comma separated):"
+    read -r TXIDS
+  fi
+  echo
+}
+
 get_node_info() {
   get_node_net
   get_node_type

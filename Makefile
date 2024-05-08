@@ -156,6 +156,12 @@ pause: ## Send a pause-chain transaction to your THORNode
 resume: ## Send a resume-chain transaction to your THORNode
 	@./scripts/resume.sh
 
+observe-tx-ins: ## Manually observe missed inbound transactions.
+	@./scripts/observe-tx-ins.sh
+
+observe-tx-outs: ## Manually observe missed outbound transactions.
+	@./scripts/observe-tx-outs.sh
+
 destroy-tools: destroy-prometheus destroy-loki destroy-dashboard ## Uninstall Prometheus/Grafana, Loki, Kubernetes dashboard
 
 install-loki: repos ## Install/Update Loki logs management stack
