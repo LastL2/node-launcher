@@ -112,3 +112,8 @@ menu() {
     esac
   done
 }
+
+# menu_default creates a menu assuming the first option is the default
+menu_default() {
+  menu "$1" "$@"
+}
