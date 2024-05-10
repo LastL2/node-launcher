@@ -19,26 +19,12 @@ debug: false
 # https://gitlab.com/thorchain/thornode/-/blob/develop/config/default.yaml
 env:
   BIFROST_CHAINS_BTC_SCANNER_LEVELDB_COMPACTION_TABLE_SIZE_MULTIPLIER: "1"
-  BIFROST_CHAINS_DOGE_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
-  BIFROST_CHAINS_LTC_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
-  BIFROST_CHAINS_BCH_MEMPOOL_TX_ID_CACHE_SIZE: "1_000_000"
 
   # enable binance smart chain
   BSC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_DISABLED: "false"
   BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon:8545
-
-  # enable utxo client V2 for all chains by default
-  # TODO: remove entirely after v1.128 when deprecated v1 client is removed
-  BIFROST_CHAINS_DOGE_UTXO_CLIENT_V2: "true"
-  BIFROST_CHAINS_BCH_UTXO_CLIENT_V2: "true"
-  BIFROST_CHAINS_LTC_UTXO_CLIENT_V2: "true"
-  BIFROST_CHAINS_BTC_UTXO_CLIENT_V2: "true"
-
-  # force AVAX and BSC scanner heights backward to re-scan transactions lacking consensus
-  BIFROST_CHAINS_AVAX_BLOCK_SCANNER_START_BLOCK_HEIGHT: "45121900"
-  BIFROST_CHAINS_BSC_BLOCK_SCANNER_START_BLOCK_HEIGHT: "38499900"
 
 thorApi: thornode:1317
 chainID:
