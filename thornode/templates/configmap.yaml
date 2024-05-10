@@ -69,12 +69,12 @@ data:
   observe-tx-outs.sh: |
     #!/bin/sh
 
-    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain observe-tx-outs --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --gas-adjustment 2 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC" --thornode-api "http://localhost:$THORNODE_SERVICE_PORT_API" --txids "$1"
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain observe-tx-outs --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --gas-adjustment 2 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC" --thornode-api https://thornode-v1.ninerealms.com --txids "$1"
 
   observe-tx-ins.sh: |
     #!/bin/sh
 
-    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain observe-tx-ins --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --gas-adjustment 2 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC" --thornode-api "http://localhost:$THORNODE_SERVICE_PORT_API" --txids "$1"
+    printf "%s\n%s\n" "$SIGNER_PASSWD" "$SIGNER_PASSWD" | thornode tx thorchain observe-tx-ins --from "$SIGNER_NAME" --keyring-backend file --chain-id "$CHAIN_ID" --yes --gas auto --gas-adjustment 2 --node "tcp://localhost:$THORNODE_SERVICE_PORT_RPC" --thornode-api https://thornode-v1.ninerealms.com --txids "$1"
 
   external-ip.sh: |
     #!/bin/bash
