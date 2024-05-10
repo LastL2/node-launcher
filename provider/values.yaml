@@ -40,13 +40,13 @@ thornodeSnapshot:
     # ignore NoSchedule taints on tolerations (allows special node pool for statesync)
     # STATE_SYNC_TOLERATIONS: "xl"
 
-    # set these if you have a service mesh with sidecar proxies that require manual exit
+    # set these for service mesh with sidecars that require manual exit
     # READY_ENDPOINT: http://localhost:15000/ready
     # QUIT_ENDPOINT: http://localhost:15020/quitquitquit
 
   # mappings for environment variable to the secret key in the "provider" secret
   secretEnv:
-  # DISCORD_WEBHOOK_MAINNET_INFO: discord-webhook-mainnet-info
+    # DISCORD_WEBHOOK_MAINNET_INFO: discord-webhook-mainnet-info
 
   # default to mon/thurs schedule
   schedule: 0 10 * * 1,4
@@ -64,14 +64,36 @@ publicAlerts:
 
   # environment variable overrides for public-alerts config
   env:
-  # ENDPOINTS_THORNODE_API: https://thornode.ninerealms.com
+    # ENDPOINTS_THORNODE_API: https://thornode.ninerealms.com
 
   # mappings for environment variable to the secret key in the "provider" secret
   secretEnv:
-  # WEBHOOKS_ACTIVITY_DISCORD: discord-webhook-mainnet-activity
-  # WEBHOOKS_INFO_DISCORD: discord-webhook-mainnet-info
-  # WEBHOOKS_UPDATES_DISCORD: discord-webhook-chain-updates
-  # WEBHOOKS_SECURITY_DISCORD: discord-webhook-thorsec
-  # WEBHOOKS_SECURITY_SLACK: slack-webhook-security
-  # WEBHOOKS_SECURITY_PAGERDUTY: pagerduty-webhook-thorsec
-  # WEBHOOKS_ERRORS_SLACK: slack-webhook-public-alert-errors
+    # WEBHOOKS_ACTIVITY_DISCORD: discord-webhook-mainnet-activity
+    # WEBHOOKS_INFO_DISCORD: discord-webhook-mainnet-info
+    # WEBHOOKS_UPDATES_DISCORD: discord-webhook-chain-updates
+    # WEBHOOKS_SECURITY_DISCORD: discord-webhook-thorsec
+    # WEBHOOKS_SECURITY_SLACK: slack-webhook-security
+    # WEBHOOKS_SECURITY_PAGERDUTY: pagerduty-webhook-thorsec
+    # WEBHOOKS_ERRORS_SLACK: slack-webhook-public-alert-errors
+
+midgardBlockstore:
+  enabled: false
+
+  image:
+    name: registry.gitlab.com/thorchain/midgard
+    tag: "2.22.0"
+    hash: 5d589edac13eade3977338d3a5f789772aadd5ef1731dafc8475bb393207ec13
+
+  schedule: "0 14 * * *"
+
+  env:
+    # these must point at an archive node if the local blockstore is not synced
+    MIDGARD_THORCHAIN_THOR_NODE_URL: https://thornode-v1.ninerealms.com/thorchain
+    MIDGARD_THORCHAIN_TENDERMINT_URL: https://rpc-v1.ninerealms.com/websocket
+
+  pvc:
+    size: 200Gi
+
+  # set these for service mesh with sidecars that require manual exit
+  # quitEndpoint: http://localhost:15020/quitquitquit
+  # readyEndpoint: http://localhost:15000/ready
