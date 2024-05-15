@@ -51,9 +51,9 @@ func NewChainLagMonitorConfig() ChainLagMonitorConfig {
 	}
 }
 
-// ///////////////////////
+/////////////////////////
 // SolvencyMonitorConfig
-// ///////////////////////
+/////////////////////////
 
 type SolvencyMonitorConfig struct {
 	AlertWindowThreshold  int
@@ -78,6 +78,24 @@ func NewSolvencyMonitorConfig() SolvencyMonitorConfig {
 	}
 }
 
+// ///////////////////////
+// StuckOutboundMonitorConfig
+// ///////////////////////
+type StuckOutboundMonitorConfig struct {
+	BlockAgeThreshold int
+}
+
+func (sobm StuckOutboundMonitorConfig) Validate() error {
+	// TODO(Orion): add validation
+	return nil
+}
+
+func NewStuckOutboundMonitorConfig() StuckOutboundMonitorConfig {
+	return StuckOutboundMonitorConfig{
+		BlockAgeThreshold: 7200, // ~12 hours
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Configuration
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,8 +109,10 @@ type Webhooks struct {
 type Config struct {
 	Endpoints struct {
 		ThornodeAPI   string `mapstructure:"thornode_api"`
+		ThornodeRPC   string `mapstructure:"thornode_rpc"`
 		NineRealmsAPI string `mapstructure:"ninerealms_api"`
 		MidgardAPI    string `mapstructure:"midgard_api"`
+		ExplorerURL   string `mapstructure:"explorer_url"`
 	} `mapstructure:"endpoints"`
 	Webhooks struct {
 		Activity Webhooks `mapstructure:"activity"`
@@ -102,8 +122,9 @@ type Config struct {
 		Errors   Webhooks `mapstructure:"errors"`
 	} `mapstructure:"webhooks"`
 	// each monitor can have its own configuration params
-	ChainLagMonitor ChainLagMonitorConfig
-	SolvencyMonitor SolvencyMonitorConfig
+	ChainLagMonitor      ChainLagMonitorConfig
+	SolvencyMonitor      SolvencyMonitorConfig
+	StuckOutboundMonitor StuckOutboundMonitorConfig
 }
 
 // //////////////////////////////////////////////////////////////////////////////
@@ -125,10 +146,14 @@ func init() {
 	// Initialize ChainLagMonitor with hardcoded values
 	config.ChainLagMonitor = NewChainLagMonitorConfig()
 	config.SolvencyMonitor = NewSolvencyMonitorConfig()
+	config.StuckOutboundMonitor = NewStuckOutboundMonitorConfig()
 
 	assert(viper.BindEnv("endpoints.thornode_api", "ENDPOINTS_THORNODE_API"))
+	assert(viper.BindEnv("endpoints.thornode_rpc", "ENDPOINTS_THORNODE_RPC"))
 	assert(viper.BindEnv("endpoints.ninerealms_api", "ENDPOINTS_NINEREALMS_API"))
 	assert(viper.BindEnv("endpoints.midgard_api", "ENDPOINTS_MIDGARD_API"))
+	// EXPLORER_URL = "https://runescan.io/tx"
+	assert(viper.BindEnv("endpoints.explorer_url", "ENDPOINTS_EXPLORER_URL"))
 	assert(viper.BindEnv("webhooks.activity.slack", "WEBHOOKS_ACTIVITY_SLACK"))
 	assert(viper.BindEnv("webhooks.activity.discord", "WEBHOOKS_ACTIVITY_DISCORD"))
 	assert(viper.BindEnv("webhooks.errors.slack", "WEBHOOKS_ERRORS_SLACK"))

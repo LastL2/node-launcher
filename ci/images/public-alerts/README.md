@@ -39,7 +39,7 @@ Monitors are independent scripts that poll for info and raise Alerts if conditio
 
 ### Notify
 
-Alerts are routed to appropriate notifer like slack or discord via webhook. A single alert can be sent to multiple comms channels like slack AND discord.
+Alerts are routed to appropriate notifier like slack or discord via webhook. A single alert can be sent to multiple comms channels like slack AND discord.
 
 ### cmd/alert
 

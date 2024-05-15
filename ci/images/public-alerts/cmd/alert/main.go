@@ -38,6 +38,15 @@ func main() {
 	solvencyMonitor := &monitor.SolvencyMonitor{}
 	// poll every 5 mins
 	monitor.Spawn(solvencyMonitor, alertQueue, 5*time.Minute)
+
+	// Invariant Monitor
+	invariantMonitor := monitor.NewInvariantsMonitor()
+	monitor.Spawn(invariantMonitor, alertQueue, 5*time.Minute)
+
+	// stuck outbound monitor
+	stuckOutboundMonitor := monitor.NewOutboundMonitor()
+	monitor.Spawn(stuckOutboundMonitor, alertQueue, 5*time.Minute)
+
 	// Spawn more monitors as needed...
 
 	for alert := range alertQueue {
@@ -46,7 +55,7 @@ func main() {
 	// alert if the queue is closed
 	notify.Notify(notify.Alert{
 		Webhooks: config.Get().Webhooks.Errors,
-		Message:  "alertQueue was unexpectedly closed",
+		Message:  "```[ERROR] alertQueue was unexpectedly closed```",
 	},
 	)
 	log.Fatal().Msg("alertQueue was unexpectedly closed")

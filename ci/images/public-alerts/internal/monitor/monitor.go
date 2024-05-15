@@ -24,7 +24,7 @@ func Spawn(m Monitor, alertQueue chan<- notify.Alert, interval time.Duration) {
 		// avoid swallowing panic
 		defer func() {
 			if rec := recover(); rec != nil {
-				err_msg := fmt.Sprintf("[ERROR] public-alerts: Monitor %s panicked: %v", m.Name(), rec)
+				err_msg := fmt.Sprintf("```[ERROR] public-alerts: Monitor %s panicked: %v ```", m.Name(), rec)
 				alertQueue <- notify.Alert{Webhooks: config.Get().Webhooks.Errors, Message: err_msg}
 				log.Fatal().Msg(err_msg)
 			}
@@ -36,7 +36,7 @@ func Spawn(m Monitor, alertQueue chan<- notify.Alert, interval time.Duration) {
 			alerts, err := m.Check()
 
 			if err != nil {
-				err_msg := fmt.Sprintf("[ERROR] public-alerts: Error Running monitor %s: %v", m.Name(), err)
+				err_msg := fmt.Sprintf("```[ERROR] public-alerts: Error Running monitor %s: %v```", m.Name(), err)
 				log.Error().Err(err).Msg(err_msg)
 				err_alert := notify.Alert{Webhooks: config.Get().Webhooks.Errors, Message: err_msg}
 				alertQueue <- err_alert

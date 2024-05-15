@@ -52,7 +52,7 @@ func (solvm *SolvencyMonitor) Name() string {
 
 func (solvm *SolvencyMonitor) Check() ([]notify.Alert, error) {
 
-	log.Info().Msg("Starting SolvencyMonitor...")
+	log.Info().Msg("Checking Solvency...")
 	cfg := config.Get()
 	vaults, err := fetchSolvencyData(cfg.Endpoints.NineRealmsAPI)
 	if err != nil {

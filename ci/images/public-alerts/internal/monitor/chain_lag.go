@@ -1,9 +1,8 @@
 package monitor
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
+	"public-alerts/internal/common"
 	"public-alerts/internal/config"
 	"public-alerts/internal/notify"
 	"strings"
@@ -37,21 +36,6 @@ func max(slice []int) int {
 		}
 	}
 	return max
-}
-
-func fetchNodes(apiURL string) ([]openapi.Node, error) {
-	resp, err := http.Get(apiURL)
-	if err != nil {
-		return nil, fmt.Errorf("error making request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	var nodes []openapi.Node
-	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&nodes); err != nil {
-		return nil, fmt.Errorf("error decoding JSON: %w", err)
-	}
-	return nodes, nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +95,12 @@ func (clm *ChainLagMonitor) Check() ([]notify.Alert, error) {
 
 	log.Info().Msg("Checking Chain Lag...")
 	cfg := config.Get()
-	nodes, err := fetchNodes(fmt.Sprintf("%s/thorchain/nodes", cfg.Endpoints.ThornodeAPI))
+	client, err := common.NewThornodeClient()
+	if err != nil {
+		return nil, err
+	}
+
+	nodes, err := client.GetNodes()
 	if err != nil {
 		return nil, err
 	}
