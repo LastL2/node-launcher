@@ -14,29 +14,11 @@ midgard:
     remote: https://storage.googleapis.com/public-snapshots-ninerealms/midgard-blockstore/mainnet/v2/
     size: 20Gi
 
-binance-daemon:
-  enabled: true
-
 bitcoin-daemon:
-  enabled: true
-
-litecoin-daemon:
-  enabled: true
-
-bitcoin-cash-daemon:
   enabled: true
 
 ethereum-daemon:
   enabled: true
 
-dogecoin-daemon:
-  enabled: true
-
-gaia-daemon:
-  enabled: true
-
 avalanche-daemon:
-  enabled: true
-
-binance-smart-daemon:
   enabled: true

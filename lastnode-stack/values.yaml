@@ -27,30 +27,11 @@ midgard:
   enabled: false
   fullnameOverride: midgard
 
-binance-daemon:
-  fullnameOverride: binance-daemon
-
 bitcoin-daemon:
   fullnameOverride: bitcoin-daemon
-
-litecoin-daemon:
-  fullnameOverride: litecoin-daemon
-
-bitcoin-cash-daemon:
-  fullnameOverride: bitcoin-cash-daemon
 
 ethereum-daemon:
   fullnameOverride: ethereum-daemon
 
-dogecoin-daemon:
-  fullnameOverride: dogecoin-daemon
-
-gaia-daemon:
-  fullnameOverride: gaia-daemon
-  enabled: false
-
 avalanche-daemon:
   fullnameOverride: avalanche-daemon
-
-binance-smart-daemon:
-  fullnameOverride: binance-smart-daemon

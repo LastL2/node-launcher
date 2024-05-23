@@ -52,7 +52,7 @@ spec:
           privileged: true
       - name: init-thorchain
         image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
-        command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for lastnode; sleep 2; done']
+        command: ['sh', '-c', 'until nc -zv {{ .Values.lastApi }}; do echo waiting for lastnode; sleep 2; done']
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -87,49 +87,13 @@ spec:
             - name: NET
               value: {{ include "bifrost.net" . }}
             - name: CHAIN_API
-              value: {{ .Values.thorApi }}
+              value: {{ .Values.lastApi }}
             - name: CHAIN_RPC
               value: {{ include "bifrost.lastDaemon" . }}
-            - name: BINANCE_HOST
-              value: {{ include "bifrost.binanceDaemon" . }}
             - name: BTC_HOST
               value: {{ include "bifrost.bitcoinDaemon" . }}
-            - name: LTC_HOST
-              value: {{ include "bifrost.litecoinDaemon" . }}
-            - name: BCH_HOST
-              value: {{ include "bifrost.bitcoinCashDaemon" . }}
-            - name: DOGE_HOST
-              value: {{ include "bifrost.dogecoinDaemon" . }}
-            - name: TERRA_HOST
-              value: {{ include "bifrost.terraDaemon" . }}
-            - name: GAIA_HOST
-              value: {{ include "bifrost.gaiaDaemon" . }}
-            - name: GAIA_GRPC_HOST
-              value: {{ include "bifrost.gaiaDaemonGRPC" . }}
-            - name: GAIA_GRPC_TLS
-              value: "{{ include "bifrost.gaiaDaemonGRPCTLS" . }}"
             - name: AVAX_HOST
               value: {{ include "bifrost.avaxDaemon" . }}
-            {{- if not .Values.litecoinDaemon.enabled }}
-            - name: LTC_DISABLED
-              value: "true"
-            {{- end}}
-            {{- if not .Values.dogecoinDaemon.enabled }}
-            - name: DOGE_DISABLED
-              value: "true"
-            {{- end}}
-            {{- if not .Values.terraDaemon.enabled }}
-            - name: TERRA_DISABLED
-              value: "true"
-            {{- end}}
-            {{- if not .Values.gaiaDaemon.enabled }}
-            - name: GAIA_DISABLED
-              value: "true"
-            {{- end}}
-            {{- if not .Values.avaxDaemon.enabled }}
-            - name: AVAX_DISABLED
-              value: "true"
-            {{- end}}
             - name: ETH_HOST
               value: {{ include "bifrost.ethereumDaemon" . }}
             - name: PEER

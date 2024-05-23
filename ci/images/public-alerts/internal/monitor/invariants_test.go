@@ -39,7 +39,7 @@ func setupTestDataFetcher() *testDataFetcher {
 			"thorchain": {
 				Invariant: "thorchain",
 				Broken:    false,
-				Msg:       []string{"Thorchain operating within parameters."},
+				Msg:       []string{"LastNetwork operating within parameters."},
 			},
 			"affiliate_collector": {
 				Invariant: "affiliate_collector",
@@ -69,7 +69,7 @@ func TestInvariantsMonitor_CheckInvariants(t *testing.T) {
 	}{
 		{"Test Asgard Invariant", "asgard", false, ""},
 		{"Test Bond Invariant", "bond", true, ""},
-		{"Test Thorchain Invariant", "thorchain", false, ""},
+		{"Test LastNetwork Invariant", "thorchain", false, ""},
 		{"Test Affiliate Collector Invariant", "affiliate_collector", true, ""},
 		{"Test Pools Invariant", "pools", false, ""},
 		{"Test Streaming Swaps Invariant", "streaming_swaps", true, ""},

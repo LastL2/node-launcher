@@ -197,10 +197,10 @@ destroy-dashboard: ## Uninstall Kubernetes dashboard
 	@helm delete kubernetes-dashboard -n kube-system
 	@echo
 
-install-provider: ## Install Thorchain provider
+install-provider: ## Install LastNetwork provider
 	@scripts/install-provider.sh
 
-destroy-provider: ## Uninstall Thorchain provider
+destroy-provider: ## Uninstall LastNetwork provider
 	@scripts/destroy-provider.sh
 
 grafana: ## Access Grafana UI through port-forward locally

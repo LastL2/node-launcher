@@ -82,7 +82,7 @@ Image
 {{- end -}}
 
 {{/*
-Thor daemon
+Last daemon
 */}}
 {{- define "bifrost.lastDaemon" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
@@ -91,19 +91,6 @@ Thor daemon
     {{ .Values.lastDaemon.stagenet }}
 {{- else -}}
     {{ .Values.lastDaemon.mainnet }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Binance daemon
-*/}}
-{{- define "bifrost.binanceDaemon" -}}
-{{- if eq (include "bifrost.net" .) "mainnet" -}}
-    {{ .Values.binanceDaemon.mainnet }}
-{{- else if eq (include "bifrost.net" .) "stagenet" -}}
-    {{ .Values.binanceDaemon.stagenet }}
-{{- else -}}
-    {{ .Values.binanceDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 

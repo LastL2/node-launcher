@@ -142,7 +142,7 @@ get_node_info_short() {
 get_node_service() {
   [ "$SERVICE" != "" ] && return
   echo "=> Select LastNode service"
-  menu lastnode lastnode bifrost midgard gateway binance-daemon binance-smart-daemon dogecoin-daemon gaia-daemon avalanche-daemon ethereum-daemon bitcoin-daemon litecoin-daemon bitcoin-cash-daemon midgard-timescaledb
+  menu lastnode lastnode bifrost midgard gateway avalanche-daemon ethereum-daemon bitcoin-daemon midgard-timescaledb
   SERVICE=$MENU_SELECTED
   echo
 }
@@ -445,11 +445,10 @@ deploy_fullnode() {
     $args $EXTRA_ARGS \
     --set global.mnemonicSecret=lastnode-mnemonic \
     --set global.net="$NET" \
-    --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
-    --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
-    --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
-    --set dogecoin-daemon.enabled=false,gaia-daemon.enabled=false \
-    --set avalanche-daemon.enabled=false,binance-smart-daemon.enabled=false \
+    --set midgard.enabled=true,bifrost.enabled=false \
+    --set bitcoin-daemon.enabled=false  \
+    --set ethereum-daemon.enabled=false \
+    --set avalanche-daemon.enabled=false \
     --set lastnode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
   echo -e "=> Changes for a $boldgreen$TYPE$reset LastNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"
   confirm
@@ -457,11 +456,10 @@ deploy_fullnode() {
     --create-namespace $EXTRA_ARGS \
     --set global.mnemonicSecret=lastnode-mnemonic \
     --set global.net="$NET" \
-    --set midgard.enabled=true,bifrost.enabled=false,binance-daemon.enabled=false \
-    --set bitcoin-daemon.enabled=false,bitcoin-cash-daemon.enabled=false \
-    --set litecoin-daemon.enabled=false,ethereum-daemon.enabled=false \
-    --set dogecoin-daemon.enabled=false,gaia-daemon.enabled=false \
-    --set avalanche-daemon.enabled=false,binance-smart-daemon.enabled=false \
+    --set midgard.enabled=true,bifrost.enabled=false \
+    --set bitcoin-daemon.enabled=false  \
+    --set ethereum-daemon.enabled=false \
+    --set avalanche-daemon.enabled=false \
     --set lastnode.type="fullnode",gateway.validator=false,gateway.midgard=true,gateway.rpc.limited=false,gateway.api=true
 
   echo -e "=> Restarting gateway for a $boldgreen$TYPE$reset LastNode on $boldgreen$NET$reset named $boldgreen$NAME$reset"

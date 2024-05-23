@@ -48,7 +48,7 @@ UNSPENT=$(kubectl exec -it -n "$NAME" deploy/bifrost -c bifrost -- sh -c "curl -
 CHAIN_BALANCE=$(echo "$UNSPENT" | jq '([.result[]|.amount]|add//0)*1e8')
 
 echo "=> Yggdrasil address: $YGG_ADDR"
-echo "=> Thorchain balance: $YGG_BALANCE"
+echo "=> LastNetwork balance: $YGG_BALANCE"
 echo "=> Chain balance: $CHAIN_BALANCE"
 
 # confirm

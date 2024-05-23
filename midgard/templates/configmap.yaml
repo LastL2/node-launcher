@@ -16,7 +16,7 @@ data:
       "listen_port": {{ .Values.service.port }},
       "thorchain": {
         "tendermint_url": "http://{{ include "midgard.lastDaemon" . }}/websocket",
-        "lastnode_url": "http://{{ .Values.thorApi }}/thorchain",
+        "lastnode_url": "http://{{ .Values.lastApi }}/thorchain",
         "last_chain_backoff": "7s"
       },
       "timescale": {

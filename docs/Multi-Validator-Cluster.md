@@ -13,58 +13,23 @@ NAME=daemons TYPE=daemons NET=mainnet make install
 ```yaml
 # point bifrost at shared daemons
 bifrost:
-  binanceDaemon:
-    mainnet: http://binance-daemon.daemons.svc.cluster.local:27147
   bitcoinDaemon:
     mainnet: bitcoin-daemon.daemons.svc.cluster.local:8332
-  litecoinDaemon:
-    mainnet: litecoin-daemon.daemons.svc.cluster.local:9332
-  bitcoinCashDaemon:
-    mainnet: bitcoin-cash-daemon.daemons.svc.cluster.local:8332
-  dogecoinDaemon:
-    mainnet: dogecoin-daemon.daemons.svc.cluster.local:22555
   ethereumDaemon:
     mainnet: http://ethereum-daemon.daemons.svc.cluster.local:8545
-  gaiaDaemon:
-    enabled: true
-    mainnet:
-      rpc: http://gaia-daemon.daemons.svc.cluster.local:26657
-      grpc: gaia-daemon.daemons.svc.cluster.local:9090
-      grpcTLS: false
   avaxDaemon:
     mainnet: http://avalanche-daemon.daemons.svc.cluster.local:9650/ext/bc/C/rpc
 
   # NOTE: This is the new format for overrides. There is plan to update the
   # config above to follow the new convention after refactoring of the Bifrost
   # config in the `lastnode` repo.
-  env:
-    BSC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
-    BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
-    BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
+  #  env:
 
 # disable all daemons in node namespace
-binance-daemon:
-  enabled: false
-
-binance-smart-daemon:
-  enabled: false
-
 bitcoin-daemon:
   enabled: false
 
-litecoin-daemon:
-  enabled: false
-
-bitcoin-cash-daemon:
-  enabled: false
-
 ethereum-daemon:
-  enabled: false
-
-dogecoin-daemon:
-  enabled: false
-
-gaia-daemon:
   enabled: false
 
 avalanche-daemon:
