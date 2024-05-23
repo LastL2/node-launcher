@@ -5,12 +5,12 @@ source ./scripts/core.sh
 get_node_info_short
 
 if ! node_exists; then
-  die "No existing THORNode found, make sure this is the correct name"
+  die "No existing LastNode found, make sure this is the correct name"
 fi
 
 if [ "$SERVICE" = "" ]; then
-  echo "=> Select a THORNode service to backup"
-  menu thornode thornode bifrost
+  echo "=> Select a LastNode service to backup"
+  menu lastnode lastnode bifrost
   SERVICE=$MENU_SELECTED
 fi
 

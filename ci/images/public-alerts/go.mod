@@ -7,7 +7,7 @@ require (
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.9.0
 	github.com/tendermint/tendermint v0.34.15
-	gitlab.com/thorchain/thornode v1.131.0
+	gitlab.com/thorchain/lastnode v1.131.0
 )
 
 require (

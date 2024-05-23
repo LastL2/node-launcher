@@ -5,7 +5,7 @@ metadata:
   name: mirror-app
 data:
   repos: |
-    https://gitlab.com/thorchain/thornode
+    https://gitlab.com/thorchain/lastnode
     https://gitlab.com/thorchain/devops/node-launcher
     https://gitlab.com/thorchain/devops/cluster-launcher
     https://gitlab.com/thorchain/midgard

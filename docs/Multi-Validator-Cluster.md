@@ -8,7 +8,7 @@ Some node operators may desire to run multiple validators within the same cluste
 NAME=daemons TYPE=daemons NET=mainnet make install
 ```
 
-2. On a separate branch, add the following to the values to `thornode-stack/mainnet.yaml`
+2. On a separate branch, add the following to the values to `lastnode-stack/mainnet.yaml`
 
 ```yaml
 # point bifrost at shared daemons
@@ -36,7 +36,7 @@ bifrost:
 
   # NOTE: This is the new format for overrides. There is plan to update the
   # config above to follow the new convention after refactoring of the Bifrost
-  # config in the `thornode` repo.
+  # config in the `lastnode` repo.
   env:
     BSC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
     BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon.daemons.svc.cluster.local:8545
@@ -74,8 +74,8 @@ avalanche-daemon:
 3. Install each of the validator nodes in their own namespaces
 
 ```yaml
-NAME=thornode-1 TYPE=validator NET=mainnet make install
-NAME=thornode-2 TYPE=validator NET=mainnet make install
+NAME=lastnode-1 TYPE=validator NET=mainnet make install
+NAME=lastnode-2 TYPE=validator NET=mainnet make install
 ```
 
 4. On each release, install both the daemons and the validators separately from the appropriate branch
@@ -85,6 +85,6 @@ NAME=thornode-2 TYPE=validator NET=mainnet make install
 NAME=daemons TYPE=daemons NET=mainnet make install
 
 # from your branch after merging master
-NAME=thornode-1 TYPE=validator NET=mainnet make update
-NAME=thornode-2 TYPE=validator NET=mainnet make update
+NAME=lastnode-1 TYPE=validator NET=mainnet make update
+NAME=lastnode-2 TYPE=validator NET=mainnet make update
 ```

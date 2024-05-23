@@ -108,8 +108,8 @@ type Webhooks struct {
 
 type Config struct {
 	Endpoints struct {
-		ThornodeAPI   string `mapstructure:"thornode_api"`
-		ThornodeRPC   string `mapstructure:"thornode_rpc"`
+		ThornodeAPI   string `mapstructure:"lastnode_api"`
+		ThornodeRPC   string `mapstructure:"lastnode_rpc"`
 		NineRealmsAPI string `mapstructure:"ninerealms_api"`
 		MidgardAPI    string `mapstructure:"midgard_api"`
 		ExplorerURL   string `mapstructure:"explorer_url"`
@@ -148,8 +148,8 @@ func init() {
 	config.SolvencyMonitor = NewSolvencyMonitorConfig()
 	config.StuckOutboundMonitor = NewStuckOutboundMonitorConfig()
 
-	assert(viper.BindEnv("endpoints.thornode_api", "ENDPOINTS_THORNODE_API"))
-	assert(viper.BindEnv("endpoints.thornode_rpc", "ENDPOINTS_THORNODE_RPC"))
+	assert(viper.BindEnv("endpoints.lastnode_api", "ENDPOINTS_LASTNODE_API"))
+	assert(viper.BindEnv("endpoints.lastnode_rpc", "ENDPOINTS_LASTNODE_RPC"))
 	assert(viper.BindEnv("endpoints.ninerealms_api", "ENDPOINTS_NINEREALMS_API"))
 	assert(viper.BindEnv("endpoints.midgard_api", "ENDPOINTS_MIDGARD_API"))
 	// EXPLORER_URL = "https://runescan.io/tx"

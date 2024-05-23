@@ -10,7 +10,7 @@ import (
 	"public-alerts/internal/notify"
 
 	"github.com/rs/zerolog/log"
-	openapi "gitlab.com/thorchain/thornode/openapi/gen"
+	openapi "gitlab.com/thorchain/lastnode/openapi/gen"
 )
 
 // OutboundMonitor monitors transactions that are stuck in outbound processes.
@@ -34,7 +34,7 @@ func (om *OutboundMonitor) Check() ([]notify.Alert, error) {
 
 	client, err := common.NewThornodeClient()
 	if err != nil {
-		log.Err(err).Msg("error creating thornode client")
+		log.Err(err).Msg("error creating lastnode client")
 		return nil, err
 	}
 
@@ -85,7 +85,7 @@ func (om *OutboundMonitor) Check() ([]notify.Alert, error) {
 	return alerts, nil
 }
 
-// getOutboundTransactions fetches outbound transactions from the THORNode API.
+// getOutboundTransactions fetches outbound transactions from the LastNode API.
 func getOutboundTransactions() ([]openapi.TxOutItem, error) {
 
 	resp, err := http.Get(fmt.Sprintf("%s/thorchain/queue/outbound", config.Get().Endpoints.ThornodeAPI))
@@ -102,7 +102,7 @@ func getOutboundTransactions() ([]openapi.TxOutItem, error) {
 	return transactions, nil
 }
 
-// getTxDetails fetches transaction details from the THORNode API using the transaction hash.
+// getTxDetails fetches transaction details from the LastNode API using the transaction hash.
 func getTxDetails(inHash *string) (openapi.TxDetailsResponse, error) {
 	// Define a variable to hold the response.
 	var txDetails openapi.TxDetailsResponse

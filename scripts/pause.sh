@@ -6,11 +6,11 @@ source ./scripts/core.sh
 
 get_node_info_short
 
-echo "=> Pausing node global halt from a THORNode named $boldyellow$NAME$reset"
+echo "=> Pausing node global halt from a LastNode named $boldyellow$NAME$reset"
 confirm
 
-kubectl exec -it -n "$NAME" -c thornode deploy/thornode -- /kube-scripts/pause.sh
+kubectl exec -it -n "$NAME" -c lastnode deploy/lastnode -- /kube-scripts/pause.sh
 sleep 5
-echo THORChain paused
+echo LastNetwork paused
 
 display_status

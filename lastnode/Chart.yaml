@@ -1,0 +1,7 @@
+apiVersion: v2
+name: lastnode
+description: LastNode daemon application
+type: application
+version: 0.1.0
+
+appVersion: 0.59.1

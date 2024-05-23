@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-{{ include "lastnode.name" . }}
+  namespace: prometheus-system
+  labels:
+    {{- include "lastnode.labels" . | nindent 4 }}
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      {{- include "lastnode.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  endpoints:
+  - port: prometheus
+    interval: 15s

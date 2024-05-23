@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-	openapi "gitlab.com/thorchain/thornode/openapi/gen"
+	openapi "gitlab.com/thorchain/lastnode/openapi/gen"
 )
 
 var (

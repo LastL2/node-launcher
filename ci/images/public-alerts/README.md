@@ -1,6 +1,6 @@
 # Public Alerts
 
-A simple alerting framework that leveraging thornode and midgard.
+A simple alerting framework that leveraging lastnode and midgard.
 
 ## Setup
 

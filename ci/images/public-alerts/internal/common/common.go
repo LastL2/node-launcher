@@ -39,7 +39,7 @@ func FormatPercent(value float64) string {
 }
 
 // assetToUSDViaMidgard fetches asset prices from the Midgard API and caches them.
-// TODO: update to use thornode prices after thorchain/thornode!3478
+// TODO: update to use lastnode prices after thorchain/lastnode!3478
 func AssetToUSDViaMidgard(midgardAPI string) (map[string]float64, error) {
 	priceCache.Lock()
 	// Check if cache is valid

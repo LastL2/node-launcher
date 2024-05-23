@@ -1,0 +1,10 @@
+- Get the LastNetwork Node IP by running these commands:
+
+  export NODE_IP=$(kubectl get configmap {{ include "lastnode.fullname" . }}-external-ip -o jsonpath={.data.externalIP})
+  echo $NODE_IP
+
+- Visit RPC endpoint of the LastNetwork Node:
+
+  Mainnet:
+  curl http://$NODE_IP:27147
+

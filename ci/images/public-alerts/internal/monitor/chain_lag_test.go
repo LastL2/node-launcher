@@ -3,7 +3,7 @@ package monitor
 import (
 	"testing"
 
-	openapi "gitlab.com/thorchain/thornode/openapi/gen"
+	openapi "gitlab.com/thorchain/lastnode/openapi/gen"
 )
 
 // TestCalculateChainLag tests the calculateChainLag function for various scenarios.

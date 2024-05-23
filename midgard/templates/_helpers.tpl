@@ -77,12 +77,12 @@ Net
 {{/*
 Thor daemon
 */}}
-{{- define "midgard.thorDaemon" -}}
+{{- define "midgard.lastDaemon" -}}
 {{- if eq (include "midgard.net" .) "mainnet" -}}
-    {{ .Values.thorDaemon.mainnet }}
+    {{ .Values.lastDaemon.mainnet }}
 {{- else if eq (include "midgard.net" .) "stagenet" -}}
-    {{ .Values.thorDaemon.stagenet }}
+    {{ .Values.lastDaemon.stagenet }}
 {{- else -}}
-    {{ .Values.thorDaemon.mainnet }}
+    {{ .Values.lastDaemon.mainnet }}
 {{- end -}}
 {{- end -}}

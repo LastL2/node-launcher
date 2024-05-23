@@ -84,13 +84,13 @@ Image
 {{/*
 Thor daemon
 */}}
-{{- define "bifrost.thorDaemon" -}}
+{{- define "bifrost.lastDaemon" -}}
 {{- if eq (include "bifrost.net" .) "mainnet" -}}
-    {{ .Values.thorDaemon.mainnet }}
+    {{ .Values.lastDaemon.mainnet }}
 {{- else if eq (include "bifrost.net" .) "stagenet" -}}
-    {{ .Values.thorDaemon.stagenet }}
+    {{ .Values.lastDaemon.stagenet }}
 {{- else -}}
-    {{ .Values.thorDaemon.mainnet }}
+    {{ .Values.lastDaemon.mainnet }}
 {{- end -}}
 {{- end -}}
 

@@ -23,8 +23,8 @@ RUN addgroup -S app && adduser -S app -G app
 USER app
 
 WORKDIR /app
-COPY --from=build /app/thornode-snapshot .
+COPY --from=build /app/lastnode-snapshot .
 
-ENTRYPOINT ["/app/thornode-snapshot"]
+ENTRYPOINT ["/app/lastnode-snapshot"]
 
 # vi: ft=dockerfile

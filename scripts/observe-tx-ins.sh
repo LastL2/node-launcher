@@ -10,4 +10,4 @@ echo "${TXIDS}"
 echo
 confirm
 
-kubectl exec -it -n "${NAME}" -c thornode deploy/thornode -- /kube-scripts/observe-tx-ins.sh "${TXIDS}"
+kubectl exec -it -n "${NAME}" -c lastnode deploy/lastnode -- /kube-scripts/observe-tx-ins.sh "${TXIDS}"

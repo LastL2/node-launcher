@@ -8,7 +8,7 @@ import (
 	"public-alerts/internal/notify"
 
 	"github.com/rs/zerolog/log"
-	openapi "gitlab.com/thorchain/thornode/openapi/gen"
+	openapi "gitlab.com/thorchain/lastnode/openapi/gen"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ func (ldf *liveDataFetcher) FetchInvariantData(invariant string) (*openapi.Invar
 func NewLiveDataFetcher() *liveDataFetcher {
 	client, err := common.NewThornodeClient()
 	if err != nil {
-		log.Error().Err(err).Msg("error creating thornode client")
+		log.Error().Err(err).Msg("error creating lastnode client")
 		return nil
 	}
 	return &liveDataFetcher{
@@ -80,7 +80,7 @@ func (invm *InvariantsMonitor) Check() ([]notify.Alert, error) {
 		msgs := []string{"> ### Broken Invariants:"}
 		for _, b := range broken {
 
-			msgs = append(msgs, fmt.Sprintf("> https://thornode.ninerealms.com/thorchain/invariant/%s", b))
+			msgs = append(msgs, fmt.Sprintf("> https://lastnode.ninerealms.com/thorchain/invariant/%s", b))
 		}
 		// Notify using the configured notification system.
 		return []notify.Alert{{Message: strings.Join(msgs, "\n")}}, nil

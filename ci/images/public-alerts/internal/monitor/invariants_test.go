@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	openapi "gitlab.com/thorchain/thornode/openapi/gen"
+	openapi "gitlab.com/thorchain/lastnode/openapi/gen"
 )
 
 // testDataFetcher with predefined responses for each invariant

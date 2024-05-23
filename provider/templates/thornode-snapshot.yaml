@@ -1,10 +1,10 @@
-{{- if .Values.thornodeSnapshot.enabled }}
+{{- if .Values.lastnodeSnapshot.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: thornode-snapshot
+  name: lastnode-snapshot
 spec:
-  schedule: {{ .Values.thornodeSnapshot.schedule }}
+  schedule: {{ .Values.lastnodeSnapshot.schedule }}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
@@ -13,19 +13,19 @@ spec:
       backoffLimit: 1
       template:
         spec:
-          activeDeadlineSeconds: {{ .Values.thornodeSnapshot.activeDeadlineSeconds }}
-          serviceAccountName: thornode-snapshot
+          activeDeadlineSeconds: {{ .Values.lastnodeSnapshot.activeDeadlineSeconds }}
+          serviceAccountName: lastnode-snapshot
           containers:
-            - name: thornode-snapshot
-              image: {{ .Values.thornodeSnapshot.image.name }}:{{ .Values.thornodeSnapshot.image.tag }}@sha256:{{ .Values.thornodeSnapshot.image.hash }}
+            - name: lastnode-snapshot
+              image: {{ .Values.lastnodeSnapshot.image.name }}:{{ .Values.lastnodeSnapshot.image.tag }}@sha256:{{ .Values.lastnodeSnapshot.image.hash }}
               env:
-                {{- range $key, $value := .Values.thornodeSnapshot.env }}
+                {{- range $key, $value := .Values.lastnodeSnapshot.env }}
                 - name: {{ $key }}
                   value: {{ $value | quote }}
                 {{- end }}
                 - name: MINIO_IMAGE
                   value: {{ .Values.minio.image.name }}:{{ .Values.minio.image.tag }}@sha256:{{ .Values.minio.image.hash }}
-                {{- range $key, $value := .Values.thornodeSnapshot.secretEnv }}
+                {{- range $key, $value := .Values.lastnodeSnapshot.secretEnv }}
                 - name: {{ $key }}
                   valueFrom:
                     secretKeyRef:
@@ -37,7 +37,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: thornode-snapshot
+  name: lastnode-snapshot
 rules:
   - apiGroups: [""]
     resources: [pods]
@@ -55,18 +55,18 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: thornode-snapshot
+  name: lastnode-snapshot
 subjects:
   - kind: ServiceAccount
-    name: thornode-snapshot
+    name: lastnode-snapshot
     apiGroup: ""
 roleRef:
   kind: Role
-  name: thornode-snapshot
+  name: lastnode-snapshot
   apiGroup: ""
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: thornode-snapshot
+  name: lastnode-snapshot
 {{- end }}

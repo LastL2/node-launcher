@@ -8,8 +8,8 @@ stages:
 
 variables:
   SCAN_KUBERNETES_MANIFESTS: "true"
-  KUBESEC_HELM_CHARTS_PATH: ./thornode-stack
-  KUBESEC_HELM_OPTIONS: --dependency-update --values thornode-stack/values.yaml --values thornode-stack/mainnet.yaml
+  KUBESEC_HELM_CHARTS_PATH: ./lastnode-stack
+  KUBESEC_HELM_OPTIONS: --dependency-update --values lastnode-stack/values.yaml --values lastnode-stack/mainnet.yaml
 
 ########################################################################################
 # Gitlab Jobs
@@ -51,7 +51,7 @@ check-image-digests:
     - apk add py3-pip jq curl
     - pip3 install yq
   script:
-    - ./scripts/check-thornode-images.sh
+    - ./scripts/check-lastnode-images.sh
     - ./scripts/check-node-launcher-images.sh
     - ./scripts/check-midgard-images.sh
 

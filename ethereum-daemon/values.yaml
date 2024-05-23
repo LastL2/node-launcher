@@ -33,7 +33,7 @@ image:
     tag: v5.0.3
     hash: 6c775ba7c814c46e7680a21f05fbc5fdedafb493c4189b39d7ae171e90ea8eae
   scripts:
-    repository: registry.gitlab.com/thorchain/thornode
+    repository: registry.gitlab.com/thorchain/lastnode
     pullPolicy: IfNotPresent
     tag: mocknet
 

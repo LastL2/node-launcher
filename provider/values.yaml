@@ -17,18 +17,18 @@ minio:
 
 # trunk-ignore-all(gitleaks/discord-client-secret): false positives triggered below
 
-thornodeSnapshot:
+lastnodeSnapshot:
   enabled: true
 
   image:
     name: registry.gitlab.com/thorchain/devops/node-launcher
-    tag: thornode-snapshot-0.1.0
+    tag: lastnode-snapshot-0.1.0
     hash: abb576e5087c0ae528f1bac0027c75dc6544d70c14b1aa2b3e69fa3c4f4df826
 
-  # environment variable overrides for thornode-snapshot config
+  # environment variable overrides for lastnode-snapshot config
   env:
     # there must be at least 2 used for statesync rpc servers
-    THORNODE_RPC_SERVERS: https://rpc-v1.ninerealms.com:443,https://rpc-v1.ninerealms.com:443
+    LASTNODE_RPC_SERVERS: https://rpc-v1.ninerealms.com:443,https://rpc-v1.ninerealms.com:443
 
     # the PVC size must be at least 2x the current snapshot size
     PVC_SIZE: 300Gi
@@ -64,7 +64,7 @@ publicAlerts:
 
   # environment variable overrides for public-alerts config
   env:
-    # ENDPOINTS_THORNODE_API: https://thornode.ninerealms.com
+    # ENDPOINTS_LASTNODE_API: https://lastnode.ninerealms.com
 
   # mappings for environment variable to the secret key in the "provider" secret
   secretEnv:
@@ -88,8 +88,8 @@ midgardBlockstore:
 
   env:
     # these must point at an archive node if the local blockstore is not synced
-    MIDGARD_THORCHAIN_THOR_NODE_URL: https://thornode-v1.ninerealms.com/thorchain
-    MIDGARD_THORCHAIN_TENDERMINT_URL: https://rpc-v1.ninerealms.com/websocket
+    MIDGARD_LASTCHAIN_LAST_NODE_URL: https://lastnode-v1.ninerealms.com/thorchain
+    MIDGARD_LASTCHAIN_TENDERMINT_URL: https://rpc-v1.ninerealms.com/websocket
 
   pvc:
     size: 200Gi

@@ -16,7 +16,7 @@ peer:
 debug: false
 
 # provide custom environment variables to override config defaults:
-# https://gitlab.com/thorchain/thornode/-/blob/develop/config/default.yaml
+# https://gitlab.com/thorchain/lastnode/-/blob/develop/config/default.yaml
 env:
   BIFROST_CHAINS_BTC_SCANNER_LEVELDB_COMPACTION_TABLE_SIZE_MULTIPLIER: "1"
 
@@ -26,14 +26,14 @@ env:
   BIFROST_CHAINS_BSC_RPC_HOST: http://binance-smart-daemon:8545
   BIFROST_CHAINS_BSC_BLOCK_SCANNER_RPC_HOST: http://binance-smart-daemon:8545
 
-thorApi: thornode:1317
+thorApi: lastnode:1317
 chainID:
   mainnet: thorchain-mainnet-v1
   stagenet: thorchain-stagenet-v2
 
-thorDaemon:
-  mainnet: thornode:27147
-  stagenet: thornode:27147
+lastDaemon:
+  mainnet: lastnode:27147
+  stagenet: lastnode:27147
 
 binanceDaemon:
   enabled: true
@@ -91,7 +91,7 @@ replicaCount: 1
 strategyType: Recreate
 
 image:
-  repository: registry.gitlab.com/thorchain/thornode
+  repository: registry.gitlab.com/thorchain/lastnode
   pullPolicy: IfNotPresent
   tag: mainnet
   hash: placeholder

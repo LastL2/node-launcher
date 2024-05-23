@@ -1,4 +1,4 @@
-module gitlab.com/devops/node-launcher/ci/images/thornode-snapshot
+module gitlab.com/devops/node-launcher/ci/images/lastnode-snapshot
 
 go 1.21
 

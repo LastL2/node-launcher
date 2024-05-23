@@ -2,11 +2,11 @@ Helm Charts
 
 ========
 
-Charts to deploy THORNode stack and tools.
+Charts to deploy LastNode stack and tools.
 It is recommended to use the Makefile commands available in this repo
 to start the charts with predefined configuration for most environments.
 
-Once you have your THORNode up and running, please follow instructions [here](https://gitlab.com/thorchain/thornode) for the next steps.
+Once you have your LastNode up and running, please follow instructions [here](https://gitlab.com/thorchain/lastnode) for the next steps.
 
 ## Requirements
 
@@ -52,21 +52,21 @@ make destroy-tools
 
 You can install those tools separately using the sections below.
 
-## Deploy THORNode
+## Deploy LastNode
 
-It is important to deploy the tools first before deploying the THORNode services as
-some services will have metrics configuration that would fail and stop the THORNode deployment.
+It is important to deploy the tools first before deploying the LastNode services as
+some services will have metrics configuration that would fail and stop the LastNode deployment.
 
-The commands deploy the umbrella chart `thornode-stack` in the background in the Kubernetes
-namespace `thornode`.
+The commands deploy the umbrella chart `lastnode-stack` in the background in the Kubernetes
+namespace `lastnode`.
 
 ```bash
 make install
 ```
 
-## THORNode commands
+## LastNode commands
 
-The Makefile provide different commands to help you operate your THORNode.
+The Makefile provide different commands to help you operate your LastNode.
 
 # help
 
@@ -87,7 +87,7 @@ make status
 
 # shell
 
-Opens a shell into your `thornode` deployment service selected:
+Opens a shell into your `lastnode` deployment service selected:
 
 ```bash
 make shell
@@ -95,7 +95,7 @@ make shell
 
 # restart
 
-Restart a THORNode deployment service selected:
+Restart a LastNode deployment service selected:
 
 ```bash
 make restart
@@ -103,7 +103,7 @@ make restart
 
 # logs
 
-Display stream of logs of a THORNode deployment selected:
+Display stream of logs of a LastNode deployment selected:
 
 ```bash
 make logs
@@ -112,7 +112,7 @@ make logs
 # set-node-keys
 
 Send a `set-node-keys` to your node, which will set your node keys automatically for you
-by retrieving them directly from the `thornode` deployment.
+by retrieving them directly from the `lastnode` deployment.
 
 ```bash
 make set-node-keys
@@ -138,7 +138,7 @@ make set-version
 
 # pause
 
-Send a `pause-chain` to your node, which will globally halt THORChain for 300 blocks. This is only to be used by node operators in the event of an emergency, such as a suspected attack on the network. This can only be done once by each node operator per churn. Nodes found abusing this command may be banned by other node operators. Use with extreme caution!
+Send a `pause-chain` to your node, which will globally halt LastNetwork for 300 blocks. This is only to be used by node operators in the event of an emergency, such as a suspected attack on the network. This can only be done once by each node operator per churn. Nodes found abusing this command may be banned by other node operators. Use with extreme caution!
 
 ```bash
 make pause
@@ -169,7 +169,7 @@ Please do not spam the Discord channels. Attempts to collude or otherwise abuse 
 make relay
 ```
 
-## Destroy THORNode
+## Destroy LastNode
 
 To fully destroy the running node and all services, run that command:
 
@@ -282,8 +282,8 @@ See previous section to access the Grafana admin interface through the command `
 Within the Grafana admin interface, to access the logs, find the `Explore` view from the left menu sidebar.
 Once in the `Explore` view, select Loki as the source, then select the service you want to show the logs by creating a query.
 The easiest way is to open the "Log browser" menu, then select the "job" label and then as value, select the service you want.
-For example you can select `thornode/bifrost` to show the logs of the Bifrost service within the default `thornode` namespace
-when deploying a mainnet validator THORNode.
+For example you can select `lastnode/bifrost` to show the logs of the Bifrost service within the default `lastnode` namespace
+when deploying a mainnet validator LastNode.
 
 ### Destroy Loki logs management stack
 
@@ -326,17 +326,17 @@ A guide for setting up Prometheus alerts can be found in [Alerting.md](./docs/Al
 
 ## Charts available:
 
-### THORNode full stack umbrella chart
+### LastNode full stack umbrella chart
 
-- thornode-stack: Umbrella chart packaging all services needed to run
-  a fullnode or validator THORNode.
+- lastnode-stack: Umbrella chart packaging all services needed to run
+  a fullnode or validator LastNode.
 
-This should be the only chart used to run THORNode stack unless
+This should be the only chart used to run LastNode stack unless
 you know what you are doing and want to run each chart separately (not recommended).
 
-### THORNode services:
+### LastNode services:
 
-- thornode: THORNode daemon & API
+- lastnode: LastNode daemon & API
 - gateway: Gateway proxy to get a single IP address for multiple deployments
 - bifrost: Bifrost service
 - midgard: Midgard API service

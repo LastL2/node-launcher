@@ -9,7 +9,7 @@ import (
 	"time"
 
 	tmhttp "github.com/tendermint/tendermint/rpc/client/http"
-	openapi "gitlab.com/thorchain/thornode/openapi/gen"
+	openapi "gitlab.com/thorchain/lastnode/openapi/gen"
 )
 
 // ThornodeDataFetcher defines the interface for fetching data from Thornode API and RPC.
@@ -20,8 +20,8 @@ type ThornodeDataFetcher interface {
 	GetInvariant(invariant string) (*openapi.InvariantResponse, error)
 }
 
-// thornodeClient implements the ThornodeDataFetcher interface using Thornode's HTTP and RPC endpoints.
-type thornodeClient struct {
+// lastnodeClient implements the ThornodeDataFetcher interface using Thornode's HTTP and RPC endpoints.
+type lastnodeClient struct {
 	httpClient *http.Client
 	rpcClient  *tmhttp.HTTP // Tendermint RPC client
 	baseURL    string
@@ -33,7 +33,7 @@ func NewThornodeClient() (ThornodeDataFetcher, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create RPC client: %w", err)
 	}
-	return &thornodeClient{
+	return &lastnodeClient{
 		httpClient: &http.Client{Timeout: 10 * time.Second},
 		rpcClient:  rpcClient,
 		baseURL:    config.Get().Endpoints.ThornodeAPI,
@@ -41,7 +41,7 @@ func NewThornodeClient() (ThornodeDataFetcher, error) {
 }
 
 // GetLatestHeight returns the latest block height from the Thornode network.
-func (c *thornodeClient) GetLatestHeight() (int, error) {
+func (c *lastnodeClient) GetLatestHeight() (int, error) {
 	ctx := context.Background()
 	status, err := c.rpcClient.Status(ctx)
 	if err != nil {
@@ -51,7 +51,7 @@ func (c *thornodeClient) GetLatestHeight() (int, error) {
 }
 
 // GetNodes retrieves the list of nodes from the Thornode network.
-func (c *thornodeClient) GetNodes() ([]openapi.Node, error) {
+func (c *lastnodeClient) GetNodes() ([]openapi.Node, error) {
 	resp, err := c.httpClient.Get(fmt.Sprintf("%s/thorchain/nodes", c.baseURL))
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %w", err)
@@ -66,7 +66,7 @@ func (c *thornodeClient) GetNodes() ([]openapi.Node, error) {
 }
 
 // GetInvariants retrieves a list of invariants from the Thornode network.
-func (c *thornodeClient) GetInvariants() ([]string, error) {
+func (c *lastnodeClient) GetInvariants() ([]string, error) {
 
 	type InvariantsResp struct {
 		Invariants []string `json:"invariants"`
@@ -86,7 +86,7 @@ func (c *thornodeClient) GetInvariants() ([]string, error) {
 }
 
 // GetInvariant returns the status of a specific invariant from the Thornode network.
-func (c *thornodeClient) GetInvariant(invariant string) (*openapi.InvariantResponse, error) {
+func (c *lastnodeClient) GetInvariant(invariant string) (*openapi.InvariantResponse, error) {
 	resp, err := c.httpClient.Get(fmt.Sprintf("%s/thorchain/invariant/%s", c.baseURL, invariant))
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %w", err)

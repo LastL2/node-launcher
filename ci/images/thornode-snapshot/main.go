@@ -36,9 +36,9 @@ type Config struct {
 	PVCName              string `mapstructure:"pvc_name"`
 	VolumeSnapshotName   string `mapstructure:"volume_snapshot_name"`
 
-	ThornodeImage      string `mapstructure:"thornode_image"`
-	ThornodeChainID    string `mapstructure:"thornode_chain_id"`
-	ThornodeRPCServers string `mapstructure:"thornode_rpc_servers"`
+	ThornodeImage      string `mapstructure:"lastnode_image"`
+	ThornodeChainID    string `mapstructure:"lastnode_chain_id"`
+	ThornodeRPCServers string `mapstructure:"lastnode_rpc_servers"`
 
 	MinioImage string `mapstructure:"minio_image"`
 
@@ -67,7 +67,7 @@ func (c Config) PodQuitCommand() string {
 func (c Config) Validate() {
 	// assert any required config without defaults is set
 	if c.ThornodeRPCServers == "" {
-		log.Fatal().Msg("missing required THORNODE_RPC_SERVERS")
+		log.Fatal().Msg("missing required LASTNODE_RPC_SERVERS")
 	}
 	if c.PVCSize == "" {
 		log.Fatal().Msg("missing required PVC_SIZE")
@@ -87,13 +87,13 @@ var config Config
 
 func init() {
 	defaults := Config{
-		StateSyncPodName:     "thornode-statesync",
-		ExportGenesisPodName: "thornode-export-genesis",
-		CreateArchivePodName: "thornode-create-archive",
-		UploadPodName:        "thornode-upload",
-		PVCName:              "thornode-snapshot-pvc",
-		VolumeSnapshotName:   "thornode-latest-statesync",
-		ThornodeImage:        "registry.gitlab.com/thorchain/thornode:mainnet",
+		StateSyncPodName:     "lastnode-statesync",
+		ExportGenesisPodName: "lastnode-export-genesis",
+		CreateArchivePodName: "lastnode-create-archive",
+		UploadPodName:        "lastnode-upload",
+		PVCName:              "lastnode-snapshot-pvc",
+		VolumeSnapshotName:   "lastnode-latest-statesync",
+		ThornodeImage:        "registry.gitlab.com/thorchain/lastnode:mainnet",
 		ThornodeChainID:      "thorchain-mainnet-v1",
 	}
 
@@ -314,11 +314,11 @@ func statesyncRecover(ctx context.Context, cs *kubernetes.Clientset) {
 		Memory: config.StateSyncMemory,
 		ExtraEnv: []corev1.EnvVar{
 			{
-				Name:  "THOR_AUTO_STATE_SYNC_ENABLED",
+				Name:  "LAST_AUTO_STATE_SYNC_ENABLED",
 				Value: "true",
 			},
 			{
-				Name:  "THOR_TENDERMINT_STATE_SYNC_RPC_SERVERS",
+				Name:  "LAST_TENDERMINT_STATE_SYNC_RPC_SERVERS",
 				Value: config.ThornodeRPCServers,
 			},
 		},
@@ -430,7 +430,7 @@ func exportGenesis(ctx context.Context, cs *kubernetes.Clientset) (height int64)
 			"sh",
 			"-c",
 			`
-			thornode export > /root/genesis.json;
+			lastnode export > /root/genesis.json;
 			jq '.initial_height|tonumber' /root/genesis.json;
 			` + config.PodQuitCommand(),
 		},
@@ -470,7 +470,7 @@ func createArchive(ctx context.Context, cs *kubernetes.Clientset, height int64) 
 			"sh",
 			"-c",
 			fmt.Sprintf(`
-			tar -czvf /root/%d.tar.gz -C /root/.thornode data;
+			tar -czvf /root/%d.tar.gz -C /root/.lastnode data;
 			`+config.PodQuitCommand(), height),
 		},
 		CPU:    "2",
@@ -494,9 +494,9 @@ func upload(ctx context.Context, cs *kubernetes.Clientset, height int64) {
 			mc config host add minio http://minio:9000 minio minio123;
 			mc mb minio/snapshots;
 			mc anonymous set download minio/snapshots;
-			mc cp /root/%d.tar.gz minio/snapshots/thornode/;
+			mc cp /root/%d.tar.gz minio/snapshots/lastnode/;
 			mc cp /root/genesis.json minio/snapshots/genesis/%d.json;
-			mc rm -r --force --older-than 60d minio/snapshots/thornode;
+			mc rm -r --force --older-than 60d minio/snapshots/lastnode;
 			`+config.PodQuitCommand(), height, height),
 		},
 		CPU:    "2",

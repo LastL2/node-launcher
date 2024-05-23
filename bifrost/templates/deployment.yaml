@@ -52,7 +52,7 @@ spec:
           privileged: true
       - name: init-thorchain
         image: busybox:{{ .Values.global.images.busybox.tag }}@sha256:{{ .Values.global.images.busybox.hash }}
-        command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for thornode; sleep 2; done']
+        command: ['sh', '-c', 'until nc -zv {{ .Values.thorApi }}; do echo waiting for lastnode; sleep 2; done']
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -69,9 +69,9 @@ spec:
             - mountPath: /var/data/bifrost
               name: data
               subPath: data
-            - mountPath: /root/.thornode
+            - mountPath: /root/.lastnode
               name: data
-              subPath: thornode
+              subPath: lastnode
             - mountPath: /etc/bifrost
               name: data
               subPath: etc
@@ -89,7 +89,7 @@ spec:
             - name: CHAIN_API
               value: {{ .Values.thorApi }}
             - name: CHAIN_RPC
-              value: {{ include "bifrost.thorDaemon" . }}
+              value: {{ include "bifrost.lastDaemon" . }}
             - name: BINANCE_HOST
               value: {{ include "bifrost.binanceDaemon" . }}
             - name: BTC_HOST

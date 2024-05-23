@@ -39,76 +39,76 @@ pull: ## Git pull node-launcher repository
 
 update-dependencies:
 	@echo "=> Updating Helm chart dependencies"
-	@helm dependencies update ./thornode-stack
+	@helm dependencies update ./lastnode-stack
 	@echo
 
 update-trust-state: ## Updates statesync trusted height/hash and Midgard blockstore hashes from Nine Realms
 	@./scripts/update-trust-state.sh
 
-mnemonic: ## Retrieve and display current mnemonic for backup from your THORNode
+mnemonic: ## Retrieve and display current mnemonic for backup from your LastNode
 	@./scripts/mnemonic.sh
 
-password: ## Retrieve and display current password for backup from your THORNode
+password: ## Retrieve and display current password for backup from your LastNode
 	@./scripts/password.sh
 
-pods: ## Get THORNode Kubernetes pods
+pods: ## Get LastNode Kubernetes pods
 	@./scripts/pods.sh
 
-pre-install: update-dependencies ## Pre deploy steps for a THORNode (secret creation)
+pre-install: update-dependencies ## Pre deploy steps for a LastNode (secret creation)
 	@./scripts/pre-install.sh
 
-install: update-dependencies ## Deploy a THORNode
+install: update-dependencies ## Deploy a LastNode
 	@./scripts/install.sh
 
-recycle: update-dependencies ## Destroy and recreate a THORNode recycling existing daemons to avoid re-sync
+recycle: update-dependencies ## Destroy and recreate a LastNode recycling existing daemons to avoid re-sync
 	@./scripts/recycle.sh
 
-update: pull update-dependencies ## Update a THORNode to latest version
+update: pull update-dependencies ## Update a LastNode to latest version
 	@./scripts/update.sh
 
-status: ## Display current status of your THORNode
+status: ## Display current status of your LastNode
 	@./scripts/status.sh
 
-reset: ## Reset and resync a service from scratch on your THORNode. This command can take a while to sync back to 100%.
+reset: ## Reset and resync a service from scratch on your LastNode. This command can take a while to sync back to 100%.
 	@./scripts/reset.sh
 
-hard-reset-thornode: ## Hard reset and resync thornode service from scratch on your THORNode, leaving no bak/* files.
-	@./scripts/hard-reset-thornode.sh
+hard-reset-lastnode: ## Hard reset and resync lastnode service from scratch on your LastNode, leaving no bak/* files.
+	@./scripts/hard-reset-lastnode.sh
 
-backup: ## Backup specific files from either thornode of bifrost service of a THORNode.
+backup: ## Backup specific files from either lastnode of bifrost service of a LastNode.
 	@./scripts/backup.sh
 
-full-backup: ## Create volume snapshots and backups for both thornode and bifrost services.
+full-backup: ## Create volume snapshots and backups for both lastnode and bifrost services.
 	@./scripts/full-backup.sh
 
-restore-backup: ## Restore backup specific files from either thornode of bifrost service of a THORNode.
+restore-backup: ## Restore backup specific files from either lastnode of bifrost service of a LastNode.
 	@./scripts/restore-backup.sh
 
-snapshot: ## Snapshot a volume for a specific THORNode service.
+snapshot: ## Snapshot a volume for a specific LastNode service.
 	@./scripts/snapshot.sh
 
-restore-snapshot: ## Restore a volume for a specific THORNode service from a snapshot.
+restore-snapshot: ## Restore a volume for a specific LastNode service from a snapshot.
 	@./scripts/restore-snapshot.sh
 
 wait-ready: ## Wait for all pods to be in Ready state
 	@./scripts/wait-ready.sh
 
-destroy: ## Uninstall current THORNode
+destroy: ## Uninstall current LastNode
 	@./scripts/destroy.sh
 
 export-state: ## Export chain state
 	@./scripts/export-state.sh
 
 hard-fork: ## Hard fork chain
-	@HARDFORK_BLOCK_HEIGHT=4786559 NEW_GENESIS_TIME='2022-03-22T01:38:16.219785087Z' CHAIN_ID='thorchain-mainnet-v1' IMAGE='registry.gitlab.com/thorchain/thornode:chaosnet-multichain-0.81.4' ./scripts/hard-fork.sh
+	@HARDFORK_BLOCK_HEIGHT=4786559 NEW_GENESIS_TIME='2022-03-22T01:38:16.219785087Z' CHAIN_ID='thorchain-mainnet-v1' IMAGE='registry.gitlab.com/thorchain/lastnode:chaosnet-multichain-0.81.4' ./scripts/hard-fork.sh
 
-shell: ## Open a shell for a selected THORNode service
+shell: ## Open a shell for a selected LastNode service
 	@./scripts/shell.sh
 
-debug: ## Open a shell for THORNode service mounting volume to debug
+debug: ## Open a shell for LastNode service mounting volume to debug
 	@./scripts/debug.sh
 
-restore-external-snapshot: ## Restore THORNode from external snapshot.
+restore-external-snapshot: ## Restore LastNode from external snapshot.
 	@./scripts/restore-external-snapshot.sh
 
 rescan-yggdrasil-utxo: ## Rescan Yggdrasil address for UTXO chains
@@ -117,25 +117,25 @@ rescan-yggdrasil-utxo: ## Rescan Yggdrasil address for UTXO chains
 rescan-asgard-utxo: ## Rescan Asgard address for UTXO chains
 	@./scripts/rescan-asgard-utxo.sh
 
-watch: ## Watch the THORNode pods in real time
+watch: ## Watch the LastNode pods in real time
 	@./scripts/watch.sh
 
-logs: ## Display logs for a selected THORNode service
+logs: ## Display logs for a selected LastNode service
 	@./scripts/logs.sh
 
-restart: ## Restart a selected THORNode service
+restart: ## Restart a selected LastNode service
 	@./scripts/restart.sh
 
-halt: ## Halt a selected THORNode service
+halt: ## Halt a selected LastNode service
 	@./scripts/halt.sh
 
-set-node-keys: ## Send a set-node-keys transaction to your THORNode
+set-node-keys: ## Send a set-node-keys transaction to your LastNode
 	@./scripts/set-node-keys.sh
 
-set-version: ## Send a set-version transaction to your THORNode
+set-version: ## Send a set-version transaction to your LastNode
 	@./scripts/set-version.sh
 
-set-ip-address: ## Send a set-ip-address transaction to your THORNode
+set-ip-address: ## Send a set-ip-address transaction to your LastNode
 	@./scripts/set-ip-address.sh
 
 set-monitoring: ## Enable PagerDuty or Deadmans Snitch monitoring via Prometheus/Grafana re-deploy
@@ -150,10 +150,10 @@ mimir: ## Send a mimir command to set a key/value
 ban: ## Send a ban command with a node address
 	@./scripts/ban.sh
 
-pause: ## Send a pause-chain transaction to your THORNode
+pause: ## Send a pause-chain transaction to your LastNode
 	@./scripts/pause.sh
 
-resume: ## Send a resume-chain transaction to your THORNode
+resume: ## Send a resume-chain transaction to your LastNode
 	@./scripts/resume.sh
 
 observe-tx-ins: ## Manually observe missed inbound transactions.

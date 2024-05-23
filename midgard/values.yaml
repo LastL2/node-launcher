@@ -2,10 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-thorApi: thornode:1317
-thorDaemon:
-  mainnet: thornode:27147
-  stagenet: thornode:27147
+thorApi: lastnode:1317
+lastDaemon:
+  mainnet: lastnode:27147
+  stagenet: lastnode:27147
 
 postgres:
   port: 5432

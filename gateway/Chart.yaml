@@ -1,6 +1,6 @@
 apiVersion: v2
 name: gateway
-description: THORNode gateway
+description: LastNode gateway
 type: application
 version: 0.1.0
 
